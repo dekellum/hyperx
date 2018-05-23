@@ -73,19 +73,19 @@ header! {
     /// # Examples
     ///
     /// ```
-    /// use hyper::header::{Headers, Connection};
+    /// use hyperx::header::{Headers, Connection};
     ///
     /// let mut headers = Headers::new();
     /// headers.set(Connection::keep_alive());
     /// ```
     ///
     /// ```
-    /// # extern crate hyper;
+    /// # extern crate hyperx;
     /// # extern crate unicase;
     /// # fn main() {
     /// // extern crate unicase;
     ///
-    /// use hyper::header::{Headers, Connection, ConnectionOption};
+    /// use hyperx::header::{Headers, Connection, ConnectionOption};
     /// use unicase::Ascii;
     ///
     /// let mut headers = Headers::new();

@@ -58,7 +58,7 @@ use header::{Header, Raw};
 /// # Examples
 ///
 /// ```
-/// use hyper::header::{Headers, Link, LinkValue, RelationType};
+/// use hyperx::header::{Headers, Link, LinkValue, RelationType};
 ///
 /// let link_value = LinkValue::new("http://example.com/TheBook/chapter2")
 ///     .push_rel(RelationType::Previous)

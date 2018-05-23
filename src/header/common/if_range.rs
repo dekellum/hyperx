@@ -30,14 +30,14 @@ use header::{self, Header, Raw, EntityTag, HttpDate};
 /// # Examples
 ///
 /// ```
-/// use hyper::header::{Headers, IfRange, EntityTag};
+/// use hyperx::header::{Headers, IfRange, EntityTag};
 ///
 /// let mut headers = Headers::new();
 /// headers.set(IfRange::EntityTag(EntityTag::new(false, "xyzzy".to_owned())));
 /// ```
 ///
 /// ```
-/// use hyper::header::{Headers, IfRange};
+/// use hyperx::header::{Headers, IfRange};
 /// use std::time::{SystemTime, Duration};
 ///
 /// let mut headers = Headers::new();

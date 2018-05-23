@@ -30,14 +30,14 @@ header! {
     /// # Examples
     ///
     /// ```
-    /// use hyper::header::{Headers, IfMatch};
+    /// use hyperx::header::{Headers, IfMatch};
     ///
     /// let mut headers = Headers::new();
     /// headers.set(IfMatch::Any);
     /// ```
     ///
     /// ```
-    /// use hyper::header::{Headers, IfMatch, EntityTag};
+    /// use hyperx::header::{Headers, IfMatch, EntityTag};
     ///
     /// let mut headers = Headers::new();
     /// headers.set(

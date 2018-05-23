@@ -30,8 +30,8 @@ header! {
     ///
     /// # Examples
     /// ```
-    /// use hyper::header::{Headers, Accept, qitem};
-    /// use hyper::mime;
+    /// use hyperx::header::{Headers, Accept, qitem};
+    /// use hyperx::mime;
     ///
     /// let mut headers = Headers::new();
     ///
@@ -43,8 +43,8 @@ header! {
     /// ```
     ///
     /// ```
-    /// use hyper::header::{Headers, Accept, qitem};
-    /// use hyper::mime;
+    /// use hyperx::header::{Headers, Accept, qitem};
+    /// use hyperx::mime;
     ///
     /// let mut headers = Headers::new();
     /// headers.set(
@@ -54,8 +54,8 @@ header! {
     /// );
     /// ```
     /// ```
-    /// use hyper::header::{Headers, Accept, QualityItem, q, qitem};
-    /// use hyper::mime;
+    /// use hyperx::header::{Headers, Accept, QualityItem, q, qitem};
+    /// use hyperx::mime;
     ///
     /// let mut headers = Headers::new();
     ///

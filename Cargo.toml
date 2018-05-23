@@ -1,14 +1,14 @@
 [package]
 
-name = "hyper"
+name = "hyperx"
 version = "0.11.27" # don't forget to update html_root_url
-description = "A modern HTTP library."
+description = "Hyper's 0.11.x header module and dependencies, eXtracted"
 readme = "README.md"
 homepage = "https://hyper.rs"
-documentation = "https://docs.rs/hyper"
-repository = "https://github.com/hyperium/hyper"
+documentation = "https://docs.rs/hyperx"
+repository = "https://github.com/dekellum/hyperx"
 license = "MIT"
-authors = ["Sean McArthur <sean@seanmonstar.com>"]
+authors = ["David Kelllum <dek-oss@gravitext.com>"]
 keywords = ["http", "hyper", "hyperium"]
 categories = ["network-programming", "web-programming::http-client", "web-programming::http-server"]
 

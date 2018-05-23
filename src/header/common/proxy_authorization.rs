@@ -26,13 +26,13 @@ use header::{Header, Raw, Scheme};
 /// # Examples
 ///
 /// ```
-/// use hyper::header::{Headers, ProxyAuthorization};
+/// use hyperx::header::{Headers, ProxyAuthorization};
 ///
 /// let mut headers = Headers::new();
 /// headers.set(ProxyAuthorization("let me in".to_owned()));
 /// ```
 /// ```
-/// use hyper::header::{Headers, ProxyAuthorization, Basic};
+/// use hyperx::header::{Headers, ProxyAuthorization, Basic};
 ///
 /// let mut headers = Headers::new();
 /// headers.set(
@@ -46,7 +46,7 @@ use header::{Header, Raw, Scheme};
 /// ```
 ///
 /// ```
-/// use hyper::header::{Headers, ProxyAuthorization, Bearer};
+/// use hyperx::header::{Headers, ProxyAuthorization, Bearer};
 ///
 /// let mut headers = Headers::new();
 /// headers.set(

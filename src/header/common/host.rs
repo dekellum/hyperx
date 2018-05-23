@@ -12,7 +12,7 @@ use header::parsing::from_one_raw_str;
 ///
 /// # Examples
 /// ```
-/// use hyper::header::{Headers, Host};
+/// use hyperx::header::{Headers, Host};
 ///
 /// let mut headers = Headers::new();
 /// headers.set(
@@ -20,7 +20,7 @@ use header::parsing::from_one_raw_str;
 /// );
 /// ```
 /// ```
-/// use hyper::header::{Headers, Host};
+/// use hyperx::header::{Headers, Host};
 ///
 /// let mut headers = Headers::new();
 /// headers.set(

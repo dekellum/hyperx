@@ -18,7 +18,7 @@ header! {
     /// # Examples
     ///
     /// ```
-    /// use hyper::header::{Headers, AccessControlMaxAge};
+    /// use hyperx::header::{Headers, AccessControlMaxAge};
     ///
     /// let mut headers = Headers::new();
     /// headers.set(AccessControlMaxAge(1728000u32));

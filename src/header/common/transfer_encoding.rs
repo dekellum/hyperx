@@ -29,7 +29,7 @@ header! {
     /// # Example
     ///
     /// ```
-    /// use hyper::header::{Headers, TransferEncoding, Encoding};
+    /// use hyperx::header::{Headers, TransferEncoding, Encoding};
     /// 
     /// let mut headers = Headers::new();
     /// headers.set(

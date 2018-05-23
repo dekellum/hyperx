@@ -16,7 +16,7 @@ use header::{self, Header, Raw};
 ///
 /// # Example
 /// ```
-/// use hyper::header::{Headers, LastEventId};
+/// use hyperx::header::{Headers, LastEventId};
 ///
 /// let mut headers = Headers::new();
 /// headers.set(LastEventId("1".to_owned()));

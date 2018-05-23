@@ -23,7 +23,7 @@ header! {
     /// # Examples
     ///
     /// ```
-    /// use hyper::header::{Headers, AcceptLanguage, LanguageTag, qitem};
+    /// use hyperx::header::{Headers, AcceptLanguage, LanguageTag, qitem};
     ///
     /// let mut headers = Headers::new();
     /// let mut langtag: LanguageTag = Default::default();
@@ -37,9 +37,9 @@ header! {
     /// ```
     ///
     /// ```
-    /// # extern crate hyper;
+    /// # extern crate hyperx;
     /// # #[macro_use] extern crate language_tags;
-    /// # use hyper::header::{Headers, AcceptLanguage, QualityItem, q, qitem};
+    /// # use hyperx::header::{Headers, AcceptLanguage, QualityItem, q, qitem};
     /// #
     /// # fn main() {
     /// let mut headers = Headers::new();

@@ -54,7 +54,7 @@ use header::shared::HttpDate;
 /// # Examples
 /// ```
 /// use std::time::Duration;
-/// use hyper::header::{Headers, RetryAfter};
+/// use hyperx::header::{Headers, RetryAfter};
 ///
 /// let mut headers = Headers::new();
 /// headers.set(
@@ -63,7 +63,7 @@ use header::shared::HttpDate;
 /// ```
 /// ```
 /// use std::time::{SystemTime, Duration};
-/// use hyper::header::{Headers, RetryAfter};
+/// use hyperx::header::{Headers, RetryAfter};
 ///
 /// let mut headers = Headers::new();
 /// let date = SystemTime::now() + Duration::from_secs(300);

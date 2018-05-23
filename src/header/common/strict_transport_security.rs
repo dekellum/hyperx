@@ -34,9 +34,9 @@ use header::{Header, Raw, parsing};
 /// # Example
 ///
 /// ```
-/// # extern crate hyper;
+/// # extern crate hyperx;
 /// # fn main() {
-/// use hyper::header::{Headers, StrictTransportSecurity};
+/// use hyperx::header::{Headers, StrictTransportSecurity};
 ///
 /// let mut headers = Headers::new();
 ///
