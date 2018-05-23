@@ -62,14 +62,6 @@ pub enum Error {
     __Nonexhaustive(Void)
 }
 
-impl Error {
-    pub(crate) fn new_canceled<E: Into<Box<StdError + Send + Sync>>>(cause: Option<E>) -> Error {
-        Error::Cancel(Canceled {
-            cause: cause.map(Into::into),
-        })
-    }
-}
-
 /// A pending item was dropped before ever being processed.
 ///
 /// For example, a `Request` could be queued in the `Client`, *just*

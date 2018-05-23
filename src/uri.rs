@@ -6,7 +6,6 @@ use std::str::{self, FromStr};
 use http;
 
 use ::common::ByteStr;
-use bytes::{BufMut, Bytes, BytesMut};
 
 /// The Request-URI of a Request's StartLine.
 ///
@@ -143,15 +142,6 @@ impl Uri {
         if let Some(query) = self.query_start {
             query
         } else if let Some(fragment) = self.fragment_start {
-            fragment
-        } else {
-            self.source.len()
-        }
-    }
-
-    #[inline]
-    fn origin_form_end(&self) -> usize {
-        if let Some(fragment) = self.fragment_start {
             fragment
         } else {
             self.source.len()
@@ -353,24 +343,6 @@ impl From<Uri> for http::Uri {
     }
 }
 
-pub unsafe fn from_utf8_unchecked(slice: Bytes) -> Result<Uri, UriError> {
-    Uri::new(ByteStr::from_utf8_unchecked(slice))
-}
-
-pub fn scheme_and_authority(uri: &Uri) -> Option<Uri> {
-    if uri.scheme_end.is_some() {
-        Some(Uri {
-            source: uri.source.slice_to(uri.authority_end.expect("scheme without authority")),
-            scheme_end: uri.scheme_end,
-            authority_end: uri.authority_end,
-            query_start: None,
-            fragment_start: None,
-        })
-    } else {
-        None
-    }
-}
-
 #[inline]
 fn asterisk_form() -> Uri {
     Uri {
@@ -379,42 +351,6 @@ fn asterisk_form() -> Uri {
         authority_end: None,
         query_start: None,
         fragment_start: None,
-    }
-}
-
-pub fn origin_form(uri: &Uri) -> Uri {
-    let range = Range(uri.path_start(), uri.origin_form_end());
-
-    let clone = if range.len() == 0 {
-        ByteStr::from_static("/")
-    } else if uri.source.as_bytes()[range.0] == b'*' {
-        return asterisk_form();
-    } else if uri.source.as_bytes()[range.0] != b'/' {
-        let mut new = BytesMut::with_capacity(range.1 - range.0 + 1);
-        new.put_u8(b'/');
-        new.put_slice(&uri.source.as_bytes()[range.0..range.1]);
-        // safety: the bytes are '/' + previous utf8 str
-        unsafe { ByteStr::from_utf8_unchecked(new.freeze()) }
-    } else if range.0 == 0 && range.1 == uri.source.len() {
-        uri.source.clone()
-    } else {
-        uri.source.slice(range.0, range.1)
-    };
-
-    Uri {
-        source: clone,
-        scheme_end: None,
-        authority_end: None,
-        query_start: uri.query_start,
-        fragment_start: None,
-    }
-}
-
-struct Range(usize, usize);
-
-impl Range {
-    fn len(&self) -> usize {
-        self.1 - self.0
     }
 }
 
@@ -688,23 +624,4 @@ fn test_uri_parse_error() {
     err("localhost?key=val");
     err("http://::1]");
     err("http://[::1");
-}
-
-#[test]
-fn test_uri_to_origin_form() {
-    let cases = vec![
-        ("/", "/"),
-        ("/foo?bar", "/foo?bar"),
-        ("/foo?bar#nope", "/foo?bar"),
-        ("http://hyper.rs", "/"),
-        ("http://hyper.rs/", "/"),
-        ("http://hyper.rs/path", "/path"),
-        ("http://hyper.rs?query", "/?query"),
-        ("*", "*"),
-    ];
-
-    for case in cases {
-        let uri = Uri::from_str(case.0).unwrap();
-        assert_eq!(origin_form(&uri), case.1); //, "{:?}", case);
-    }
 }
