@@ -1,4 +1,4 @@
-## 0.12.0 (TBD)
+## 0.12.0 (2018-6-1)
 
 Forked from hyper 0.11.27 (0.11.x branch, hyperium/hyper@76fdbcf2),
 e*x*tracting the typed *header* module.
