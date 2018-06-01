@@ -6,12 +6,12 @@ matrix:
     include:
         - rust: nightly
           env: FEATURES="--features nightly"
-        - rust: beta
+        - rust: stable
+          env: WITH_LOCK="1"
         - rust: stable
           env: FEATURES="--no-default-features"
-        - rust: stable
-          env: FEATURES="--features compat"
         - rust: 1.21.0
+          env: WITH_LOCK="1"
 
 cache:
     apt: true
@@ -20,6 +20,7 @@ cache:
         - target/debug/build
 
 script:
+  - 'if [ "$WITH_LOCK" != "1" ]; then rm -f Cargo.lock; fi'
   - cargo build $FEATURES
   - 'if [ "$BUILD_ONLY" != "1" ]; then cargo test $FEATURES; fi'
 
