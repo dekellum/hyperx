@@ -1,16 +1,16 @@
-#![doc(html_root_url = "https://docs.rs/hyperx/0.11.27")]
+#![doc(html_root_url = "https://docs.rs/hyperx/0.12.0")]
 #![deny(missing_docs)]
 #![deny(missing_debug_implementations)]
 #![deny(unused_extern_crates)]
 #![cfg_attr(all(test, feature = "nightly"), feature(test))]
 
-//! # hyper_x_
+//! # hyper*x*
 //!
-//! Hyper is the low-level HTTP implementation for Rust. Hyper_x_ is an
-//! e_x_traction of the hyper 0.11 typed header module, with minimized
-//! dependencies, for continued use with hyper 0.12 (current master, work in
-//! progress), where this module was dropped in preference to the
-//! byte-oriented `http::header` module.
+//! Hyper is the low-level HTTP implementation for Rust. Hyper*x* is an
+//! e*x*traction of the hyper 0.11 typed header module, with minimized
+//! dependencies, for continued use with hyper 0.12 (current master), where
+//! this module was removed in preference to the byte-oriented `http::header`
+//! module.
 
 extern crate base64;
 extern crate bytes;
