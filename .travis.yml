@@ -1,34 +1,31 @@
 language: rust
 sudo: false
-dist: trusty
-matrix:
-    fast_finish: true
-    include:
-        - rust: nightly
-          env: FEATURES="--features nightly"
-        - rust: stable
-          env: WITH_LOCK="1"
-        - rust: stable
-          env: FEATURES="--no-default-features"
-        - rust: 1.21.0
-          env: WITH_LOCK="1"
-
-cache:
-    apt: true
-    directories:
-        - target/debug/deps
-        - target/debug/build
-
 script:
-  - 'if [ "$WITH_LOCK" != "1" ]; then rm -f Cargo.lock; fi'
-  - cargo build $FEATURES
-  - 'if [ "$BUILD_ONLY" != "1" ]; then cargo test $FEATURES; fi'
-
-addons:
-  apt:
-    packages:
-      - libcurl4-openssl-dev
-      - libelf-dev
-      - libdw-dev
-      - binutils-dev
-      - libiberty-dev
+  - 'set -e'
+  - 'if [ "$WITH_LOCK" != "true" ]; then cargo update; fi'
+  - 'cargo test --no-default-features'
+  - 'cargo test'
+  - 'if [ "$TRAVIS_RUST_VERSION" = "nightly" ]; then
+       cargo test --features nightly
+     fi'
+cache: cargo
+rust: 1.21.0
+env: # important!
+matrix:
+  include:
+    - rust: 1.21.0
+      os: osx
+      env: WITH_LOCK=true
+    - rust: stable
+      os: osx
+    - rust: 1.21.0
+      env: WITH_LOCK=true
+    - rust: stable
+    - rust: nightly
+      env: WITH_LOCK=true
+    - rust: beta
+      env: MAY_FAIL=true
+    - rust: nightly
+      env: MAY_FAIL=true
+  allow_failures:
+    - env: MAY_FAIL=true
