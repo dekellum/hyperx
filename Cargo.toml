@@ -12,10 +12,10 @@ authors = ["David Kelllum <dek-oss@gravitext.com>"]
 keywords = ["http", "hyper", "hyperium"]
 categories = ["network-programming", "web-programming::http-client", "web-programming::http-server"]
 
-include = [
-  "Cargo.toml",
-  "LICENSE",
-  "src/**/*"
+exclude = [
+    ".gitignore",
+    ".travis.yml",
+    "appveyor.yml",
 ]
 
 [dependencies]
