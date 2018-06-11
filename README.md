@@ -6,11 +6,13 @@
 [![Appveyor CI Build](https://ci.appveyor.com/api/projects/status/99slabo810em9xvy?svg=true)](https://ci.appveyor.com/project/dekellum/hyperx)
 [![deps status](https://deps.rs/repo/github/dekellum/hyperx/status.svg)](https://deps.rs/repo/github/dekellum/hyperx)
 
-Hyper is the low-level HTTP implementation for Rust. Hyper*x* is an
+[Hyper] is the low-level HTTP implementation for Rust. Hyper*x* is an
 e*x*traction of the hyper 0.11 typed header module, with minimized
 dependencies, for continued use with hyper 0.12 (current master),
 where this module was dropped in preference to the byte-oriented
 `http::header` module.
+
+[Hyper]: https://github.com/hyperium/hyper
 
 ## License
 
