@@ -8,7 +8,7 @@ homepage = "https://hyper.rs"
 documentation = "https://docs.rs/hyperx"
 repository = "https://github.com/dekellum/hyperx"
 license = "MIT"
-authors = ["David Kelllum <dek-oss@gravitext.com>"]
+authors = ["David Kellum <dek-oss@gravitext.com>"]
 keywords = ["http", "hyper", "hyperium"]
 categories = ["network-programming", "web-programming::http-client", "web-programming::http-server"]
 
