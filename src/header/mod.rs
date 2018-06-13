@@ -1037,6 +1037,11 @@ mod tests {
         let conv_http_headers: http::HeaderMap = orig_hyper_headers.clone().into();
         assert_eq!(orig_hyper_headers, conv_hyper_headers);
         assert_eq!(orig_http_headers, conv_http_headers);
+
+        // Test Headers::from(&http::HeaderMap)
+        let conv_hyper_headers: Headers = Headers::from(&orig_http_headers);
+        assert_eq!(orig_hyper_headers, conv_hyper_headers);
+        assert_eq!(orig_http_headers, conv_http_headers);
     }
 
     #[cfg(feature = "nightly")]
