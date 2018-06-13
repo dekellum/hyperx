@@ -509,6 +509,18 @@ impl Headers {
         self.data.insert(name, Item::new_raw(value));
     }
 
+    /// Alternative to append_raw that avoids an allocation if name
+    /// already exists as a key.
+    pub fn append_raw_str<V: Into<Raw>>(&mut self, name: &str, value: V) {
+        let value = value.into();
+        if let Some(item) = self.data.get_mut(name) {
+            item.raw_mut().push(value);
+            return;
+        }
+        let name = HeaderName(Ascii::new(name.to_owned().into()));
+        self.data.insert(name, Item::new_raw(value));
+    }
+
     /// Remove a header by name.
     pub fn remove_raw(&mut self, name: &str) {
         self.data.remove(name);
@@ -561,8 +573,19 @@ impl From<http::HeaderMap> for Headers {
                 for value in value_drain {
                     raw.push(value.as_bytes());
                 }
-                headers.append_raw(name.as_str().to_string(), raw);        
+                headers.append_raw(name.as_str().to_string(), raw);
             }
+        }
+        headers
+    }
+}
+
+#[cfg(feature = "compat")]
+impl<'a> From<&'a http::HeaderMap> for Headers {
+    fn from(header_map: &'a http::HeaderMap) -> Headers {
+        let mut headers = Headers::new();
+        for (name, value) in header_map.iter() {
+            headers.append_raw_str(name.as_str(), value.as_bytes());
         }
         headers
     }
