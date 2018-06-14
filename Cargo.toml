@@ -2,7 +2,7 @@
 
 name = "hyperx"
 version = "0.13.0" # don't forget to update html_root_url
-description = "Hyper's 0.11.x header module and dependencies, eXtracted"
+description = "Hyper's typed header module, eXtracted and improved"
 readme = "README.md"
 homepage = "https://hyper.rs"
 documentation = "https://docs.rs/hyperx"
@@ -10,8 +10,11 @@ repository = "https://github.com/dekellum/hyperx"
 license = "MIT"
 authors = ["David Kellum <dek-oss@gravitext.com>"]
 keywords = ["http", "hyper", "hyperium"]
-categories = ["network-programming", "web-programming::http-client", "web-programming::http-server"]
-
+categories = [
+    "network-programming",
+    "web-programming::http-client",
+    "web-programming::http-server"
+]
 exclude = [
     ".gitignore",
     ".travis.yml",
