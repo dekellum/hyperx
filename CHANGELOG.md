@@ -1,5 +1,12 @@
 ## 0.13.0 (TBD)
 
+* Remove variants from `hyperx::Error` which are unused by the header
+  module. Exhaustive matching has been discouraged for this enum, but
+  this is still a potential breaking change. (dekellum #2)
+
+* Add an alternative, by reference `From<&http::HeaderMap>` for `Headers`
+  (DarrenTsung #3)
+
 ## 0.12.0 (2018-6-1)
 
 Forked from hyper 0.11.27, e*x*tracting the typed *header* module
