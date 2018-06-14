@@ -1,7 +1,6 @@
 //! Error and Result module.
 use std::error::Error as StdError;
 use std::fmt;
-use std::io::Error as IoError;
 use std::str::Utf8Error;
 use std::string::FromUtf8Error;
 
@@ -11,17 +10,10 @@ pub use uri::UriError;
 
 use self::Error::{
     Method,
-    Uri,
     Version,
     Header,
     Status,
-    Timeout,
-    Upgrade,
-    Closed,
-    Cancel,
-    Io,
     TooLarge,
-    Incomplete,
     Utf8
 };
 
@@ -33,28 +25,15 @@ pub type Result<T> = ::std::result::Result<T, Error>;
 pub enum Error {
     /// An invalid `Method`, such as `GE,T`.
     Method,
-    /// An invalid `Uri`, such as `exam ple.domain`.
-    Uri(UriError),
     /// An invalid `HttpVersion`, such as `HTP/1.1`
     Version,
     /// An invalid `Header`.
     Header,
     /// A message head is too large to be reasonable.
     TooLarge,
-    /// A message reached EOF, but is not complete.
-    Incomplete,
     /// An invalid `Status`, such as `1337 ELITE`.
     Status,
     /// A timeout occurred waiting for an IO event.
-    Timeout,
-    /// A protocol upgrade was encountered, but not yet supported in hyper.
-    Upgrade,
-    /// A pending item was dropped before ever being processed.
-    Cancel(Canceled),
-    /// Indicates a connection is closed.
-    Closed,
-    /// An `io::Error` that occurred while trying to read or write to a network stream.
-    Io(IoError),
     /// Parsing a field as string failed
     Utf8(Utf8Error),
 
@@ -97,8 +76,6 @@ impl fmt::Debug for Void {
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
-            Uri(ref e) => fmt::Display::fmt(e, f),
-            Io(ref e) => fmt::Display::fmt(e, f),
             Utf8(ref e) => fmt::Display::fmt(e, f),
             ref e => f.write_str(e.description()),
         }
@@ -113,13 +90,6 @@ impl StdError for Error {
             Header => "invalid Header provided",
             TooLarge => "message head is too large",
             Status => "invalid Status provided",
-            Incomplete => "message is incomplete",
-            Timeout => "timeout",
-            Upgrade => "unsupported protocol upgrade",
-            Closed => "connection is closed",
-            Cancel(ref e) => e.description(),
-            Uri(ref e) => e.description(),
-            Io(ref e) => e.description(),
             Utf8(ref e) => e.description(),
             Error::__Nonexhaustive(..) =>  unreachable!(),
         }
@@ -127,25 +97,10 @@ impl StdError for Error {
 
     fn cause(&self) -> Option<&StdError> {
         match *self {
-            Io(ref error) => Some(error),
-            Uri(ref error) => Some(error),
             Utf8(ref error) => Some(error),
-            Cancel(ref e) => e.cause.as_ref().map(|e| &**e as &StdError),
             Error::__Nonexhaustive(..) =>  unreachable!(),
             _ => None,
         }
-    }
-}
-
-impl From<UriError> for Error {
-    fn from(err: UriError) -> Error {
-        Uri(err)
-    }
-}
-
-impl From<IoError> for Error {
-    fn from(err: IoError) -> Error {
-        Io(err)
     }
 }
 
@@ -183,18 +138,9 @@ impl AssertSendSync for Error {}
 #[cfg(test)]
 mod tests {
     use std::error::Error as StdError;
-    use std::io;
     use httparse;
     use super::Error;
     use super::Error::*;
-
-    #[test]
-    fn test_cause() {
-        let orig = io::Error::new(io::ErrorKind::Other, "other");
-        let desc = orig.description().to_owned();
-        let e = Io(orig);
-        assert_eq!(e.cause().unwrap().description(), desc);
-    }
 
     macro_rules! from {
         ($from:expr => $error:pat) => {
@@ -207,24 +153,8 @@ mod tests {
         }
     }
 
-    macro_rules! from_and_cause {
-        ($from:expr => $error:pat) => {
-            match Error::from($from) {
-                e @ $error => {
-                    let desc = e.cause().unwrap().description();
-                    assert_eq!(desc, $from.description().to_owned());
-                    assert_eq!(desc, e.description());
-                },
-                _ => panic!("{:?}", $from)
-            }
-        }
-    }
-
     #[test]
     fn test_from() {
-
-        from_and_cause!(io::Error::new(io::ErrorKind::Other, "other") => Io(..));
-
         from!(httparse::Error::HeaderName => Header);
         from!(httparse::Error::HeaderName => Header);
         from!(httparse::Error::HeaderValue => Header);
