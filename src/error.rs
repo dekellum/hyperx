@@ -6,8 +6,6 @@ use std::string::FromUtf8Error;
 
 use httparse;
 
-pub use uri::UriError;
-
 use self::Error::{
     Method,
     Version,
