@@ -20,7 +20,7 @@ use self::Error::{
 /// Result type often returned from methods that can have hyper `Error`s.
 pub type Result<T> = ::std::result::Result<T, Error>;
 
-/// A set of errors that can occur parsing HTTP streams.
+/// Errors while parsing headers and associated types.
 #[derive(Debug)]
 pub enum Error {
     /// An invalid `Method`, such as `GE,T`.
@@ -33,8 +33,7 @@ pub enum Error {
     TooLarge,
     /// An invalid `Status`, such as `1337 ELITE`.
     Status,
-    /// A timeout occurred waiting for an IO event.
-    /// Parsing a field as string failed
+    /// Parsing a field as string failed.
     Utf8(Utf8Error),
 
     #[doc(hidden)]
