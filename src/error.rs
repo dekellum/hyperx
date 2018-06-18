@@ -38,29 +38,6 @@ pub enum Error {
     __Nonexhaustive(Void)
 }
 
-/// A pending item was dropped before ever being processed.
-///
-/// For example, a `Request` could be queued in the `Client`, *just*
-/// as the related connection gets closed by the remote. In that case,
-/// when the connection drops, the pending response future will be
-/// fulfilled with this error, signaling the `Request` was never started.
-#[derive(Debug)]
-pub struct Canceled {
-    cause: Option<Box<StdError + Send + Sync>>,
-}
-
-impl Canceled {
-    fn description(&self) -> &str {
-        "an operation was canceled internally before starting"
-    }
-}
-
-impl fmt::Display for Canceled {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.pad(self.description())
-    }
-}
-
 #[doc(hidden)]
 pub struct Void(());
 
