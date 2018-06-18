@@ -1,4 +1,4 @@
-## 0.13.0 (TBD)
+## 0.13.0 (2018-6-18)
 
 * Remove variants from `hyperx::Error` which are unused by the header
   module. Exhaustive matching has been discouraged for this enum, but
