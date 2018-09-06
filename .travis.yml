@@ -5,7 +5,12 @@ script:
   - 'cargo test --no-default-features'
   - 'cargo test'
   - 'if [ "$TRAVIS_RUST_VERSION" = "nightly" ]; then cargo test --features nightly; fi'
-cache: cargo
+# See https://levans.fr/rust_travis_cache.html
+cache:
+  directories:
+    - /home/travis/.cargo
+before_cache:
+  - rm -rf /home/travis/.cargo/registry
 rust: 1.21.0
 env: # important!
 matrix:
@@ -16,6 +21,8 @@ matrix:
     - rust: stable
       os: osx
     - rust: 1.21.0
+      env: WITH_LOCK=true
+    - rust: 1.27.2
       env: WITH_LOCK=true
     - rust: stable
     - rust: nightly
