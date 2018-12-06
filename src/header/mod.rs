@@ -1,26 +1,72 @@
 //! Headers container, and common header fields.
 //!
-//! hyper has the opinion that Headers should be strongly-typed, because that's
-//! why we're using Rust in the first place. To set or get any header, an object
-//! must implement the `Header` trait from this module. Several common headers
-//! are already provided, such as `Host`, `ContentType`, `UserAgent`, and others.
+//! ## Why Typed?
 //!
-//! # Why Typed?
+//! Hyper <strike>has</strike> had the opinion that:
 //!
-//! Or, why not stringly-typed? Types give the following advantages:
+//! > Headers should be strongly-typed, because that's why we're using Rust in
+//! > the first place. Or, why not stringly-typed? Types give the following
+//! > advantages:
+//! > - More difficult to typo, since typos in types should be caught by the
+//! >   compiler
+//! > - Parsing to a proper type by default
 //!
-//! - More difficult to typo, since typos in types should be caught by the compiler
-//! - Parsing to a proper type by default
+//! However, it seems that for many applications, it is sufficient to use
+//! `http::header::HeaderMap` (byte values) and parse only the headers that
+//! are of interest.
 //!
-//! # Defining Custom Headers
+//! ## Parsing `http::header::HeaderValue`s
 //!
-//! Hyper provides many of the most commonly used headers in HTTP. If
-//! you need to define a custom header, it's easy to do while still taking
-//! advantage of the type system. Hyper includes a `header!` macro for defining
-//! many wrapper-style headers.
+//! With the default *compat* feature enabled, `HeaderValue`(s) implement the
+//! `RawLike` trait which allows for parsing with less copying than going
+//! through `HeaderValue::to_str` or the `Raw` type. See example usage below:
 //!
 //! ```
-//! #[macro_use] extern crate hyperx;
+//! # #[cfg(feature = "compat")]
+//! # extern crate hyperx;
+//! # #[cfg(feature = "compat")]
+//! # extern crate http;
+//! # #[cfg(feature = "compat")]
+//! # fn run() -> Result<(), Box<std::error::Error>> {
+//! use http::header::{HeaderMap, CONTENT_ENCODING};
+//! use hyperx::header::{ContentEncoding, Encoding, Header};
+//!
+//! // Given a HeaderMap with 2 Content-Encoding headers and 3 delimited values
+//! let mut hmap = HeaderMap::new();
+//! hmap.insert(CONTENT_ENCODING, "chunked, gzip".parse()?);
+//! hmap.append(CONTENT_ENCODING, "identity".parse()?);
+//!
+//! // Parse the first header value
+//! let first = hmap.get(CONTENT_ENCODING).unwrap();
+//! let ce = ContentEncoding::parse_header(&first)?;
+//! assert_eq!(ce, ContentEncoding(vec![Encoding::Chunked, Encoding::Gzip]));
+//!
+//! // Parse all header values to a single list
+//! let all = hmap.get_all(CONTENT_ENCODING);
+//! let ce = ContentEncoding::parse_header(&all)?;
+//! assert_eq!(ce, ContentEncoding(
+//!     vec![Encoding::Chunked, Encoding::Gzip, Encoding::Identity]
+//! ));
+//! # Ok(())
+//! # }
+//! # #[cfg(feature = "compat")]
+//! # fn main() {
+//! #     run().unwrap();
+//! # }
+//! # #[cfg(not(feature = "compat"))]
+//! # fn main() {
+//! # }
+//! ```
+//!
+//! ## Defining Custom Headers
+//!
+//! Hyper*x* provides many of the most commonly used headers in HTTP. If you
+//! need to define a custom header, it's easy to do while still taking
+//! advantage of the type system. Hyper*x* includes a `header!` macro for
+//! defining many wrapper-style headers.
+//!
+//! ```
+//! # #[macro_use] extern crate hyperx;
 //! use hyperx::header::Headers;
 //! header! { (XRequestGuid, "X-Request-Guid") => [String] }
 //!
@@ -773,6 +819,9 @@ mod tests {
     use std::fmt;
     use super::{Headers, Header, RawLike, ContentLength, ContentType, Host, SetCookie};
 
+    #[cfg(feature = "compat")]
+    use super::{ContentEncoding, Encoding};
+
     #[cfg(feature = "nightly")]
     use test::Bencher;
 
@@ -1047,6 +1096,38 @@ mod tests {
         // Test Headers::from(&http::HeaderMap)
         let conv_hyper_headers: Headers = Headers::from(&orig_http_headers);
         assert_eq!(orig_hyper_headers, conv_hyper_headers);
+    }
+
+    #[test]
+    #[cfg(feature = "compat")]
+    fn test_compat_value_parse() {
+        use http;
+        let mut hheads = http::HeaderMap::new();
+        hheads.insert(http::header::CONTENT_ENCODING,
+                      "chunked, gzip".parse().unwrap());
+        let val = hheads.get(http::header::CONTENT_ENCODING).unwrap();
+        let ce = ContentEncoding::parse_header(&val).unwrap();
+        assert_eq!(ce, ContentEncoding(vec![Encoding::Chunked, Encoding::Gzip]))
+    }
+
+    #[test]
+    #[cfg(feature = "compat")]
+    fn test_compat_multi_value_parse() {
+        use http;
+        let mut hheads = http::HeaderMap::new();
+        hheads.insert(http::header::CONTENT_ENCODING,
+                      "chunked, gzip".parse().unwrap());
+        hheads.append(http::header::CONTENT_ENCODING,
+                      "br".parse().unwrap());
+
+        let vals = hheads.get_all(http::header::CONTENT_ENCODING);
+        let ce = ContentEncoding::parse_header(&vals).unwrap();
+        assert_eq!(
+            ce,
+            ContentEncoding(vec![
+                Encoding::Chunked, Encoding::Gzip, Encoding::Brotli
+            ])
+        )
     }
 
     #[cfg(feature = "nightly")]
