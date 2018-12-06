@@ -1056,6 +1056,30 @@ mod tests {
         assert_eq!(ce, ContentEncoding(vec![Encoding::Chunked, Encoding::Gzip]))
     }
 
+    #[test]
+    #[cfg(feature = "compat")]
+    fn test_compat_multi_value_parse() {
+        use http;
+        let mut hheads = http::HeaderMap::new();
+        hheads.insert(http::header::CONTENT_ENCODING,
+                      "chunked, gzip".parse().unwrap());
+        hheads.append(http::header::CONTENT_ENCODING,
+                      "br".parse().unwrap());
+
+        let vals = hheads.get_all(http::header::CONTENT_ENCODING);
+        let mut raw = Raw::empty();
+        for v in vals {
+            raw.push(v);
+        }
+        let ce = ContentEncoding::parse_header(&raw).unwrap();
+        assert_eq!(
+            ce,
+            ContentEncoding(vec![
+                Encoding::Chunked, Encoding::Gzip, Encoding::Brotli
+            ])
+        )
+    }
+
     #[cfg(feature = "nightly")]
     #[bench]
     fn bench_headers_new(b: &mut Bencher) {

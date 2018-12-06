@@ -7,6 +7,11 @@ use bytes::Bytes;
 pub struct Raw(Lines);
 
 impl Raw {
+    /// Construct new empty value
+    pub fn empty() -> Raw {
+        Raw(Lines::Empty)
+    }
+
     /// Returns the amount of lines.
     #[inline]
     pub fn len(&self) -> usize {
