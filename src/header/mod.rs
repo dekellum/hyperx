@@ -767,7 +767,8 @@ impl PartialEq<HeaderName> for str {
 #[cfg(test)]
 mod tests {
     use std::fmt;
-    use super::{Headers, Header, Raw, ContentLength, ContentType, Host, SetCookie};
+    use super::{Headers, Header, Raw, ContentLength, ContentType, ContentEncoding,
+                Encoding, Host, SetCookie};
 
     #[cfg(feature = "nightly")]
     use test::Bencher;
@@ -1041,6 +1042,18 @@ mod tests {
         // Test Headers::from(&http::HeaderMap)
         let conv_hyper_headers: Headers = Headers::from(&orig_http_headers);
         assert_eq!(orig_hyper_headers, conv_hyper_headers);
+    }
+
+    #[test]
+    #[cfg(feature = "compat")]
+    fn test_compat_value_parse() {
+        use http;
+        let mut hheads = http::HeaderMap::new();
+        hheads.insert(http::header::CONTENT_ENCODING,
+                      "chunked, gzip".parse().unwrap());
+        let val = hheads.get(http::header::CONTENT_ENCODING).unwrap();
+        let ce = ContentEncoding::parse_header(&Raw::from(val.as_bytes())).unwrap();
+        assert_eq!(ce, ContentEncoding(vec![Encoding::Chunked, Encoding::Gzip]))
     }
 
     #[cfg(feature = "nightly")]
