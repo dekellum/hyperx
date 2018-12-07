@@ -1052,7 +1052,7 @@ mod tests {
         hheads.insert(http::header::CONTENT_ENCODING,
                       "chunked, gzip".parse().unwrap());
         let val = hheads.get(http::header::CONTENT_ENCODING).unwrap();
-        let ce = ContentEncoding::parse_header(&Raw::from(val.as_bytes())).unwrap();
+        let ce = ContentEncoding::parse_header(&val.into()).unwrap();
         assert_eq!(ce, ContentEncoding(vec![Encoding::Chunked, Encoding::Gzip]))
     }
 

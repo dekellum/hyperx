@@ -2,6 +2,9 @@ use std::borrow::Cow;
 use std::fmt;
 use bytes::Bytes;
 
+#[cfg(feature = "compat")]
+use http::header::HeaderValue;
+
 /// A raw header value.
 #[derive(Clone, Debug)]
 pub struct Raw(Lines);
@@ -193,6 +196,14 @@ impl From<Bytes> for Raw {
     #[inline]
     fn from(val: Bytes) -> Raw {
         Raw(Lines::One(val))
+    }
+}
+
+#[cfg(feature = "compat")]
+impl<'a> From<&'a HeaderValue> for Raw {
+    #[inline]
+    fn from(val: &'a HeaderValue) -> Raw {
+        Raw(Lines::One(val.as_bytes().into()))
     }
 }
 
