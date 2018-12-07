@@ -1,26 +1,75 @@
 //! Headers container, and common header fields.
 //!
-//! hyper has the opinion that Headers should be strongly-typed, because that's
-//! why we're using Rust in the first place. To set or get any header, an object
-//! must implement the `Header` trait from this module. Several common headers
-//! are already provided, such as `Host`, `ContentType`, `UserAgent`, and others.
+//! To set or get any header, an object must implement the `Header` trait from
+//! this module. Several common headers are already provided, such as `Host`,
+//! `ContentType`, `UserAgent`, and others.
 //!
-//! # Why Typed?
+//! ## Why Typed?
 //!
-//! Or, why not stringly-typed? Types give the following advantages:
+//! Hyper <strike>has</strike> had the opinion that:
 //!
-//! - More difficult to typo, since typos in types should be caught by the compiler
-//! - Parsing to a proper type by default
+//! > Headers should be strongly-typed, because that's why we're using Rust in
+//! > the first place. Or, why not stringly-typed? Types give the following advantages:
+//! >
+//! > - More difficult to typo, since typos in types should be caught by the compiler
+//! > - Parsing to a proper type by default
 //!
-//! # Defining Custom Headers
+//! For many applications, it is sufficient to use `http::header::HeaderMap`
+//! (byte values) and parse only the headers that are of interest.
 //!
-//! Hyper provides many of the most commonly used headers in HTTP. If
-//! you need to define a custom header, it's easy to do while still taking
-//! advantage of the type system. Hyper includes a `header!` macro for defining
-//! many wrapper-style headers.
+//! ## Parsing `http::header::HeaderValue`s
+//!
+//! With the default *compat* feature enabled, conversions have been added
+//! from `HeaderValue`(s) to the `Raw` type that `Header::parse_header`
+//! needs. Using these conversions is generally faster than going through
+//! `HeaderValue::to_str`. See example usage below:
 //!
 //! ```
-//! #[macro_use] extern crate hyperx;
+//! # #[cfg(feature = "compat")]
+//! # extern crate hyperx;
+//! # #[cfg(feature = "compat")]
+//! # extern crate http;
+//! # #[cfg(feature = "compat")]
+//! # fn run() -> Result<(), Box<std::error::Error>> {
+//! use http::header::{HeaderMap, CONTENT_ENCODING};
+//! use hyperx::header::{ContentEncoding, Encoding, Header};
+//!
+//! // Given a HeaderMap with 2 Content-Encoding headers and 3 delimited values
+//! let mut hmap = HeaderMap::new();
+//! hmap.insert(CONTENT_ENCODING, "chunked, gzip".parse()?);
+//! hmap.append(CONTENT_ENCODING, "identity".parse()?);
+//!
+//! // Parse the first header value
+//! let first = hmap.get(CONTENT_ENCODING).unwrap();
+//! let ce = ContentEncoding::parse_header(&first.into())?;
+//! assert_eq!(ce, ContentEncoding(vec![Encoding::Chunked, Encoding::Gzip]));
+//!
+//! // Parse all header values to a single list
+//! let all = hmap.get_all(CONTENT_ENCODING);
+//! let ce = ContentEncoding::parse_header(&all.into())?;
+//! assert_eq!(ce, ContentEncoding(
+//!     vec![Encoding::Chunked, Encoding::Gzip, Encoding::Identity]
+//! ));
+//! # Ok(())
+//! # }
+//! # #[cfg(feature = "compat")]
+//! # fn main() {
+//! #     run().unwrap();
+//! # }
+//! # #[cfg(not(feature = "compat"))]
+//! # fn main() {
+//! # }
+//! ```
+//!
+//! ## Defining Custom Headers
+//!
+//! Hyper*x* provides many of the most commonly used headers in HTTP. If you
+//! need to define a custom header, it's easy to do while still taking
+//! advantage of the type system. Hyper*x* includes a `header!` macro for
+//! defining many wrapper-style headers.
+//!
+//! ```
+//! # #[macro_use] extern crate hyperx;
 //! use hyperx::header::Headers;
 //! header! { (XRequestGuid, "X-Request-Guid") => [String] }
 //!
@@ -767,8 +816,10 @@ impl PartialEq<HeaderName> for str {
 #[cfg(test)]
 mod tests {
     use std::fmt;
-    use super::{Headers, Header, Raw, ContentLength, ContentType, ContentEncoding,
-                Encoding, Host, SetCookie};
+    use super::{Headers, Header, Raw, ContentLength, ContentType, Host, SetCookie};
+
+    #[cfg(feature = "compat")]
+    use super::{ContentEncoding, Encoding};
 
     #[cfg(feature = "nightly")]
     use test::Bencher;
