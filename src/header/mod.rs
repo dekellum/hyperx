@@ -1067,11 +1067,7 @@ mod tests {
                       "br".parse().unwrap());
 
         let vals = hheads.get_all(http::header::CONTENT_ENCODING);
-        let mut raw = Raw::empty();
-        for v in vals {
-            raw.push(v);
-        }
-        let ce = ContentEncoding::parse_header(&raw).unwrap();
+        let ce = ContentEncoding::parse_header(&vals.into()).unwrap();
         assert_eq!(
             ce,
             ContentEncoding(vec![

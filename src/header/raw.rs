@@ -3,18 +3,13 @@ use std::fmt;
 use bytes::Bytes;
 
 #[cfg(feature = "compat")]
-use http::header::HeaderValue;
+use http::header::{GetAll, HeaderValue};
 
 /// A raw header value.
 #[derive(Clone, Debug)]
 pub struct Raw(Lines);
 
 impl Raw {
-    /// Construct new empty value
-    pub fn empty() -> Raw {
-        Raw(Lines::Empty)
-    }
-
     /// Returns the amount of lines.
     #[inline]
     pub fn len(&self) -> usize {
@@ -204,6 +199,18 @@ impl<'a> From<&'a HeaderValue> for Raw {
     #[inline]
     fn from(val: &'a HeaderValue) -> Raw {
         Raw(Lines::One(val.as_bytes().into()))
+    }
+}
+
+#[cfg(feature = "compat")]
+impl<'a> From<GetAll<'a, HeaderValue>> for Raw
+{
+    fn from(ga: GetAll<'a, HeaderValue>) -> Raw {
+        let mut raw = new();
+        for v in ga {
+            raw.push(v);
+        }
+        raw
     }
 }
 
