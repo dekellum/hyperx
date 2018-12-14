@@ -122,7 +122,7 @@ impl<S: Scheme> fmt::Display for ProxyAuthorization<S> {
 #[cfg(test)]
 mod tests {
     use super::ProxyAuthorization;
-    use super::super::super::{Headers, Header, Basic, Bearer};
+    use super::super::super::{Headers, Header, Raw, Basic, Bearer};
 
     #[test]
     fn test_raw_auth() {
@@ -133,7 +133,8 @@ mod tests {
 
     #[test]
     fn test_raw_auth_parse() {
-        let header: ProxyAuthorization<String> = Header::parse_header(&b"foo bar baz".as_ref().into()).unwrap();
+        let r: Raw = b"foo bar baz".as_ref().into();
+        let header: ProxyAuthorization<String> = Header::parse_header(&r).unwrap();
         assert_eq!(header.0, "foo bar baz");
     }
 
@@ -156,16 +157,16 @@ mod tests {
 
     #[test]
     fn test_basic_auth_parse() {
-        let auth: ProxyAuthorization<Basic> = Header::parse_header(
-            &b"Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==".as_ref().into()).unwrap();
+        let r: Raw = b"Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==".as_ref().into();
+        let auth: ProxyAuthorization<Basic> = Header::parse_header(&r).unwrap();
         assert_eq!(auth.0.username, "Aladdin");
         assert_eq!(auth.0.password, Some("open sesame".to_owned()));
     }
 
     #[test]
     fn test_basic_auth_parse_no_password() {
-        let auth: ProxyAuthorization<Basic> = Header::parse_header(
-            &b"Basic QWxhZGRpbjo=".as_ref().into()).unwrap();
+        let r: Raw = b"Basic QWxhZGRpbjo=".as_ref().into();
+        let auth: ProxyAuthorization<Basic> = Header::parse_header(&r).unwrap();
         assert_eq!(auth.0.username, "Aladdin");
         assert_eq!(auth.0.password, Some("".to_owned()));
     }
@@ -182,8 +183,8 @@ mod tests {
 
     #[test]
     fn test_bearer_auth_parse() {
-        let auth: ProxyAuthorization<Bearer> = Header::parse_header(
-            &b"Bearer fpKL54jvWmEGVoRdCNjG".as_ref().into()).unwrap();
+        let r: Raw = b"Bearer fpKL54jvWmEGVoRdCNjG".as_ref().into();
+        let auth: ProxyAuthorization<Bearer> = Header::parse_header(&r).unwrap();
         assert_eq!(auth.0.token, "fpKL54jvWmEGVoRdCNjG");
     }
 }

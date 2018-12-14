@@ -899,7 +899,7 @@ mod tests {
     use super::{Link, LinkValue, MediaDesc, RelationType, SplitAsciiUnquoted};
     use super::{fmt_delimited, verify_and_trim};
 
-    use header::Header;
+    use header::{Header, Raw};
 
     use mime;
 
@@ -915,7 +915,8 @@ mod tests {
 
         let expected_link = Link::new(vec![link_value]);
 
-        let link = Header::parse_header(&vec![link_header.to_vec()].into());
+        let r: Raw = vec![link_header.to_vec()].into();
+        let link = Header::parse_header(&r);
         assert_eq!(link.ok(), Some(expected_link));
     }
 
@@ -936,7 +937,8 @@ mod tests {
 
         let expected_link = Link::new(vec![first_link, second_link]);
 
-        let link = Header::parse_header(&vec![link_header.to_vec()].into());
+        let r: Raw = vec![link_header.to_vec()].into();
+        let link = Header::parse_header(&r);
         assert_eq!(link.ok(), Some(expected_link));
     }
 
@@ -960,7 +962,8 @@ mod tests {
 
         let expected_link = Link::new(vec![link_value]);
 
-        let link = Header::parse_header(&vec![link_header.to_vec()].into());
+        let r: Raw = vec![link_header.to_vec()].into();
+        let link = Header::parse_header(&r);
         assert_eq!(link.ok(), Some(expected_link));
     }
 
@@ -995,31 +998,32 @@ mod tests {
         let link_a  = b"http://example.com/TheBook/chapter2; \
             rel=\"previous\"; rev=next; title=\"previous chapter\"";
 
-        let mut err: Result<Link, _> = Header::parse_header(&vec![link_a.to_vec()].into());
+        let r: Raw = vec![link_a.to_vec()].into();
+        let mut err: Result<Link, _> = Header::parse_header(&r);
         assert_eq!(err.is_err(), true);
 
         let link_b = b"<http://example.com/TheBook/chapter2>; \
             =\"previous\"; rev=next; title=\"previous chapter\"";
-
-        err = Header::parse_header(&vec![link_b.to_vec()].into());
+        let r: Raw = vec![link_b.to_vec()].into();
+        err = Header::parse_header(&r);
         assert_eq!(err.is_err(), true);
 
         let link_c = b"<http://example.com/TheBook/chapter2>; \
             rel=; rev=next; title=\"previous chapter\"";
-
-        err = Header::parse_header(&vec![link_c.to_vec()].into());
+        let r: Raw = vec![link_c.to_vec()].into();
+        err = Header::parse_header(&r);
         assert_eq!(err.is_err(), true);
 
         let link_d = b"<http://example.com/TheBook/chapter2>; \
             rel=\"previous\"; rev=next; title=";
-
-        err = Header::parse_header(&vec![link_d.to_vec()].into());
+        let r: Raw = vec![link_d.to_vec()].into();
+        err = Header::parse_header(&r);
         assert_eq!(err.is_err(), true);
 
         let link_e = b"<http://example.com/TheBook/chapter2>; \
             rel=\"previous\"; rev=next; attr=unknown";
-
-        err = Header::parse_header(&vec![link_e.to_vec()].into());
+        let r: Raw = vec![link_e.to_vec()].into();
+        err = Header::parse_header(&r);
         assert_eq!(err.is_err(), true);
      }
 

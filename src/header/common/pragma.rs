@@ -76,12 +76,19 @@ impl fmt::Display for Pragma {
 
 #[test]
 fn test_parse_header() {
-    let a: Pragma = Header::parse_header(&"no-cache".into()).unwrap();
+    use header::{Header, Raw};
+
+    let r: Raw = "no-cache".into();
+    let a: Pragma = Header::parse_header(&r).unwrap();
     let b = Pragma::NoCache;
     assert_eq!(a, b);
-    let c: Pragma = Header::parse_header(&"FoObar".into()).unwrap();
+
+    let r: Raw = "FoObar".into();
+    let c: Pragma = Header::parse_header(&r).unwrap();
     let d = Pragma::Ext("FoObar".to_owned());
     assert_eq!(c, d);
-    let e: ::Result<Pragma> = Header::parse_header(&"".into());
+
+    let r: Raw = "".into();
+    let e: ::Result<Pragma> = Header::parse_header(&r);
     assert_eq!(e.ok(), None);
 }

@@ -153,11 +153,14 @@ impl FromStr for Warning {
 #[cfg(test)]
 mod tests {
     use super::Warning;
-    use header::{Header, HttpDate};
+    use header::{Header, HttpDate, Raw};
 
     #[test]
     fn test_parsing() {
-        let warning = Header::parse_header(&vec![b"112 - \"network down\" \"Sat, 25 Aug 2012 23:34:45 GMT\"".to_vec()].into());
+        let r: Raw = vec![
+            b"112 - \"network down\" \"Sat, 25 Aug 2012 23:34:45 GMT\"".to_vec()
+        ].into();
+        let warning = Header::parse_header(&r);
         assert_eq!(warning.ok(), Some(Warning {
             code: 112,
             agent: "-".to_owned(),
@@ -165,7 +168,11 @@ mod tests {
             date: "Sat, 25 Aug 2012 23:34:45 GMT".parse::<HttpDate>().ok()
         }));
 
-        let warning = Header::parse_header(&vec![b"299 api.hyper.rs:8080 \"Deprecated API : use newapi.hyper.rs instead.\"".to_vec()].into());
+        let r: Raw = vec![
+            b"299 api.hyper.rs:8080 \"Deprecated API : \
+              use newapi.hyper.rs instead.\"".to_vec()
+        ].into();
+        let warning = Header::parse_header(&r);
         assert_eq!(warning.ok(), Some(Warning {
             code: 299,
             agent: "api.hyper.rs:8080".to_owned(),
@@ -173,7 +180,12 @@ mod tests {
             date: None
         }));
 
-        let warning = Header::parse_header(&vec![b"299 api.hyper.rs:8080 \"Deprecated API : use newapi.hyper.rs instead.\" \"Tue, 15 Nov 1994 08:12:31 GMT\"".to_vec()].into());
+        let r: Raw = vec![
+            b"299 api.hyper.rs:8080 \"Deprecated API : \
+              use newapi.hyper.rs instead.\" \
+              \"Tue, 15 Nov 1994 08:12:31 GMT\"".to_vec()
+        ].into();
+        let warning = Header::parse_header(&r);
         assert_eq!(warning.ok(), Some(Warning {
             code: 299,
             agent: "api.hyper.rs:8080".to_owned(),

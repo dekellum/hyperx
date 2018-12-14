@@ -147,7 +147,7 @@ macro_rules! test_header {
             use std::ascii::AsciiExt;
             let raw = $raw;
             let a: Vec<Vec<u8>> = raw.iter().map(|x| x.to_vec()).collect();
-            let a = a.into();
+            let a: Raw = a.into();
             let value = HeaderField::parse_header(&a);
             let result = format!("{}", value.unwrap());
             let expected = String::from_utf8(raw[0].to_vec()).unwrap();
@@ -167,8 +167,9 @@ macro_rules! test_header {
     ($id:ident, $raw:expr, $typed:expr) => {
         #[test]
         fn $id() {
+
             let a: Vec<Vec<u8>> = $raw.iter().map(|x| x.to_vec()).collect();
-            let a = a.into();
+            let a: Raw = a.into();
             let val = HeaderField::parse_header(&a);
             let typed: Option<HeaderField> = $typed;
             // Test parsing

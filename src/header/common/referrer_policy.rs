@@ -106,18 +106,28 @@ impl fmt::Display for ReferrerPolicy {
     }
 }
 
-#[test]
-fn test_parse_header() {
-    let a: ReferrerPolicy = Header::parse_header(&"origin".into()).unwrap();
-    let b = ReferrerPolicy::Origin;
-    assert_eq!(a, b);
-    let e: ::Result<ReferrerPolicy> = Header::parse_header(&"foobar".into());
-    assert!(e.is_err());
-}
+#[cfg(test)]
+mod tests {
+    use super::ReferrerPolicy;
+    use header::{Header, Raw};
 
-#[test]
-fn test_rightmost_header() {
-    let a: ReferrerPolicy = Header::parse_header(&"same-origin, origin, foobar".into()).unwrap();
-    let b = ReferrerPolicy::Origin;
-    assert_eq!(a, b);
+    #[test]
+    fn test_parse_header() {
+        let r: Raw = "origin".into();
+        let a: ReferrerPolicy = Header::parse_header(&r).unwrap();
+        let b = ReferrerPolicy::Origin;
+        assert_eq!(a, b);
+
+        let r: Raw = "foobar".into();
+        let e: ::Result<ReferrerPolicy> = Header::parse_header(&r);
+        assert!(e.is_err());
+    }
+
+    #[test]
+    fn test_rightmost_header() {
+        let r: Raw = "same-origin, origin, foobar".into();
+        let a: ReferrerPolicy = Header::parse_header(&r).unwrap();
+        let b = ReferrerPolicy::Origin;
+        assert_eq!(a, b);
+    }
 }

@@ -72,7 +72,8 @@ header! {
             Some(Upgrade(vec![Protocol::new(ProtocolName::WebSocket, None)])));
         #[test]
         fn test3() {
-            let x: ::Result<Upgrade> = Header::parse_header(&"WEbSOCKet".into());
+            let r: Raw = "WEbSOCKet".into();
+            let x: ::Result<Upgrade> = Header::parse_header(&r);
             assert_eq!(x.ok(), Some(Upgrade(vec![Protocol::new(ProtocolName::WebSocket, None)])));
         }
     }

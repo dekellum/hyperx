@@ -156,7 +156,7 @@ impl fmt::Display for Origin {
 #[cfg(test)]
 mod tests {
     use super::Origin;
-    use header::Header;
+    use header::{Header, Raw};
     use std::borrow::Cow;
 
     macro_rules! assert_borrowed{
@@ -170,11 +170,13 @@ mod tests {
 
     #[test]
     fn test_origin() {
-        let origin : Origin = Header::parse_header(&vec![b"http://foo.com".to_vec()].into()).unwrap();
+        let r: Raw = vec![b"http://foo.com".to_vec()].into();
+        let origin : Origin = Header::parse_header(&r).unwrap();
         assert_eq!(&origin, &Origin::new("http", "foo.com", None));
         assert_borrowed!(origin.scheme().unwrap().into());
 
-        let origin : Origin = Header::parse_header(&vec![b"https://foo.com:443".to_vec()].into()).unwrap();
+        let r: Raw = vec![b"https://foo.com:443".to_vec()].into();
+        let origin : Origin = Header::parse_header(&r).unwrap();
         assert_eq!(&origin, &Origin::new("https", "foo.com", Some(443)));
         assert_borrowed!(origin.scheme().unwrap().into());
     }

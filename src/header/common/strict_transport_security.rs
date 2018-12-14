@@ -151,53 +151,61 @@ impl fmt::Display for StrictTransportSecurity {
 #[cfg(test)]
 mod tests {
     use super::StrictTransportSecurity;
-    use header::Header;
+    use header::{Header, Raw};
 
     #[test]
     fn test_parse_max_age() {
-        let h = Header::parse_header(&"max-age=31536000".into());
+        let r: Raw = "max-age=31536000".into();
+        let h = Header::parse_header(&r);
         assert_eq!(h.ok(), Some(StrictTransportSecurity { include_subdomains: false, max_age: 31536000u64 }));
     }
 
     #[test]
     fn test_parse_max_age_no_value() {
-        let h: ::Result<StrictTransportSecurity> = Header::parse_header(&"max-age".into());
+        let r: Raw = "max-age".into();
+        let h: ::Result<StrictTransportSecurity> = Header::parse_header(&r);
         assert!(h.is_err());
     }
 
     #[test]
     fn test_parse_quoted_max_age() {
-        let h = Header::parse_header(&"max-age=\"31536000\"".into());
+        let r: Raw = "max-age=\"31536000\"".into();
+        let h = Header::parse_header(&r);
         assert_eq!(h.ok(), Some(StrictTransportSecurity { include_subdomains: false, max_age: 31536000u64 }));
     }
 
     #[test]
     fn test_parse_spaces_max_age() {
-        let h = Header::parse_header(&"max-age = 31536000".into());
+        let r: Raw = "max-age = 31536000".into();
+        let h = Header::parse_header(&r);
         assert_eq!(h.ok(), Some(StrictTransportSecurity { include_subdomains: false, max_age: 31536000u64 }));
     }
 
     #[test]
     fn test_parse_include_subdomains() {
-        let h = Header::parse_header(&"max-age=15768000 ; includeSubDomains".into());
+        let r: Raw = "max-age=15768000 ; includeSubDomains".into();
+        let h = Header::parse_header(&r);
         assert_eq!(h.ok(), Some(StrictTransportSecurity { include_subdomains: true, max_age: 15768000u64 }));
     }
 
     #[test]
     fn test_parse_no_max_age() {
-        let h: ::Result<StrictTransportSecurity> = Header::parse_header(&"includeSubDomains".into());
+        let r: Raw = "includeSubDomains".into();
+        let h: ::Result<StrictTransportSecurity> = Header::parse_header(&r);
         assert!(h.is_err());
     }
 
     #[test]
     fn test_parse_max_age_nan() {
-        let h: ::Result<StrictTransportSecurity> = Header::parse_header(&"max-age = derp".into());
+        let r: Raw = "max-age = derp".into();
+        let h: ::Result<StrictTransportSecurity> = Header::parse_header(&r);
         assert!(h.is_err());
     }
 
     #[test]
     fn test_parse_duplicate_directives() {
-        assert!(StrictTransportSecurity::parse_header(&"max-age=100; max-age=5; max-age=0".into()).is_err());
+        let r: Raw = "max-age=100; max-age=5; max-age=0".into();
+        assert!(StrictTransportSecurity::parse_header(&r).is_err());
     }
 }
 

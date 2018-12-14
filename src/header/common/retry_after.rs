@@ -134,7 +134,7 @@ impl fmt::Display for RetryAfter {
 #[cfg(test)]
 mod tests {
     use std::time::Duration;
-    use header::Header;
+    use header::{Header, Raw};
     use header::shared::HttpDate;
 
     use super::RetryAfter;
@@ -146,8 +146,8 @@ mod tests {
 
     #[test]
     fn parse_delay() {
-        let retry_after = RetryAfter::parse_header(&vec![b"1234".to_vec()].into()).unwrap();
-
+        let r: Raw = vec![b"1234".to_vec()].into();
+        let retry_after = RetryAfter::parse_header(&r).unwrap();
         assert_eq!(RetryAfter::Delay(Duration::from_secs(1234)), retry_after);
     }
 
@@ -156,8 +156,8 @@ mod tests {
             #[test]
             fn $name() {
                 let dt = "Sun, 06 Nov 1994 08:49:37 GMT".parse::<HttpDate>().unwrap();
-                let retry_after = RetryAfter::parse_header(&vec![$bytes.to_vec()].into()).expect("parse_header ok");
-
+                let r: Raw = vec![$bytes.to_vec()].into();
+                let retry_after = RetryAfter::parse_header(&r).expect("parse_header ok");
                 assert_eq!(RetryAfter::DateTime(dt), retry_after);
             }
         }
@@ -169,15 +169,16 @@ mod tests {
 
     #[test]
     fn hyper_headers_from_raw_delay() {
-        let retry_after = RetryAfter::parse_header(&b"300".to_vec().into()).unwrap();
+        let r: Raw = b"300".to_vec().into();
+        let retry_after = RetryAfter::parse_header(&r).unwrap();
         assert_eq!(retry_after, RetryAfter::Delay(Duration::from_secs(300)));
     }
 
     #[test]
     fn hyper_headers_from_raw_datetime() {
-        let retry_after = RetryAfter::parse_header(&b"Sun, 06 Nov 1994 08:49:37 GMT".to_vec().into()).unwrap();
+        let r: Raw = b"Sun, 06 Nov 1994 08:49:37 GMT".to_vec().into();
+        let retry_after = RetryAfter::parse_header(&r).unwrap();
         let expected = "Sun, 06 Nov 1994 08:49:37 GMT".parse::<HttpDate>().unwrap();
-
         assert_eq!(retry_after, RetryAfter::DateTime(expected));
     }
 }

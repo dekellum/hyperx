@@ -93,8 +93,8 @@ __hyper__tm!(ContentLength, tests {
     // Can't use the test_header macro because "5, 5" gets cleaned to "5".
     #[test]
     fn test_duplicates() {
-        let parsed = HeaderField::parse_header(&vec![b"5".to_vec(),
-                                                 b"5".to_vec()].into()).unwrap();
+        let r: Raw = vec![b"5".to_vec(), b"5".to_vec()].into();
+        let parsed = HeaderField::parse_header(&r).unwrap();
         assert_eq!(parsed, HeaderField(5));
         assert_eq!(format!("{}", parsed), "5");
     }

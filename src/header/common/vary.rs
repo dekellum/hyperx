@@ -57,14 +57,19 @@ header! {
         #[test]
         fn test2() {
             let mut vary: ::Result<Vary>;
-
-            vary = Header::parse_header(&"*".into());
+            let r: Raw = "*".into();
+            vary = Header::parse_header(&r);
             assert_eq!(vary.ok(), Some(Vary::Any));
 
-            vary = Header::parse_header(&"etag,cookie,allow".into());
-            assert_eq!(vary.ok(), Some(Vary::Items(vec!["eTag".parse().unwrap(),
-                                                        "cookIE".parse().unwrap(),
-                                                        "AlLOw".parse().unwrap(),])));
+            let r: Raw = "etag,cookie,allow".into();
+            vary = Header::parse_header(&r);
+            assert_eq!(
+                vary.ok(),
+                Some(Vary::Items(vec![
+                    "eTag".parse().unwrap(),
+                    "cookIE".parse().unwrap(),
+                    "AlLOw".parse().unwrap(),
+                ])));
         }
     }
 }

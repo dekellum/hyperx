@@ -107,25 +107,29 @@ impl FromStr for Host {
 #[cfg(test)]
 mod tests {
     use super::Host;
-    use header::Header;
+    use header::{Header, Raw};
 
 
     #[test]
     fn test_host() {
-        let host = Header::parse_header(&vec![b"foo.com".to_vec()].into());
+        let r: Raw = vec![b"foo.com".to_vec()].into();
+        let host = Header::parse_header(&r);
         assert_eq!(host.ok(), Some(Host::new("foo.com", None)));
 
-
-        let host = Header::parse_header(&vec![b"foo.com:8080".to_vec()].into());
+        let r: Raw = vec![b"foo.com:8080".to_vec()].into();
+        let host = Header::parse_header(&r);
         assert_eq!(host.ok(), Some(Host::new("foo.com", Some(8080))));
 
-        let host = Header::parse_header(&vec![b"foo.com".to_vec()].into());
+        let r: Raw = vec![b"foo.com".to_vec()].into();
+        let host = Header::parse_header(&r);
         assert_eq!(host.ok(), Some(Host::new("foo.com", None)));
 
-        let host = Header::parse_header(&vec![b"[::1]:8080".to_vec()].into());
+        let r: Raw = vec![b"[::1]:8080".to_vec()].into();
+        let host = Header::parse_header(&r);
         assert_eq!(host.ok(), Some(Host::new("[::1]", Some(8080))));
 
-        let host = Header::parse_header(&vec![b"[::1]".to_vec()].into());
+        let r: Raw = vec![b"[::1]".to_vec()].into();
+        let host = Header::parse_header(&r);
         assert_eq!(host.ok(), Some(Host::new("[::1]", None)));
     }
 }
