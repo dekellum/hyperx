@@ -75,11 +75,11 @@ macro_rules! bench_header(
             use test::Bencher;
             use super::*;
 
-            use header::{Header};
+            use header::{Header, Raw};
 
             #[bench]
             fn bench_parse(b: &mut Bencher) {
-                let val = $value.into();
+                let val: Raw = $value.into();
                 b.iter(|| {
                     let _: $ty = Header::parse_header(&val).unwrap();
                 });
@@ -87,7 +87,7 @@ macro_rules! bench_header(
 
             #[bench]
             fn bench_format(b: &mut Bencher) {
-                let raw = $value.into();
+                let raw: Raw = $value.into();
                 let val: $ty = Header::parse_header(&raw).unwrap();
                 b.iter(|| {
                     format!("{}", val);
