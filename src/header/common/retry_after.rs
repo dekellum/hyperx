@@ -38,7 +38,7 @@
 use std::fmt;
 use std::time::Duration;
 
-use header::{Header, Raw};
+use header::{Header, RawLike};
 use header::shared::HttpDate;
 
 /// The `Retry-After` header.
@@ -90,7 +90,9 @@ impl Header for RetryAfter {
         NAME
     }
 
-    fn parse_header(raw: &Raw) -> ::Result<RetryAfter> {
+    fn parse_header<'a, T>(raw: &'a T) -> ::Result<RetryAfter>
+    where T: RawLike<'a>
+    {
         if let Some(ref line) = raw.one() {
             let utf8_str = match ::std::str::from_utf8(line) {
                 Ok(utf8_str) => utf8_str,

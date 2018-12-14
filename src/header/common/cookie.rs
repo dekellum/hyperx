@@ -2,7 +2,7 @@ use std::borrow::Cow;
 use std::fmt;
 use std::str::from_utf8;
 
-use header::{Header, Raw};
+use header::{Header, RawLike};
 use header::internals::VecMap;
 
 /// `Cookie` header, defined in [RFC6265](http://tools.ietf.org/html/rfc6265#section-5.4)
@@ -116,7 +116,9 @@ impl Header for Cookie {
         NAME
     }
 
-    fn parse_header(raw: &Raw) -> ::Result<Cookie> {
+    fn parse_header<'a, T>(raw: &'a T) -> ::Result<Cookie>
+    where T: RawLike<'a>
+    {
         let mut vec_map = VecMap::with_capacity(raw.len());
         for cookies_raw in raw.iter() {
             let cookies_str = try!(from_utf8(&cookies_raw[..]));

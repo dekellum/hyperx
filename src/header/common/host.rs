@@ -2,7 +2,7 @@ use std::borrow::Cow;
 use std::fmt;
 use std::str::FromStr;
 
-use header::{Header, Raw};
+use header::{Header, RawLike};
 use header::parsing::from_one_raw_str;
 
 /// The `Host` header.
@@ -64,8 +64,10 @@ impl Header for Host {
         NAME
     }
 
-    fn parse_header(raw: &Raw) -> ::Result<Host> {
-       from_one_raw_str(raw)
+    fn parse_header<'a, T>(raw: &'a T) -> ::Result<Host>
+    where T: RawLike<'a>
+    {
+        from_one_raw_str(raw)
     }
 
     fn fmt_header(&self, f: &mut ::header::Formatter) -> fmt::Result {

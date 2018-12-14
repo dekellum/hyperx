@@ -2,6 +2,22 @@ use std::borrow::Cow;
 use std::fmt;
 use bytes::Bytes;
 
+/// Trait for Raw access for parsing
+pub trait RawLike<'a>
+{
+    /// The associated concrete type of iterator
+    type IntoIter: Iterator<Item=&'a [u8]> + 'a;
+
+    /// Returns the amount of lines.
+    fn len(&'a self) -> usize;
+
+    /// Returns the line if there is only 1.
+    fn one(&'a self) -> Option<&'a [u8]>;
+
+    /// Iterate the lines of raw bytes.
+    fn iter(&'a self) -> Self::IntoIter;
+}
+
 /// A raw header value.
 #[derive(Clone, Debug)]
 pub struct Raw(Lines);
@@ -64,6 +80,24 @@ impl Raw {
                 self.0 = Lines::Many(lines);
             }
         }
+    }
+}
+
+impl<'a> RawLike<'a> for Raw
+{
+    type IntoIter = RawLines<'a>;
+
+    fn len(&'a self) -> usize {
+        self.len()
+    }
+
+    fn one(&'a self) -> Option<&'a [u8]> {
+        self.one()
+    }
+
+    fn iter(&'a self) -> RawLines<'a>
+    {
+        self.iter()
     }
 }
 

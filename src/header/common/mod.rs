@@ -208,7 +208,9 @@ macro_rules! header {
                 NAME
             }
             #[inline]
-            fn parse_header(raw: &$crate::header::Raw) -> $crate::Result<Self> {
+            fn parse_header<'a, T>(raw: &'a T) -> $crate::Result<Self>
+            where T: $crate::header::RawLike<'a>
+            {
                 $crate::header::parsing::from_comma_delimited(raw).map($id)
             }
             #[inline]
@@ -236,7 +238,9 @@ macro_rules! header {
                 NAME
             }
             #[inline]
-            fn parse_header(raw: &$crate::header::Raw) -> $crate::Result<Self> {
+            fn parse_header<'a, T>(raw: &'a T) -> $crate::Result<Self>
+            where T: $crate::header::RawLike<'a>
+            {
                 $crate::header::parsing::from_comma_delimited(raw).map($id)
             }
             #[inline]
@@ -264,7 +268,9 @@ macro_rules! header {
                 NAME
             }
             #[inline]
-            fn parse_header(raw: &$crate::header::Raw) -> $crate::Result<Self> {
+            fn parse_header<'a, T>(raw: &'a T) -> $crate::Result<Self>
+            where T: $crate::header::RawLike<'a>
+            {
                 $crate::header::parsing::from_one_raw_str(raw).map($id)
             }
             #[inline]
@@ -292,7 +298,9 @@ macro_rules! header {
                 NAME
             }
             #[inline]
-            fn parse_header(raw: &$crate::header::Raw) -> $crate::Result<Self> {
+            fn parse_header<'a, T>(raw: &'a T) -> $crate::Result<Self>
+            where T: $crate::header::RawLike<'a>
+            {
                 $crate::header::parsing::from_one_raw_str(raw).map($id)
             }
             #[inline]
@@ -332,8 +340,10 @@ macro_rules! header {
                 NAME
             }
             #[inline]
-            fn parse_header(raw: &$crate::header::Raw) -> $crate::Result<Self> {
-                $crate::header::parsing::from_one_raw_str::<<$value as ::std::borrow::ToOwned>::Owned>(raw).map($id::new)
+            fn parse_header<'a, T>(raw: &'a T) -> $crate::Result<Self>
+            where T: $crate::header::RawLike<'a>
+            {
+                $crate::header::parsing::from_one_raw_str::<_, <$value as ::std::borrow::ToOwned>::Owned>(raw).map($id::new)
             }
             #[inline]
             fn fmt_header(&self, f: &mut $crate::header::Formatter) -> ::std::fmt::Result {
@@ -364,10 +374,12 @@ macro_rules! header {
                 NAME
             }
             #[inline]
-            fn parse_header(raw: &$crate::header::Raw) -> $crate::Result<Self> {
+            fn parse_header<'a, T>(raw: &'a T) -> $crate::Result<Self>
+            where T: $crate::header::RawLike<'a>
+            {
                 // FIXME: Return None if no item is in $id::Only
-                if raw.len() == 1 {
-                    if &raw[0] == b"*" {
+                if let Some(l) = raw.one() {
+                    if l == b"*" {
                         return Ok($id::Any)
                     }
                 }

@@ -1,7 +1,7 @@
 use std::fmt::{self, Display};
 use std::str::FromStr;
 
-use header::{Header, Raw};
+use header::{Header, RawLike};
 use header::parsing::{from_one_raw_str};
 
 /// `Range` header, defined in [RFC7233](https://tools.ietf.org/html/rfc7233#section-3.1)
@@ -261,7 +261,9 @@ impl Header for Range {
         NAME
     }
 
-    fn parse_header(raw: &Raw) -> ::Result<Range> {
+    fn parse_header<'a, T>(raw: &'a T) -> ::Result<Range>
+    where T: RawLike<'a>
+    {
         from_one_raw_str(raw)
     }
 

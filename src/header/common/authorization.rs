@@ -3,7 +3,7 @@ use std::fmt::{self, Display};
 use std::str::{FromStr, from_utf8};
 use std::ops::{Deref, DerefMut};
 use base64::{encode, decode};
-use header::{Header, Raw};
+use header::{Header, RawLike};
 
 /// `Authorization` header, defined in [RFC7235](https://tools.ietf.org/html/rfc7235#section-4.2)
 ///
@@ -80,7 +80,9 @@ impl<S: Scheme + Any> Header for Authorization<S> where <S as FromStr>::Err: 'st
         NAME
     }
 
-    fn parse_header(raw: &Raw) -> ::Result<Authorization<S>> {
+    fn parse_header<'a, T>(raw: &'a T) -> ::Result<Authorization<S>>
+    where T: RawLike<'a>
+    {
         if let Some(line) = raw.one() {
             let header = try!(from_utf8(line));
             if let Some(scheme) = <S as Scheme>::scheme() {

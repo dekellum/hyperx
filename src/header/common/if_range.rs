@@ -1,5 +1,5 @@
 use std::fmt::{self, Display};
-use header::{self, Header, Raw, EntityTag, HttpDate};
+use header::{self, Header, RawLike, EntityTag, HttpDate};
 
 /// `If-Range` header, defined in [RFC7233](http://tools.ietf.org/html/rfc7233#section-3.2)
 ///
@@ -57,7 +57,9 @@ impl Header for IfRange {
         static NAME: &'static str = "If-Range";
         NAME
     }
-    fn parse_header(raw: &Raw) -> ::Result<IfRange> {
+    fn parse_header<'a, T>(raw: &'a T) -> ::Result<IfRange>
+    where T: RawLike<'a>
+    {
         let etag: ::Result<EntityTag> = header::parsing::from_one_raw_str(raw);
         if let Ok(etag) = etag {
             return Ok(IfRange::EntityTag(etag));

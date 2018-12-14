@@ -1,6 +1,6 @@
 use std::fmt;
 use std::str::FromStr;
-use header::{Header, Raw};
+use header::{Header, RawLike};
 use header::parsing::{from_comma_delimited, fmt_comma_delimited};
 
 /// `Cache-Control` header, defined in [RFC7234](https://tools.ietf.org/html/rfc7234#section-5.2)
@@ -59,7 +59,9 @@ impl Header for CacheControl {
         NAME
     }
 
-    fn parse_header(raw: &Raw) -> ::Result<CacheControl> {
+    fn parse_header<'a, T>(raw: &'a T) -> ::Result<CacheControl>
+    where T: RawLike<'a>
+    {
         let directives = try!(from_comma_delimited(raw));
         if !directives.is_empty() {
             Ok(CacheControl(directives))

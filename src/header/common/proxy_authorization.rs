@@ -2,7 +2,7 @@ use std::any::Any;
 use std::fmt;
 use std::str::{FromStr, from_utf8};
 use std::ops::{Deref, DerefMut};
-use header::{Header, Raw, Scheme};
+use header::{Header, RawLike, Scheme};
 
 /// `Proxy-Authorization` header, defined in [RFC7235](https://tools.ietf.org/html/rfc7235#section-4.4)
 ///
@@ -80,7 +80,9 @@ impl<S: Scheme + Any> Header for ProxyAuthorization<S> where <S as FromStr>::Err
         NAME
     }
 
-    fn parse_header(raw: &Raw) -> ::Result<ProxyAuthorization<S>> {
+    fn parse_header<'a, T>(raw: &'a T) -> ::Result<ProxyAuthorization<S>>
+    where T: RawLike<'a>
+    {
         if let Some(line) = raw.one() {
             let header = try!(from_utf8(line));
             if let Some(scheme) = <S as Scheme>::scheme() {

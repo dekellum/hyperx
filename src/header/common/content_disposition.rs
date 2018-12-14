@@ -10,7 +10,7 @@ use language_tags::LanguageTag;
 use std::fmt;
 use unicase;
 
-use header::{Header, Raw, parsing};
+use header::{Header, RawLike, parsing};
 use header::parsing::{parse_extended_value, http_percent_encode};
 use header::shared::Charset;
 
@@ -95,7 +95,9 @@ impl Header for ContentDisposition {
         NAME
     }
 
-    fn parse_header(raw: &Raw) -> ::Result<ContentDisposition> {
+    fn parse_header<'a, T>(raw: &'a T) -> ::Result<ContentDisposition>
+    where T: RawLike<'a>
+    {
         parsing::from_one_raw_str(raw).and_then(|s: String| {
             let mut sections = s.split(';');
             let disposition = match sections.next() {

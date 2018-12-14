@@ -41,7 +41,7 @@
 //!
 //! ```
 //! use std::fmt;
-//! use hyperx::header::{self, Header, Raw};
+//! use hyperx::header::{self, Header, RawLike};
 //!
 //! #[derive(Debug, Clone, Copy)]
 //! struct Dnt(bool);
@@ -51,9 +51,10 @@
 //!         "DNT"
 //!     }
 //!
-//!     fn parse_header(raw: &Raw) -> hyperx::Result<Dnt> {
-//!         if raw.len() == 1 {
-//!             let line = &raw[0];
+//!     fn parse_header<'a, T>(raw: &'a T) -> hyperx::Result<Dnt>
+//!     where T: RawLike<'a>
+//!     {
+//!         if let Some(line) = raw.one() {
 //!             if line.len() == 1 {
 //!                 let byte = line[0];
 //!                 match byte {
@@ -92,7 +93,7 @@ use self::sealed::HeaderClone;
 
 pub use self::shared::*;
 pub use self::common::*;
-pub use self::raw::Raw;
+pub use self::raw::{Raw, RawLike};
 use bytes::Bytes;
 
 mod common;
@@ -111,6 +112,7 @@ pub trait Header: 'static + HeaderClone + Send + Sync {
     ///
     /// This will become an associated constant once available.
     fn header_name() -> &'static str where Self: Sized;
+
     /// Parse a header from a raw stream of bytes.
     ///
     /// It's possible that a request can include a header field more than once,
@@ -118,7 +120,9 @@ pub trait Header: 'static + HeaderClone + Send + Sync {
     /// it's not necessarily the case that a Header is *allowed* to have more
     /// than one field value. If that's the case, you **should** return `None`
     /// if `raw.len() > 1`.
-    fn parse_header(raw: &Raw) -> ::Result<Self> where Self: Sized;
+    fn parse_header<'a, T>(raw: &'a T) -> ::Result<Self>
+    where T: RawLike<'a>, Self: Sized;
+
     /// Format a header to outgoing stream.
     ///
     /// Most headers should be formatted on one line, and so a common pattern
@@ -767,7 +771,7 @@ impl PartialEq<HeaderName> for str {
 #[cfg(test)]
 mod tests {
     use std::fmt;
-    use super::{Headers, Header, Raw, ContentLength, ContentType, Host, SetCookie};
+    use super::{Headers, Header, RawLike, ContentLength, ContentType, Host, SetCookie};
 
     #[cfg(feature = "nightly")]
     use test::Bencher;
@@ -797,7 +801,9 @@ mod tests {
         fn header_name() -> &'static str {
             "content-length"
         }
-        fn parse_header(raw: &Raw) -> ::Result<CrazyLength> {
+        fn parse_header<'a, T>(raw: &'a T) -> ::Result<CrazyLength>
+        where T: RawLike<'a>
+        {
             use std::str::from_utf8;
             use std::str::FromStr;
 

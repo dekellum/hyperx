@@ -1,6 +1,6 @@
 use std::fmt;
 use std::str::FromStr;
-use header::{Header, Raw};
+use header::{Header, RawLike};
 use header::parsing::{from_comma_delimited, fmt_comma_delimited};
 
 /// `Prefer` header, defined in [RFC7240](http://tools.ietf.org/html/rfc7240)
@@ -59,7 +59,9 @@ impl Header for Prefer {
         NAME
     }
 
-    fn parse_header(raw: &Raw) -> ::Result<Prefer> {
+    fn parse_header<'a, T>(raw: &'a T) -> ::Result<Prefer>
+    where T: RawLike<'a>
+    {
         let preferences = try!(from_comma_delimited(raw));
         if !preferences.is_empty() {
             Ok(Prefer(preferences))

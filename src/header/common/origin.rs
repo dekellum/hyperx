@@ -1,4 +1,4 @@
-use header::{Header, Raw, Host};
+use header::{Header, RawLike, Host};
 use std::borrow::Cow;
 use std::fmt;
 use std::str::FromStr;
@@ -104,7 +104,9 @@ impl Header for Origin {
         NAME
     }
 
-    fn parse_header(raw: &Raw) -> ::Result<Origin> {
+    fn parse_header<'a, T>(raw: &'a T) -> ::Result<Origin>
+    where T: RawLike<'a>
+    {
         from_one_raw_str(raw)
     }
 

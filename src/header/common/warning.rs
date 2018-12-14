@@ -1,6 +1,6 @@
 use std::fmt;
 use std::str::{FromStr};
-use header::{Header, HttpDate, Raw};
+use header::{Header, HttpDate, RawLike};
 use header::parsing::from_one_raw_str;
 
 /// `Warning` header, defined in [RFC7234](https://tools.ietf.org/html/rfc7234#section-5.5)
@@ -94,7 +94,9 @@ impl Header for Warning {
         NAME
     }
 
-    fn parse_header(raw: &Raw) -> ::Result<Warning> {
+    fn parse_header<'a, T>(raw: &'a T) -> ::Result<Warning>
+    where T: RawLike<'a>
+    {
         from_one_raw_str(raw)
     }
 

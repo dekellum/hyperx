@@ -1,5 +1,5 @@
 use std::fmt::{self, Display};
-use header::{self, Header, Raw};
+use header::{self, Header, RawLike};
 
 /// `Last-Event-ID` header, defined in
 /// [RFC3864](https://html.spec.whatwg.org/multipage/references.html#refsRFC3864)
@@ -32,7 +32,9 @@ impl Header for LastEventId {
     }
 
     #[inline]
-    fn parse_header(raw: &Raw) -> ::Result<Self> {
+    fn parse_header<'a, T>(raw: &'a T) -> ::Result<Self>
+    where T: RawLike<'a>
+    {
         match raw.one() {
             Some(line) if line.is_empty() => Ok(LastEventId("".to_owned())),
             Some(line) => header::parsing::from_raw_str(line).map(LastEventId),

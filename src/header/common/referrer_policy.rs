@@ -2,7 +2,7 @@ use std::fmt;
 #[allow(unused, deprecated)]
 use std::ascii::AsciiExt;
 
-use header::{Header, Raw, parsing};
+use header::{Header, RawLike, parsing};
 
 /// `Referrer-Policy` header, part of
 /// [Referrer Policy](https://www.w3.org/TR/referrer-policy/#referrer-policy-header)
@@ -60,7 +60,9 @@ impl Header for ReferrerPolicy {
         NAME
     }
 
-    fn parse_header(raw: &Raw) -> ::Result<ReferrerPolicy> {
+    fn parse_header<'a, T>(raw: &'a T) -> ::Result<ReferrerPolicy>
+    where T: RawLike<'a>
+    {
         use self::ReferrerPolicy::*;
         // See https://www.w3.org/TR/referrer-policy/#determine-policy-for-token
         let headers: Vec<String> = try!(parsing::from_comma_delimited(raw));

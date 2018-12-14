@@ -8,7 +8,7 @@ use mime::Mime;
 use language_tags::LanguageTag;
 
 use header::parsing;
-use header::{Header, Raw};
+use header::{Header, RawLike};
 
 /// The `Link` header, defined in
 /// [RFC5988](http://tools.ietf.org/html/rfc5988#section-5)
@@ -391,7 +391,9 @@ impl Header for Link {
         NAME
     }
 
-    fn parse_header(raw: &Raw) -> ::Result<Link> {
+    fn parse_header<'a, T>(raw: &'a T) -> ::Result<Link>
+    where T: RawLike<'a>
+    {
         // If more that one `Link` headers are present in a request's
         // headers they are combined in a single `Link` header containing
         // all the `link-value`s present in each of those `Link` headers.

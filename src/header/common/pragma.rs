@@ -2,7 +2,7 @@ use std::fmt;
 #[allow(unused, deprecated)]
 use std::ascii::AsciiExt;
 
-use header::{Header, Raw, parsing};
+use header::{Header, RawLike, parsing};
 
 /// The `Pragma` header defined by HTTP/1.0.
 ///
@@ -48,7 +48,9 @@ impl Header for Pragma {
         NAME
     }
 
-    fn parse_header(raw: &Raw) -> ::Result<Pragma> {
+    fn parse_header<'a, T>(raw: &'a T) -> ::Result<Pragma>
+    where T: RawLike<'a>
+    {
         parsing::from_one_raw_str(raw).and_then(|s: String| {
             let slice = &s.to_ascii_lowercase()[..];
             match slice {

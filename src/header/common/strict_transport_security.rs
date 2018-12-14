@@ -3,7 +3,7 @@ use std::str::{self, FromStr};
 
 use unicase;
 
-use header::{Header, Raw, parsing};
+use header::{Header, RawLike, parsing};
 
 /// `StrictTransportSecurity` header, defined in [RFC6797](https://tools.ietf.org/html/rfc6797)
 ///
@@ -127,7 +127,9 @@ impl Header for StrictTransportSecurity {
         NAME
     }
 
-    fn parse_header(raw: &Raw) -> ::Result<StrictTransportSecurity> {
+    fn parse_header<'a, T>(raw: &'a T) -> ::Result<StrictTransportSecurity>
+    where T: RawLike<'a>
+    {
         parsing::from_one_raw_str(raw)
     }
 

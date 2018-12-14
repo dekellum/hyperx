@@ -1,7 +1,7 @@
 use std::fmt::{self, Display};
 use std::str;
 use unicase;
-use header::{Header, Raw};
+use header::{Header, RawLike};
 
 /// `Access-Control-Allow-Credentials` header, part of
 /// [CORS](http://www.w3.org/TR/cors/#access-control-allow-headers-response-header)
@@ -48,7 +48,9 @@ impl Header for AccessControlAllowCredentials {
         NAME
     }
 
-    fn parse_header(raw: &Raw) -> ::Result<AccessControlAllowCredentials> {
+    fn parse_header<'a, T>(raw: &'a T) -> ::Result<AccessControlAllowCredentials>
+    where T: RawLike<'a>
+    {
         if let Some(line) = raw.one() {
             let text = unsafe {
                 // safe because:
