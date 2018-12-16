@@ -182,7 +182,6 @@ pub trait Header: 'static + HeaderClone + Send + Sync {
     /// The main example here is `Set-Cookie`, which requires that every
     /// cookie being set be specified in a separate line. Almost every other
     /// case should only format as 1 single line.
-    #[inline]
     fn fmt_header(&self, f: &mut Formatter) -> fmt::Result;
 }
 
