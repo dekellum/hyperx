@@ -26,35 +26,6 @@ pub trait RawLike<'a>
 pub struct Raw(Lines);
 
 impl Raw {
-    /// Returns the amount of lines.
-    #[inline]
-    pub fn len(&self) -> usize {
-        match self.0 {
-            Lines::Empty => 0,
-            Lines::One(..) => 1,
-            Lines::Many(ref lines) => lines.len()
-        }
-    }
-
-    /// Returns the line if there is only 1.
-    #[inline]
-    pub fn one(&self) -> Option<&[u8]> {
-        match self.0 {
-            Lines::One(ref line) => Some(line.as_ref()),
-            Lines::Many(ref lines) if lines.len() == 1 => Some(lines[0].as_ref()),
-            _ => None
-        }
-    }
-
-    /// Iterate the lines of raw bytes.
-    #[inline]
-    pub fn iter(&self) -> RawLines {
-        RawLines {
-            inner: &self.0,
-            pos: 0,
-        }
-    }
-
     /// Append a line to this `Raw` header value.
     pub fn push<V: Into<Raw>>(&mut self, val: V) {
         let raw = val.into();
@@ -90,17 +61,30 @@ impl<'a> RawLike<'a> for Raw
 {
     type IntoIter = RawLines<'a>;
 
+    #[inline]
     fn len(&'a self) -> usize {
-        self.len()
+        match self.0 {
+            Lines::Empty => 0,
+            Lines::One(..) => 1,
+            Lines::Many(ref lines) => lines.len()
+        }
     }
 
+    #[inline]
     fn one(&'a self) -> Option<&'a [u8]> {
-        self.one()
+        match self.0 {
+            Lines::One(ref line) => Some(line.as_ref()),
+            Lines::Many(ref lines) if lines.len() == 1 => Some(lines[0].as_ref()),
+            _ => None
+        }
     }
 
-    fn iter(&'a self) -> RawLines<'a>
-    {
-        self.iter()
+    #[inline]
+    fn iter(&'a self) -> RawLines<'a> {
+        RawLines {
+            inner: &self.0,
+            pos: 0,
+        }
     }
 }
 
