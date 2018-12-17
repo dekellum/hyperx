@@ -251,7 +251,7 @@ impl<'a> RawLike<'a> for GetAll<'a, HeaderValue> {
 
 #[cfg(feature = "compat")]
 impl<'a> RawLike<'a> for &'a HeaderValue {
-    type IntoIter = std::iter::Once<&'a [u8]>;
+    type IntoIter = ::std::iter::Once<&'a [u8]>;
 
     fn len(&'a self) -> usize {
         1
@@ -262,7 +262,7 @@ impl<'a> RawLike<'a> for &'a HeaderValue {
     }
 
     fn iter(&'a self) -> Self::IntoIter {
-        std::iter::once(self.as_bytes())
+        ::std::iter::once(self.as_bytes())
     }
 }
 
