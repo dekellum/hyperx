@@ -5,19 +5,21 @@ use bytes::Bytes;
 #[cfg(feature = "compat")]
 use http::header::{GetAll, HeaderValue, ValueIter};
 
-/// Trait for Raw access for parsing
+/// Trait for raw bytes access to header values (aka lines) for a single
+/// key, for a parsing purposes.
 pub trait RawLike<'a>
 {
-    /// The associated concrete type of iterator
+    /// The associated type of `Iterator` over values.
     type IntoIter: Iterator<Item=&'a [u8]> + 'a;
 
-    /// Returns the amount of lines.
+    /// Return the number of values (lines) in the headers.
     fn len(&'a self) -> usize;
 
-    /// Returns the line if there is only 1.
+    /// Return the single value (line), if and only if there is exactly
+    /// one. Otherwise return `None`.
     fn one(&'a self) -> Option<&'a [u8]>;
 
-    /// Iterate the lines of raw bytes.
+    /// Iterate the values (lines) as raw bytes.
     fn iter(&'a self) -> Self::IntoIter;
 }
 
