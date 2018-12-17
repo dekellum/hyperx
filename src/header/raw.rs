@@ -7,8 +7,7 @@ use http::header::{GetAll, HeaderValue, ValueIter};
 
 /// Trait for raw bytes access to header values (aka lines) for a single
 /// key, for a parsing purposes.
-pub trait RawLike<'a>
-{
+pub trait RawLike<'a> {
     /// The associated type of `Iterator` over values.
     type IntoIter: Iterator<Item=&'a [u8]> + 'a;
 
@@ -59,8 +58,7 @@ impl Raw {
     }
 }
 
-impl<'a> RawLike<'a> for Raw
-{
+impl<'a> RawLike<'a> for Raw {
     type IntoIter = RawLines<'a>;
 
     #[inline]
@@ -229,8 +227,7 @@ impl<'a> Iterator for ValueMapIter<'a> {
 }
 
 #[cfg(feature = "compat")]
-impl<'a> RawLike<'a> for GetAll<'a, HeaderValue>
-{
+impl<'a> RawLike<'a> for GetAll<'a, HeaderValue> {
     type IntoIter = ValueMapIter<'a>;
 
     fn len(&'a self) -> usize {
@@ -253,8 +250,7 @@ impl<'a> RawLike<'a> for GetAll<'a, HeaderValue>
 }
 
 #[cfg(feature = "compat")]
-impl<'a> RawLike<'a> for &'a HeaderValue
-{
+impl<'a> RawLike<'a> for &'a HeaderValue {
     type IntoIter = std::iter::Once<&'a [u8]>;
 
     fn len(&'a self) -> usize {

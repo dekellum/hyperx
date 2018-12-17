@@ -6,7 +6,6 @@ use std::str::from_utf8;
 use super::cell::{OptCell, PtrMapCell};
 use header::{Header, Formatter, Multi, raw, Raw, RawLike};
 
-
 #[derive(Clone)]
 pub struct Item {
     raw: OptCell<Raw>,
@@ -23,7 +22,6 @@ impl Item {
     }
 
     #[inline]
-
     pub fn new_typed<H: Header>(val: H) -> Item {
         Item {
             raw: OptCell::new(None),
