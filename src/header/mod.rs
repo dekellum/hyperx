@@ -1146,7 +1146,7 @@ mod tests {
     #[cfg(feature = "nightly")]
     #[bench]
     #[cfg(feature = "compat")]
-    fn bench_compat_value_parse_str(b: &mut Bencher) {
+    fn bench_compat_value_parse_extra_str(b: &mut Bencher) {
         use http;
         use header::Raw;
         let mut hheads = http::HeaderMap::new();
@@ -1156,6 +1156,19 @@ mod tests {
             let val = hheads.get(http::header::CONTENT_ENCODING).unwrap();
             let r: Raw = val.to_str().unwrap().into();
             ContentEncoding::parse_header(&r).unwrap();
+        })
+    }
+
+    #[cfg(feature = "nightly")]
+    #[bench]
+    #[cfg(feature = "compat")]
+    fn bench_compat_value_parse_int(b: &mut Bencher) {
+        use http;
+        let mut hheads = http::HeaderMap::new();
+        hheads.insert(http::header::CONTENT_LENGTH, "1024".parse().unwrap());
+        b.iter(|| {
+            let val = hheads.get(http::header::CONTENT_LENGTH).unwrap();
+            ContentLength::parse_header(&val).unwrap();
         })
     }
 
