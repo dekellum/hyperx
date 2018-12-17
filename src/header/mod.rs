@@ -1130,6 +1130,21 @@ mod tests {
     #[cfg(feature = "nightly")]
     #[bench]
     #[cfg(feature = "compat")]
+    fn bench_compat_value_parse_extra_str(b: &mut Bencher) {
+        use http;
+        let mut hheads = http::HeaderMap::new();
+        hheads.insert(http::header::CONTENT_ENCODING,
+                      "chunked, gzip".parse().unwrap());
+        b.iter(|| {
+            let val = hheads.get(http::header::CONTENT_ENCODING).unwrap();
+            let val = val.to_str().unwrap();
+            ContentEncoding::parse_header(&val.into()).unwrap();
+        })
+    }
+
+    #[cfg(feature = "nightly")]
+    #[bench]
+    #[cfg(feature = "compat")]
     fn bench_compat_value_parse(b: &mut Bencher) {
         use http;
         let mut hheads = http::HeaderMap::new();
@@ -1144,15 +1159,13 @@ mod tests {
     #[cfg(feature = "nightly")]
     #[bench]
     #[cfg(feature = "compat")]
-    fn bench_compat_value_parse_str(b: &mut Bencher) {
+    fn bench_compat_value_parse_int(b: &mut Bencher) {
         use http;
         let mut hheads = http::HeaderMap::new();
-        hheads.insert(http::header::CONTENT_ENCODING,
-                      "chunked, gzip".parse().unwrap());
+        hheads.insert(http::header::CONTENT_LENGTH, "1024".parse().unwrap());
         b.iter(|| {
-            let val = hheads.get(http::header::CONTENT_ENCODING).unwrap();
-            let val = val.to_str().unwrap();
-            ContentEncoding::parse_header(&val.into()).unwrap();
+            let val = hheads.get(http::header::CONTENT_LENGTH).unwrap();
+            ContentLength::parse_header(&val.into()).unwrap();
         })
     }
 
