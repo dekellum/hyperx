@@ -139,7 +139,7 @@ use self::sealed::HeaderClone;
 
 pub use self::shared::*;
 pub use self::common::*;
-pub use self::raw::{Raw, RawLike};
+pub use self::raw::{Raw, RawLike, ValueMapIter};
 use bytes::Bytes;
 
 mod common;
