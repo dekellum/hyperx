@@ -5,8 +5,8 @@ use bytes::Bytes;
 #[cfg(feature = "compat")]
 use http::header::{GetAll, HeaderValue, ValueIter};
 
-/// Trait for raw bytes access to header values (aka lines) for a single
-/// key, for a parsing purposes.
+/// Trait for raw bytes parsing access to header values (aka lines) for a single
+/// header name.
 pub trait RawLike<'a> {
     /// The associated type of `Iterator` over values.
     type IntoIter: Iterator<Item=&'a [u8]> + 'a;
