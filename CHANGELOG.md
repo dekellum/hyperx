@@ -1,7 +1,11 @@
-## 0.13.2 (TBD)
+## 0.13.2 (2019-9-1)
 
 * Remove un-exported, and unused as of 0.13.1, `uri` module and related code.
+
 * Broaden base64 dependency to include 0.10.0, passing tests.
+
+* Silence a deprecation warning for `str::trim_right_matches` until the minimum
+  rust version is updated to 1.30.0.
 
 ## 0.13.1 (2018-6-26)
 
