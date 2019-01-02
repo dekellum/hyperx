@@ -1,14 +1,13 @@
 ## 0.13.1 (2018-6-26)
 
-* Remove error::UriError re-export and error::Canceled which are
-  unused internally and where not exported from this crate.
-  (dekellum #5)
+* Remove `error::UriError` re-export and `error::Canceled` which are unused
+  internally and where not exported from this crate.  (dekellum #5)
 
 ## 0.13.0 (2018-6-18)
 
 * Remove variants from `hyperx::Error` which are unused by the header
-  module. Exhaustive matching has been discouraged for this enum, but
-  this is still a potential breaking change. (dekellum #2)
+  module. Exhaustive matching has been discouraged for this enum, but this is
+  still a potential breaking change. (dekellum #2)
 
 * Add an alternative, by reference `From<&http::HeaderMap>` for `Headers`.
   (DarrenTsung #3)
