@@ -1,5 +1,8 @@
 ## 0.13.2 (TBD)
 
+* Remove un-exported, and unused as of 0.13.1, `uri` module and related code.
+* Broaden base64 dependency to include 0.10.0, passing tests.
+
 ## 0.13.1 (2018-6-26)
 
 * Remove `error::UriError` re-export and `error::Canceled` which are unused
