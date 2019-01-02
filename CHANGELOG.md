@@ -1,3 +1,5 @@
+## 0.13.2 (TBD)
+
 ## 0.13.1 (2018-6-26)
 
 * Remove `error::UriError` re-export and `error::Canceled` which are unused
