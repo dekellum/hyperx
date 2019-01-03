@@ -38,7 +38,7 @@
 use std::fmt;
 use std::time::Duration;
 
-use header::{Header, Raw};
+use header::{Header, RawLike};
 use header::shared::HttpDate;
 
 /// The `Retry-After` header.
@@ -90,7 +90,9 @@ impl Header for RetryAfter {
         NAME
     }
 
-    fn parse_header(raw: &Raw) -> ::Result<RetryAfter> {
+    fn parse_header<'a, T>(raw: &'a T) -> ::Result<RetryAfter>
+    where T: RawLike<'a>
+    {
         if let Some(ref line) = raw.one() {
             let utf8_str = match ::std::str::from_utf8(line) {
                 Ok(utf8_str) => utf8_str,
@@ -132,7 +134,7 @@ impl fmt::Display for RetryAfter {
 #[cfg(test)]
 mod tests {
     use std::time::Duration;
-    use header::Header;
+    use header::{Header, Raw};
     use header::shared::HttpDate;
 
     use super::RetryAfter;
@@ -144,8 +146,8 @@ mod tests {
 
     #[test]
     fn parse_delay() {
-        let retry_after = RetryAfter::parse_header(&vec![b"1234".to_vec()].into()).unwrap();
-
+        let r: Raw = vec![b"1234".to_vec()].into();
+        let retry_after = RetryAfter::parse_header(&r).unwrap();
         assert_eq!(RetryAfter::Delay(Duration::from_secs(1234)), retry_after);
     }
 
@@ -154,8 +156,8 @@ mod tests {
             #[test]
             fn $name() {
                 let dt = "Sun, 06 Nov 1994 08:49:37 GMT".parse::<HttpDate>().unwrap();
-                let retry_after = RetryAfter::parse_header(&vec![$bytes.to_vec()].into()).expect("parse_header ok");
-
+                let r: Raw = vec![$bytes.to_vec()].into();
+                let retry_after = RetryAfter::parse_header(&r).expect("parse_header ok");
                 assert_eq!(RetryAfter::DateTime(dt), retry_after);
             }
         }
@@ -167,15 +169,16 @@ mod tests {
 
     #[test]
     fn hyper_headers_from_raw_delay() {
-        let retry_after = RetryAfter::parse_header(&b"300".to_vec().into()).unwrap();
+        let r: Raw = b"300".to_vec().into();
+        let retry_after = RetryAfter::parse_header(&r).unwrap();
         assert_eq!(retry_after, RetryAfter::Delay(Duration::from_secs(300)));
     }
 
     #[test]
     fn hyper_headers_from_raw_datetime() {
-        let retry_after = RetryAfter::parse_header(&b"Sun, 06 Nov 1994 08:49:37 GMT".to_vec().into()).unwrap();
+        let r: Raw = b"Sun, 06 Nov 1994 08:49:37 GMT".to_vec().into();
+        let retry_after = RetryAfter::parse_header(&r).unwrap();
         let expected = "Sun, 06 Nov 1994 08:49:37 GMT".parse::<HttpDate>().unwrap();
-
         assert_eq!(retry_after, RetryAfter::DateTime(expected));
     }
 }

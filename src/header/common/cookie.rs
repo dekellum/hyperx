@@ -2,7 +2,7 @@ use std::borrow::Cow;
 use std::fmt;
 use std::str::from_utf8;
 
-use header::{Header, Raw};
+use header::{Header, RawLike};
 use header::internals::VecMap;
 
 /// `Cookie` header, defined in [RFC6265](http://tools.ietf.org/html/rfc6265#section-5.4)
@@ -116,7 +116,9 @@ impl Header for Cookie {
         NAME
     }
 
-    fn parse_header(raw: &Raw) -> ::Result<Cookie> {
+    fn parse_header<'a, T>(raw: &'a T) -> ::Result<Cookie>
+    where T: RawLike<'a>
+    {
         let mut vec_map = VecMap::with_capacity(raw.len());
         for cookies_raw in raw.iter() {
             let cookies_str = try!(from_utf8(&cookies_raw[..]));
@@ -191,7 +193,7 @@ impl<'a> Iterator for CookieIter<'a> {
 
 #[cfg(test)]
 mod tests {
-    use header::Header;
+    use header::{Header, Raw};
     use super::Cookie;
 
     #[test]
@@ -241,47 +243,47 @@ mod tests {
     #[test]
     fn test_parse() {
         let mut cookie = Cookie::new();
-
-        let parsed = Cookie::parse_header(&b"foo=bar".to_vec().into()).unwrap();
+        let r: Raw = b"foo=bar".to_vec().into();
+        let parsed = Cookie::parse_header(&r).unwrap();
         cookie.append("foo", "bar");
         assert_eq!(cookie, parsed);
 
-        let parsed = Cookie::parse_header(&b"foo=bar;".to_vec().into()).unwrap();
+        let parsed = Cookie::parse_header(&r).unwrap();
         assert_eq!(cookie, parsed);
 
-        let parsed = Cookie::parse_header(&b"foo=bar; baz=quux".to_vec().into()).unwrap();
+        let r: Raw = b"foo=bar; baz=quux".to_vec().into();
+        let parsed = Cookie::parse_header(&r).unwrap();
         cookie.append("baz", "quux");
         assert_eq!(cookie, parsed);
 
-        let parsed = Cookie::parse_header(&b"foo=bar;; baz=quux".to_vec().into()).unwrap();
+        let r: Raw = b"foo=bar;; baz=quux".to_vec().into();
+        let parsed = Cookie::parse_header(&r).unwrap();
         assert_eq!(cookie, parsed);
 
-        let parsed = Cookie::parse_header(&b"foo=bar; invalid ; bad; ;; baz=quux".to_vec().into())
-            .unwrap();
+        let r: Raw = b"foo=bar; invalid ; bad; ;; baz=quux".to_vec().into();
+        let parsed = Cookie::parse_header(&r).unwrap();
         assert_eq!(cookie, parsed);
 
-        let parsed = Cookie::parse_header(&b" foo  =    bar;baz= quux  ".to_vec().into()).unwrap();
+        let r: Raw = b" foo  =    bar;baz= quux  ".to_vec().into();
+        let parsed = Cookie::parse_header(&r).unwrap();
         assert_eq!(cookie, parsed);
 
-        let parsed =
-            Cookie::parse_header(&vec![b"foo  =    bar".to_vec(), b"baz= quux  ".to_vec()].into())
-                .unwrap();
+        let r: Raw = vec![b"foo  =    bar".to_vec(), b"baz= quux  ".to_vec()].into();
+        let parsed = Cookie::parse_header(&r).unwrap();
         assert_eq!(cookie, parsed);
-
-        let parsed = Cookie::parse_header(&b"foo=bar; baz=quux ; empty=".to_vec().into()).unwrap();
+        let r: Raw = b"foo=bar; baz=quux ; empty=".to_vec().into();
+        let parsed = Cookie::parse_header(&r).unwrap();
         cookie.append("empty", "");
         assert_eq!(cookie, parsed);
 
-
         let mut cookie = Cookie::new();
-
-        let parsed = Cookie::parse_header(&b"middle=equals=in=the=middle".to_vec().into()).unwrap();
+        let r: Raw = b"middle=equals=in=the=middle".to_vec().into();
+        let parsed = Cookie::parse_header(&r).unwrap();
         cookie.append("middle", "equals=in=the=middle");
         assert_eq!(cookie, parsed);
 
-        let parsed =
-            Cookie::parse_header(&b"middle=equals=in=the=middle; double==2".to_vec().into())
-                .unwrap();
+        let r: Raw = b"middle=equals=in=the=middle; double==2".to_vec().into();
+        let parsed = Cookie::parse_header(&r).unwrap();
         cookie.append("double", "=2");
         assert_eq!(cookie, parsed);
     }

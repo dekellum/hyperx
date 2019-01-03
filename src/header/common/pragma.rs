@@ -2,7 +2,7 @@ use std::fmt;
 #[allow(unused, deprecated)]
 use std::ascii::AsciiExt;
 
-use header::{Header, Raw, parsing};
+use header::{Header, RawLike, parsing};
 
 /// The `Pragma` header defined by HTTP/1.0.
 ///
@@ -48,7 +48,9 @@ impl Header for Pragma {
         NAME
     }
 
-    fn parse_header(raw: &Raw) -> ::Result<Pragma> {
+    fn parse_header<'a, T>(raw: &'a T) -> ::Result<Pragma>
+    where T: RawLike<'a>
+    {
         parsing::from_one_raw_str(raw).and_then(|s: String| {
             let slice = &s.to_ascii_lowercase()[..];
             match slice {
@@ -74,12 +76,19 @@ impl fmt::Display for Pragma {
 
 #[test]
 fn test_parse_header() {
-    let a: Pragma = Header::parse_header(&"no-cache".into()).unwrap();
+    use header::{Header, Raw};
+
+    let r: Raw = "no-cache".into();
+    let a: Pragma = Header::parse_header(&r).unwrap();
     let b = Pragma::NoCache;
     assert_eq!(a, b);
-    let c: Pragma = Header::parse_header(&"FoObar".into()).unwrap();
+
+    let r: Raw = "FoObar".into();
+    let c: Pragma = Header::parse_header(&r).unwrap();
     let d = Pragma::Ext("FoObar".to_owned());
     assert_eq!(c, d);
-    let e: ::Result<Pragma> = Header::parse_header(&"".into());
+
+    let r: Raw = "".into();
+    let e: ::Result<Pragma> = Header::parse_header(&r);
     assert_eq!(e.ok(), None);
 }

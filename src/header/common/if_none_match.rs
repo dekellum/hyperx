@@ -64,17 +64,19 @@ header! {
 #[cfg(test)]
 mod tests {
     use super::IfNoneMatch;
-    use header::Header;
+    use header::{Header, Raw};
     use header::EntityTag;
 
     #[test]
     fn test_if_none_match() {
         let mut if_none_match: ::Result<IfNoneMatch>;
 
-        if_none_match = Header::parse_header(&b"*".as_ref().into());
+        let r: Raw = b"*".as_ref().into();
+        if_none_match = Header::parse_header(&r);
         assert_eq!(if_none_match.ok(), Some(IfNoneMatch::Any));
 
-        if_none_match = Header::parse_header(&b"\"foobar\", W/\"weak-etag\"".as_ref().into());
+        let r: Raw = b"\"foobar\", W/\"weak-etag\"".as_ref().into();
+        if_none_match = Header::parse_header(&r);
         let mut entities: Vec<EntityTag> = Vec::new();
         let foobar_etag = EntityTag::new(false, "foobar".to_owned());
         let weak_etag = EntityTag::new(true, "weak-etag".to_owned());

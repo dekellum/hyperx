@@ -1,6 +1,6 @@
 use std::fmt;
 use std::str::FromStr;
-use header::{Header, Raw};
+use header::{Header, RawLike};
 use header::parsing::{from_comma_delimited, fmt_comma_delimited};
 
 /// `Cache-Control` header, defined in [RFC7234](https://tools.ietf.org/html/rfc7234#section-5.2)
@@ -59,7 +59,9 @@ impl Header for CacheControl {
         NAME
     }
 
-    fn parse_header(raw: &Raw) -> ::Result<CacheControl> {
+    fn parse_header<'a, T>(raw: &'a T) -> ::Result<CacheControl>
+    where T: RawLike<'a>
+    {
         let directives = try!(from_comma_delimited(raw));
         if !directives.is_empty() {
             Ok(CacheControl(directives))
@@ -172,32 +174,36 @@ impl FromStr for CacheDirective {
 
 #[cfg(test)]
 mod tests {
-    use header::Header;
+    use header::{Header, Raw};
     use super::*;
 
     #[test]
     fn test_parse_multiple_headers() {
-        let cache = Header::parse_header(&vec![b"no-cache".to_vec(), b"private".to_vec()].into());
+        let r: Raw = vec![b"no-cache".to_vec(), b"private".to_vec()].into();
+        let cache = Header::parse_header(&r);
         assert_eq!(cache.ok(), Some(CacheControl(vec![CacheDirective::NoCache,
                                                  CacheDirective::Private])))
     }
 
     #[test]
     fn test_parse_argument() {
-        let cache = Header::parse_header(&vec![b"max-age=100, private".to_vec()].into());
+        let r: Raw = vec![b"max-age=100, private".to_vec()].into();
+        let cache = Header::parse_header(&r);
         assert_eq!(cache.ok(), Some(CacheControl(vec![CacheDirective::MaxAge(100),
                                                  CacheDirective::Private])))
     }
 
     #[test]
     fn test_parse_quote_form() {
-        let cache = Header::parse_header(&vec![b"max-age=\"200\"".to_vec()].into());
+        let r: Raw = vec![b"max-age=\"200\"".to_vec()].into();
+        let cache = Header::parse_header(&r);
         assert_eq!(cache.ok(), Some(CacheControl(vec![CacheDirective::MaxAge(200)])))
     }
 
     #[test]
     fn test_parse_extension() {
-        let cache = Header::parse_header(&vec![b"foo, bar=baz".to_vec()].into());
+        let r: Raw = vec![b"foo, bar=baz".to_vec()].into();
+        let cache = Header::parse_header(&r);
         assert_eq!(cache.ok(), Some(CacheControl(vec![
             CacheDirective::Extension("foo".to_owned(), None),
             CacheDirective::Extension("bar".to_owned(), Some("baz".to_owned()))])))
@@ -205,7 +211,8 @@ mod tests {
 
     #[test]
     fn test_parse_bad_syntax() {
-        let cache: ::Result<CacheControl> = Header::parse_header(&vec![b"foo=".to_vec()].into());
+        let r: Raw = vec![b"foo=".to_vec()].into();
+        let cache: ::Result<CacheControl> = Header::parse_header(&r);
         assert_eq!(cache.ok(), None)
     }
 }

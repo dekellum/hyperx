@@ -75,11 +75,11 @@ macro_rules! bench_header(
             use test::Bencher;
             use super::*;
 
-            use header::{Header};
+            use header::{Header, Raw};
 
             #[bench]
             fn bench_parse(b: &mut Bencher) {
-                let val = $value.into();
+                let val: Raw = $value.into();
                 b.iter(|| {
                     let _: $ty = Header::parse_header(&val).unwrap();
                 });
@@ -87,7 +87,7 @@ macro_rules! bench_header(
 
             #[bench]
             fn bench_format(b: &mut Bencher) {
-                let raw = $value.into();
+                let raw: Raw = $value.into();
                 let val: $ty = Header::parse_header(&raw).unwrap();
                 b.iter(|| {
                     format!("{}", val);
@@ -147,7 +147,7 @@ macro_rules! test_header {
             use std::ascii::AsciiExt;
             let raw = $raw;
             let a: Vec<Vec<u8>> = raw.iter().map(|x| x.to_vec()).collect();
-            let a = a.into();
+            let a: Raw = a.into();
             let value = HeaderField::parse_header(&a);
             let result = format!("{}", value.unwrap());
             let expected = String::from_utf8(raw[0].to_vec()).unwrap();
@@ -167,8 +167,9 @@ macro_rules! test_header {
     ($id:ident, $raw:expr, $typed:expr) => {
         #[test]
         fn $id() {
+
             let a: Vec<Vec<u8>> = $raw.iter().map(|x| x.to_vec()).collect();
-            let a = a.into();
+            let a: Raw = a.into();
             let val = HeaderField::parse_header(&a);
             let typed: Option<HeaderField> = $typed;
             // Test parsing
@@ -208,7 +209,9 @@ macro_rules! header {
                 NAME
             }
             #[inline]
-            fn parse_header(raw: &$crate::header::Raw) -> $crate::Result<Self> {
+            fn parse_header<'a, T>(raw: &'a T) -> $crate::Result<Self>
+            where T: $crate::header::RawLike<'a>
+            {
                 $crate::header::parsing::from_comma_delimited(raw).map($id)
             }
             #[inline]
@@ -236,7 +239,9 @@ macro_rules! header {
                 NAME
             }
             #[inline]
-            fn parse_header(raw: &$crate::header::Raw) -> $crate::Result<Self> {
+            fn parse_header<'a, T>(raw: &'a T) -> $crate::Result<Self>
+            where T: $crate::header::RawLike<'a>
+            {
                 $crate::header::parsing::from_comma_delimited(raw).map($id)
             }
             #[inline]
@@ -264,7 +269,9 @@ macro_rules! header {
                 NAME
             }
             #[inline]
-            fn parse_header(raw: &$crate::header::Raw) -> $crate::Result<Self> {
+            fn parse_header<'a, T>(raw: &'a T) -> $crate::Result<Self>
+            where T: $crate::header::RawLike<'a>
+            {
                 $crate::header::parsing::from_one_raw_str(raw).map($id)
             }
             #[inline]
@@ -292,7 +299,9 @@ macro_rules! header {
                 NAME
             }
             #[inline]
-            fn parse_header(raw: &$crate::header::Raw) -> $crate::Result<Self> {
+            fn parse_header<'a, T>(raw: &'a T) -> $crate::Result<Self>
+            where T: $crate::header::RawLike<'a>
+            {
                 $crate::header::parsing::from_one_raw_str(raw).map($id)
             }
             #[inline]
@@ -332,8 +341,10 @@ macro_rules! header {
                 NAME
             }
             #[inline]
-            fn parse_header(raw: &$crate::header::Raw) -> $crate::Result<Self> {
-                $crate::header::parsing::from_one_raw_str::<<$value as ::std::borrow::ToOwned>::Owned>(raw).map($id::new)
+            fn parse_header<'a, T>(raw: &'a T) -> $crate::Result<Self>
+            where T: $crate::header::RawLike<'a>
+            {
+                $crate::header::parsing::from_one_raw_str::<_, <$value as ::std::borrow::ToOwned>::Owned>(raw).map($id::new)
             }
             #[inline]
             fn fmt_header(&self, f: &mut $crate::header::Formatter) -> ::std::fmt::Result {
@@ -364,10 +375,12 @@ macro_rules! header {
                 NAME
             }
             #[inline]
-            fn parse_header(raw: &$crate::header::Raw) -> $crate::Result<Self> {
+            fn parse_header<'a, T>(raw: &'a T) -> $crate::Result<Self>
+            where T: $crate::header::RawLike<'a>
+            {
                 // FIXME: Return None if no item is in $id::Only
-                if raw.len() == 1 {
-                    if &raw[0] == b"*" {
+                if let Some(l) = raw.one() {
+                    if l == b"*" {
                         return Ok($id::Any)
                     }
                 }

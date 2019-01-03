@@ -126,11 +126,11 @@ bench_header!(header, Connection, { vec![b"authorization".to_vec()] });
 #[cfg(test)]
 mod tests {
     use super::{Connection,ConnectionHeader};
-    use header::Header;
+    use header::{Header, Raw};
     use unicase::Ascii;
 
     fn parse_option(header: Vec<u8>) -> Connection {
-        let val = header.into();
+        let val: Raw = header.into();
         let connection: Connection = Header::parse_header(&val).unwrap();
         connection
     }

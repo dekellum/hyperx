@@ -3,7 +3,7 @@ use std::str;
 
 use unicase;
 
-use header::{Header, Raw};
+use header::{Header, RawLike};
 
 /// The `Expect` header.
 ///
@@ -32,7 +32,9 @@ impl Header for Expect {
         NAME
     }
 
-    fn parse_header(raw: &Raw) -> ::Result<Expect> {
+    fn parse_header<'a, T>(raw: &'a T) -> ::Result<Expect>
+    where T: RawLike<'a>
+    {
         if let Some(line) = raw.one() {
             let text = unsafe {
                 // safe because:

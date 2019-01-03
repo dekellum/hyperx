@@ -1,6 +1,6 @@
 use std::fmt;
 
-use header::{Header, Raw, parsing};
+use header::{Header, RawLike, parsing};
 
 /// `Content-Length` header, defined in
 /// [RFC7230](http://tools.ietf.org/html/rfc7230#section-3.3.2)
@@ -49,7 +49,9 @@ impl Header for ContentLength {
         NAME
     }
 
-    fn parse_header(raw: &Raw) -> ::Result<ContentLength> {
+    fn parse_header<'a, T>(raw: &'a T) -> ::Result<ContentLength>
+    where T: RawLike<'a>
+    {
         // If multiple Content-Length headers were sent, everything can still
         // be alright if they all contain the same value, and all parse
         // correctly. If not, then it's an error.
@@ -91,8 +93,8 @@ __hyper__tm!(ContentLength, tests {
     // Can't use the test_header macro because "5, 5" gets cleaned to "5".
     #[test]
     fn test_duplicates() {
-        let parsed = HeaderField::parse_header(&vec![b"5".to_vec(),
-                                                 b"5".to_vec()].into()).unwrap();
+        let r: Raw = vec![b"5".to_vec(), b"5".to_vec()].into();
+        let parsed = HeaderField::parse_header(&r).unwrap();
         assert_eq!(parsed, HeaderField(5));
         assert_eq!(format!("{}", parsed), "5");
     }

@@ -3,7 +3,7 @@ use std::fmt::{self, Display};
 use std::str::{FromStr, from_utf8};
 use std::ops::{Deref, DerefMut};
 use base64::{encode, decode};
-use header::{Header, Raw};
+use header::{Header, RawLike};
 
 /// `Authorization` header, defined in [RFC7235](https://tools.ietf.org/html/rfc7235#section-4.2)
 ///
@@ -80,7 +80,9 @@ impl<S: Scheme + Any> Header for Authorization<S> where <S as FromStr>::Err: 'st
         NAME
     }
 
-    fn parse_header(raw: &Raw) -> ::Result<Authorization<S>> {
+    fn parse_header<'a, T>(raw: &'a T) -> ::Result<Authorization<S>>
+    where T: RawLike<'a>
+    {
         if let Some(line) = raw.one() {
             let header = try!(from_utf8(line));
             if let Some(scheme) = <S as Scheme>::scheme() {
@@ -228,7 +230,7 @@ impl FromStr for Bearer {
 #[cfg(test)]
 mod tests {
     use super::{Authorization, Basic, Bearer};
-    use super::super::super::{Headers, Header};
+    use super::super::super::{Headers, Header, Raw};
 
     #[test]
     fn test_raw_auth() {
@@ -239,7 +241,8 @@ mod tests {
 
     #[test]
     fn test_raw_auth_parse() {
-        let header: Authorization<String> = Header::parse_header(&b"foo bar baz".as_ref().into()).unwrap();
+        let r: Raw = b"foo bar baz".as_ref().into();
+        let header: Authorization<String> = Header::parse_header(&r).unwrap();
         assert_eq!(header.0, "foo bar baz");
     }
 
@@ -262,16 +265,16 @@ mod tests {
 
     #[test]
     fn test_basic_auth_parse() {
-        let auth: Authorization<Basic> = Header::parse_header(
-            &b"Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==".as_ref().into()).unwrap();
+        let r: Raw = b"Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==".as_ref().into();
+        let auth: Authorization<Basic> = Header::parse_header(&r).unwrap();
         assert_eq!(auth.0.username, "Aladdin");
         assert_eq!(auth.0.password, Some("open sesame".to_owned()));
     }
 
     #[test]
     fn test_basic_auth_parse_no_password() {
-        let auth: Authorization<Basic> = Header::parse_header(
-            &b"Basic QWxhZGRpbjo=".as_ref().into()).unwrap();
+        let r: Raw = b"Basic QWxhZGRpbjo=".as_ref().into();
+        let auth: Authorization<Basic> = Header::parse_header(&r).unwrap();
         assert_eq!(auth.0.username, "Aladdin");
         assert_eq!(auth.0.password, Some("".to_owned()));
     }
@@ -288,8 +291,8 @@ mod tests {
 
     #[test]
     fn test_bearer_auth_parse() {
-        let auth: Authorization<Bearer> = Header::parse_header(
-            &b"Bearer fpKL54jvWmEGVoRdCNjG".as_ref().into()).unwrap();
+        let r: Raw = b"Bearer fpKL54jvWmEGVoRdCNjG".as_ref().into();
+        let auth: Authorization<Bearer> = Header::parse_header(&r).unwrap();
         assert_eq!(auth.0.token, "fpKL54jvWmEGVoRdCNjG");
     }
 }

@@ -11,6 +11,8 @@
 //! dependencies, for continued use with hyper 0.12 (current master), where
 //! this module was removed in preference to the byte-oriented `http::header`
 //! module.
+//!
+//! See the [*header*](header/index.html) module for more details.
 
 extern crate base64;
 extern crate bytes;

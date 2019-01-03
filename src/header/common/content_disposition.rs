@@ -10,7 +10,7 @@ use language_tags::LanguageTag;
 use std::fmt;
 use unicase;
 
-use header::{Header, Raw, parsing};
+use header::{Header, RawLike, parsing};
 use header::parsing::{parse_extended_value, http_percent_encode};
 use header::shared::Charset;
 
@@ -95,7 +95,9 @@ impl Header for ContentDisposition {
         NAME
     }
 
-    fn parse_header(raw: &Raw) -> ::Result<ContentDisposition> {
+    fn parse_header<'a, T>(raw: &'a T) -> ::Result<ContentDisposition>
+    where T: RawLike<'a>
+    {
         parsing::from_one_raw_str(raw).and_then(|s: String| {
             let mut sections = s.split(';');
             let disposition = match sections.next() {
@@ -196,14 +198,15 @@ impl fmt::Display for ContentDisposition {
 #[cfg(test)]
 mod tests {
     use super::{ContentDisposition,DispositionType,DispositionParam};
-    use ::header::Header;
+    use ::header::{Header, Raw};
     use ::header::shared::Charset;
 
     #[test]
     fn test_parse_header() {
-        assert!(ContentDisposition::parse_header(&"".into()).is_err());
+        let a: Raw = "".into();
+        assert!(ContentDisposition::parse_header(&a).is_err());
 
-        let a = "form-data; dummy=3; name=upload;\r\n filename=\"sample.png\"".into();
+        let a: Raw = "form-data; dummy=3; name=upload;\r\n filename=\"sample.png\"".into();
         let a: ContentDisposition = ContentDisposition::parse_header(&a).unwrap();
         let b = ContentDisposition {
             disposition: DispositionType::Ext("form-data".to_owned()),
@@ -217,7 +220,7 @@ mod tests {
         };
         assert_eq!(a, b);
 
-        let a = "attachment; filename=\"image.jpg\"".into();
+        let a: Raw = "attachment; filename=\"image.jpg\"".into();
         let a: ContentDisposition = ContentDisposition::parse_header(&a).unwrap();
         let b = ContentDisposition {
             disposition: DispositionType::Attachment,
@@ -229,7 +232,7 @@ mod tests {
         };
         assert_eq!(a, b);
 
-        let a = "attachment; filename*=UTF-8''%c2%a3%20and%20%e2%82%ac%20rates".into();
+        let a: Raw = "attachment; filename*=UTF-8''%c2%a3%20and%20%e2%82%ac%20rates".into();
         let a: ContentDisposition = ContentDisposition::parse_header(&a).unwrap();
         let b = ContentDisposition {
             disposition: DispositionType::Attachment,
@@ -246,17 +249,17 @@ mod tests {
     #[test]
     fn test_display() {
         let as_string = "attachment; filename*=UTF-8'en'%C2%A3%20and%20%E2%82%AC%20rates";
-        let a = as_string.into();
+        let a: Raw = as_string.into();
         let a: ContentDisposition = ContentDisposition::parse_header(&a).unwrap();
         let display_rendered = format!("{}",a);
         assert_eq!(as_string, display_rendered);
 
-        let a = "attachment; filename*=UTF-8''black%20and%20white.csv".into();
+        let a: Raw = "attachment; filename*=UTF-8''black%20and%20white.csv".into();
         let a: ContentDisposition = ContentDisposition::parse_header(&a).unwrap();
         let display_rendered = format!("{}",a);
         assert_eq!("attachment; filename=\"black and white.csv\"".to_owned(), display_rendered);
 
-        let a = "attachment; filename=colourful.csv".into();
+        let a: Raw = "attachment; filename=colourful.csv".into();
         let a: ContentDisposition = ContentDisposition::parse_header(&a).unwrap();
         let display_rendered = format!("{}",a);
         assert_eq!("attachment; filename=\"colourful.csv\"".to_owned(), display_rendered);

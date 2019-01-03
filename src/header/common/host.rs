@@ -2,7 +2,7 @@ use std::borrow::Cow;
 use std::fmt;
 use std::str::FromStr;
 
-use header::{Header, Raw};
+use header::{Header, RawLike};
 use header::parsing::from_one_raw_str;
 
 /// The `Host` header.
@@ -64,8 +64,10 @@ impl Header for Host {
         NAME
     }
 
-    fn parse_header(raw: &Raw) -> ::Result<Host> {
-       from_one_raw_str(raw)
+    fn parse_header<'a, T>(raw: &'a T) -> ::Result<Host>
+    where T: RawLike<'a>
+    {
+        from_one_raw_str(raw)
     }
 
     fn fmt_header(&self, f: &mut ::header::Formatter) -> fmt::Result {
@@ -105,25 +107,29 @@ impl FromStr for Host {
 #[cfg(test)]
 mod tests {
     use super::Host;
-    use header::Header;
+    use header::{Header, Raw};
 
 
     #[test]
     fn test_host() {
-        let host = Header::parse_header(&vec![b"foo.com".to_vec()].into());
+        let r: Raw = vec![b"foo.com".to_vec()].into();
+        let host = Header::parse_header(&r);
         assert_eq!(host.ok(), Some(Host::new("foo.com", None)));
 
-
-        let host = Header::parse_header(&vec![b"foo.com:8080".to_vec()].into());
+        let r: Raw = vec![b"foo.com:8080".to_vec()].into();
+        let host = Header::parse_header(&r);
         assert_eq!(host.ok(), Some(Host::new("foo.com", Some(8080))));
 
-        let host = Header::parse_header(&vec![b"foo.com".to_vec()].into());
+        let r: Raw = vec![b"foo.com".to_vec()].into();
+        let host = Header::parse_header(&r);
         assert_eq!(host.ok(), Some(Host::new("foo.com", None)));
 
-        let host = Header::parse_header(&vec![b"[::1]:8080".to_vec()].into());
+        let r: Raw = vec![b"[::1]:8080".to_vec()].into();
+        let host = Header::parse_header(&r);
         assert_eq!(host.ok(), Some(Host::new("[::1]", Some(8080))));
 
-        let host = Header::parse_header(&vec![b"[::1]".to_vec()].into());
+        let r: Raw = vec![b"[::1]".to_vec()].into();
+        let host = Header::parse_header(&r);
         assert_eq!(host.ok(), Some(Host::new("[::1]", None)));
     }
 }

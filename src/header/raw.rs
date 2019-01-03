@@ -2,40 +2,31 @@ use std::borrow::Cow;
 use std::fmt;
 use bytes::Bytes;
 
+#[cfg(feature = "compat")]
+use http::header::{GetAll, HeaderValue, ValueIter};
+
+/// Trait for raw bytes parsing access to header values (aka lines) for a single
+/// header name.
+pub trait RawLike<'a> {
+    /// The associated type of `Iterator` over values.
+    type IntoIter: Iterator<Item=&'a [u8]> + 'a;
+
+    /// Return the number of values (lines) in the headers.
+    fn len(&'a self) -> usize;
+
+    /// Return the single value (line), if and only if there is exactly
+    /// one. Otherwise return `None`.
+    fn one(&'a self) -> Option<&'a [u8]>;
+
+    /// Iterate the values (lines) as raw bytes.
+    fn iter(&'a self) -> Self::IntoIter;
+}
+
 /// A raw header value.
 #[derive(Clone, Debug)]
 pub struct Raw(Lines);
 
 impl Raw {
-    /// Returns the amount of lines.
-    #[inline]
-    pub fn len(&self) -> usize {
-        match self.0 {
-            Lines::Empty => 0,
-            Lines::One(..) => 1,
-            Lines::Many(ref lines) => lines.len()
-        }
-    }
-
-    /// Returns the line if there is only 1.
-    #[inline]
-    pub fn one(&self) -> Option<&[u8]> {
-        match self.0 {
-            Lines::One(ref line) => Some(line.as_ref()),
-            Lines::Many(ref lines) if lines.len() == 1 => Some(lines[0].as_ref()),
-            _ => None
-        }
-    }
-
-    /// Iterate the lines of raw bytes.
-    #[inline]
-    pub fn iter(&self) -> RawLines {
-        RawLines {
-            inner: &self.0,
-            pos: 0,
-        }
-    }
-
     /// Append a line to this `Raw` header value.
     pub fn push<V: Into<Raw>>(&mut self, val: V) {
         let raw = val.into();
@@ -63,6 +54,36 @@ impl Raw {
                 lines.push(line);
                 self.0 = Lines::Many(lines);
             }
+        }
+    }
+}
+
+impl<'a> RawLike<'a> for Raw {
+    type IntoIter = RawLines<'a>;
+
+    #[inline]
+    fn len(&'a self) -> usize {
+        match self.0 {
+            Lines::Empty => 0,
+            Lines::One(..) => 1,
+            Lines::Many(ref lines) => lines.len()
+        }
+    }
+
+    #[inline]
+    fn one(&'a self) -> Option<&'a [u8]> {
+        match self.0 {
+            Lines::One(ref line) => Some(line.as_ref()),
+            Lines::Many(ref lines) if lines.len() == 1 => Some(lines[0].as_ref()),
+            _ => None
+        }
+    }
+
+    #[inline]
+    fn iter(&'a self) -> RawLines<'a> {
+        RawLines {
+            inner: &self.0,
+            pos: 0,
         }
     }
 }
@@ -188,6 +209,60 @@ impl From<Bytes> for Raw {
     #[inline]
     fn from(val: Bytes) -> Raw {
         Raw(Lines::One(val))
+    }
+}
+
+/// Iterator adaptor for HeaderValue
+#[cfg(feature = "compat")]
+#[derive(Debug)]
+pub struct ValueMapIter<'a>(ValueIter<'a, HeaderValue>);
+
+#[cfg(feature = "compat")]
+impl<'a> Iterator for ValueMapIter<'a> {
+    type Item = &'a [u8];
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.0.next().map(HeaderValue::as_bytes)
+    }
+}
+
+#[cfg(feature = "compat")]
+impl<'a> RawLike<'a> for GetAll<'a, HeaderValue> {
+    type IntoIter = ValueMapIter<'a>;
+
+    fn len(&'a self) -> usize {
+        self.iter().count()
+    }
+
+    fn one(&'a self) -> Option<&'a [u8]> {
+        let mut iter = self.iter();
+        if let Some(v) = iter.next() {
+            if iter.next().is_none() {
+                return Some(v.as_bytes());
+            }
+        }
+        None
+    }
+
+    fn iter(&'a self) -> ValueMapIter<'a> {
+        ValueMapIter(self.iter())
+    }
+}
+
+#[cfg(feature = "compat")]
+impl<'a> RawLike<'a> for &'a HeaderValue {
+    type IntoIter = ::std::iter::Once<&'a [u8]>;
+
+    fn len(&'a self) -> usize {
+        1
+    }
+
+    fn one(&'a self) -> Option<&'a [u8]> {
+        Some(self.as_bytes())
+    }
+
+    fn iter(&'a self) -> Self::IntoIter {
+        ::std::iter::once(self.as_bytes())
     }
 }
 

@@ -1,5 +1,5 @@
 use std::fmt;
-use header::{Header, Raw, Preference};
+use header::{Header, RawLike, Preference};
 use header::parsing::{from_comma_delimited, fmt_comma_delimited};
 
 /// `Preference-Applied` header, defined in [RFC7240](http://tools.ietf.org/html/rfc7240)
@@ -58,7 +58,9 @@ impl Header for PreferenceApplied {
         NAME
     }
 
-    fn parse_header(raw: &Raw) -> ::Result<PreferenceApplied> {
+    fn parse_header<'a, T>(raw: &'a T) -> ::Result<PreferenceApplied>
+    where T: RawLike<'a>
+    {
         let preferences = try!(from_comma_delimited(raw));
         if !preferences.is_empty() {
             Ok(PreferenceApplied(preferences))

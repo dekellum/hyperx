@@ -6,12 +6,14 @@ use std::str::FromStr;
 use std::fmt::{self, Display};
 use percent_encoding;
 
-use header::Raw;
+use header::RawLike;
 use header::shared::Charset;
 
 
 /// Reads a single raw string when parsing a header.
-pub fn from_one_raw_str<T: str::FromStr>(raw: &Raw) -> ::Result<T> {
+pub fn from_one_raw_str<'a, R, T>(raw: &'a R) -> ::Result<T>
+where R: RawLike<'a>, T: str::FromStr
+{
     if let Some(line) = raw.one() {
         if !line.is_empty() {
             return from_raw_str(line)
@@ -28,9 +30,11 @@ pub fn from_raw_str<T: str::FromStr>(raw: &[u8]) -> ::Result<T> {
 
 /// Reads a comma-delimited raw header into a Vec.
 #[inline]
-pub fn from_comma_delimited<T: str::FromStr>(raw: &Raw) -> ::Result<Vec<T>> {
+pub fn from_comma_delimited<'a, R, T>(raw: &'a R) -> ::Result<Vec<T>>
+where R: RawLike<'a>, T: str::FromStr
+{
     let mut result = Vec::new();
-    for s in raw {
+    for s in raw.iter() {
         let s = try!(str::from_utf8(s.as_ref()));
         result.extend(s.split(',')
                       .filter_map(|x| match x.trim() {

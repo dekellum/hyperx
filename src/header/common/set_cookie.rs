@@ -1,4 +1,4 @@
-use header::{Header, Raw};
+use header::{Header, RawLike};
 use std::fmt;
 use std::str::from_utf8;
 
@@ -79,9 +79,11 @@ impl Header for SetCookie {
         NAME
     }
 
-    fn parse_header(raw: &Raw) -> ::Result<SetCookie> {
+    fn parse_header<'a, T>(raw: &'a T) -> ::Result<SetCookie>
+    where T: RawLike<'a>
+    {
         let mut set_cookies = Vec::with_capacity(raw.len());
-        for set_cookies_raw in raw {
+        for set_cookies_raw in raw.iter() {
             if let Ok(s) = from_utf8(&set_cookies_raw[..]) {
                 set_cookies.push(s.trim().to_owned());
             }

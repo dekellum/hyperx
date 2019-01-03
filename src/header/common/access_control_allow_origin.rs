@@ -1,7 +1,7 @@
 use std::fmt::{self, Display};
 use std::str;
 
-use header::{Header, Raw};
+use header::{Header, RawLike};
 
 /// The `Access-Control-Allow-Origin` response header,
 /// part of [CORS](http://www.w3.org/TR/cors/#access-control-allow-origin-response-header)
@@ -61,7 +61,9 @@ impl Header for AccessControlAllowOrigin {
         "Access-Control-Allow-Origin"
     }
 
-    fn parse_header(raw: &Raw) -> ::Result<AccessControlAllowOrigin> {
+    fn parse_header<'a, T>(raw: &'a T) -> ::Result<AccessControlAllowOrigin>
+    where T: RawLike<'a>
+    {
         if let Some(line) = raw.one() {
             Ok(match line {
                 b"*" => AccessControlAllowOrigin::Any,

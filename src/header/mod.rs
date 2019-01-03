@@ -1,26 +1,72 @@
 //! Headers container, and common header fields.
 //!
-//! hyper has the opinion that Headers should be strongly-typed, because that's
-//! why we're using Rust in the first place. To set or get any header, an object
-//! must implement the `Header` trait from this module. Several common headers
-//! are already provided, such as `Host`, `ContentType`, `UserAgent`, and others.
+//! ## Why Typed?
 //!
-//! # Why Typed?
+//! Hyper <strike>has</strike> had the opinion that:
 //!
-//! Or, why not stringly-typed? Types give the following advantages:
+//! > Headers should be strongly-typed, because that's why we're using Rust in
+//! > the first place. Or, why not stringly-typed? Types give the following
+//! > advantages:
+//! > - More difficult to typo, since typos in types should be caught by the
+//! >   compiler
+//! > - Parsing to a proper type by default
 //!
-//! - More difficult to typo, since typos in types should be caught by the compiler
-//! - Parsing to a proper type by default
+//! However, it seems that for many applications, it is sufficient to use
+//! `http::header::HeaderMap` (byte values) and parse only the headers that
+//! are of interest.
 //!
-//! # Defining Custom Headers
+//! ## Parsing `http::header::HeaderValue`s
 //!
-//! Hyper provides many of the most commonly used headers in HTTP. If
-//! you need to define a custom header, it's easy to do while still taking
-//! advantage of the type system. Hyper includes a `header!` macro for defining
-//! many wrapper-style headers.
+//! With the default *compat* feature enabled, `HeaderValue`(s) implement the
+//! `RawLike` trait which allows for parsing with less copying than going
+//! through `HeaderValue::to_str` or the `Raw` type. See example usage below:
 //!
 //! ```
-//! #[macro_use] extern crate hyperx;
+//! # #[cfg(feature = "compat")]
+//! # extern crate hyperx;
+//! # #[cfg(feature = "compat")]
+//! # extern crate http;
+//! # #[cfg(feature = "compat")]
+//! # fn run() -> Result<(), Box<std::error::Error>> {
+//! use http::header::{HeaderMap, CONTENT_ENCODING};
+//! use hyperx::header::{ContentEncoding, Encoding, Header};
+//!
+//! // Given a HeaderMap with 2 Content-Encoding headers and 3 delimited values
+//! let mut hmap = HeaderMap::new();
+//! hmap.insert(CONTENT_ENCODING, "chunked, gzip".parse()?);
+//! hmap.append(CONTENT_ENCODING, "identity".parse()?);
+//!
+//! // Parse the first header value
+//! let first = hmap.get(CONTENT_ENCODING).unwrap();
+//! let ce = ContentEncoding::parse_header(&first)?;
+//! assert_eq!(ce, ContentEncoding(vec![Encoding::Chunked, Encoding::Gzip]));
+//!
+//! // Parse all header values to a single list
+//! let all = hmap.get_all(CONTENT_ENCODING);
+//! let ce = ContentEncoding::parse_header(&all)?;
+//! assert_eq!(ce, ContentEncoding(
+//!     vec![Encoding::Chunked, Encoding::Gzip, Encoding::Identity]
+//! ));
+//! # Ok(())
+//! # }
+//! # #[cfg(feature = "compat")]
+//! # fn main() {
+//! #     run().unwrap();
+//! # }
+//! # #[cfg(not(feature = "compat"))]
+//! # fn main() {
+//! # }
+//! ```
+//!
+//! ## Defining Custom Headers
+//!
+//! Hyper*x* provides many of the most commonly used headers in HTTP. If you
+//! need to define a custom header, it's easy to do while still taking
+//! advantage of the type system. Hyper*x* includes a `header!` macro for
+//! defining many wrapper-style headers.
+//!
+//! ```
+//! # #[macro_use] extern crate hyperx;
 //! use hyperx::header::Headers;
 //! header! { (XRequestGuid, "X-Request-Guid") => [String] }
 //!
@@ -41,7 +87,7 @@
 //!
 //! ```
 //! use std::fmt;
-//! use hyperx::header::{self, Header, Raw};
+//! use hyperx::header::{self, Header, RawLike};
 //!
 //! #[derive(Debug, Clone, Copy)]
 //! struct Dnt(bool);
@@ -51,9 +97,10 @@
 //!         "DNT"
 //!     }
 //!
-//!     fn parse_header(raw: &Raw) -> hyperx::Result<Dnt> {
-//!         if raw.len() == 1 {
-//!             let line = &raw[0];
+//!     fn parse_header<'a, T>(raw: &'a T) -> hyperx::Result<Dnt>
+//!     where T: RawLike<'a>
+//!     {
+//!         if let Some(line) = raw.one() {
 //!             if line.len() == 1 {
 //!                 let byte = line[0];
 //!                 match byte {
@@ -92,7 +139,11 @@ use self::sealed::HeaderClone;
 
 pub use self::shared::*;
 pub use self::common::*;
-pub use self::raw::Raw;
+pub use self::raw::{Raw, RawLike};
+
+#[cfg(feature = "compat")]
+pub use self::raw::{ValueMapIter};
+
 use bytes::Bytes;
 
 mod common;
@@ -111,6 +162,7 @@ pub trait Header: 'static + HeaderClone + Send + Sync {
     ///
     /// This will become an associated constant once available.
     fn header_name() -> &'static str where Self: Sized;
+
     /// Parse a header from a raw stream of bytes.
     ///
     /// It's possible that a request can include a header field more than once,
@@ -118,7 +170,9 @@ pub trait Header: 'static + HeaderClone + Send + Sync {
     /// it's not necessarily the case that a Header is *allowed* to have more
     /// than one field value. If that's the case, you **should** return `None`
     /// if `raw.len() > 1`.
-    fn parse_header(raw: &Raw) -> ::Result<Self> where Self: Sized;
+    fn parse_header<'a, T>(raw: &'a T) -> ::Result<Self>
+    where T: RawLike<'a>, Self: Sized;
+
     /// Format a header to outgoing stream.
     ///
     /// Most headers should be formatted on one line, and so a common pattern
@@ -132,7 +186,6 @@ pub trait Header: 'static + HeaderClone + Send + Sync {
     /// The main example here is `Set-Cookie`, which requires that every
     /// cookie being set be specified in a separate line. Almost every other
     /// case should only format as 1 single line.
-    #[inline]
     fn fmt_header(&self, f: &mut Formatter) -> fmt::Result;
 }
 
@@ -767,7 +820,10 @@ impl PartialEq<HeaderName> for str {
 #[cfg(test)]
 mod tests {
     use std::fmt;
-    use super::{Headers, Header, Raw, ContentLength, ContentType, Host, SetCookie};
+    use super::{Headers, Header, RawLike, ContentLength, ContentType, Host, SetCookie};
+
+    #[cfg(feature = "compat")]
+    use super::{ContentEncoding, Encoding};
 
     #[cfg(feature = "nightly")]
     use test::Bencher;
@@ -797,7 +853,9 @@ mod tests {
         fn header_name() -> &'static str {
             "content-length"
         }
-        fn parse_header(raw: &Raw) -> ::Result<CrazyLength> {
+        fn parse_header<'a, T>(raw: &'a T) -> ::Result<CrazyLength>
+        where T: RawLike<'a>
+        {
             use std::str::from_utf8;
             use std::str::FromStr;
 
@@ -1041,6 +1099,81 @@ mod tests {
         // Test Headers::from(&http::HeaderMap)
         let conv_hyper_headers: Headers = Headers::from(&orig_http_headers);
         assert_eq!(orig_hyper_headers, conv_hyper_headers);
+    }
+
+    #[test]
+    #[cfg(feature = "compat")]
+    fn test_compat_value_parse() {
+        use http;
+        let mut hheads = http::HeaderMap::new();
+        hheads.insert(http::header::CONTENT_ENCODING,
+                      "chunked, gzip".parse().unwrap());
+        let val = hheads.get(http::header::CONTENT_ENCODING).unwrap();
+        let ce = ContentEncoding::parse_header(&val).unwrap();
+        assert_eq!(ce, ContentEncoding(vec![Encoding::Chunked, Encoding::Gzip]))
+    }
+
+    #[test]
+    #[cfg(feature = "compat")]
+    fn test_compat_multi_value_parse() {
+        use http;
+        let mut hheads = http::HeaderMap::new();
+        hheads.insert(http::header::CONTENT_ENCODING,
+                      "chunked, gzip".parse().unwrap());
+        hheads.append(http::header::CONTENT_ENCODING,
+                      "br".parse().unwrap());
+
+        let vals = hheads.get_all(http::header::CONTENT_ENCODING);
+        let ce = ContentEncoding::parse_header(&vals).unwrap();
+        assert_eq!(
+            ce,
+            ContentEncoding(vec![
+                Encoding::Chunked, Encoding::Gzip, Encoding::Brotli
+            ])
+        )
+    }
+
+    #[cfg(feature = "nightly")]
+    #[bench]
+    #[cfg(feature = "compat")]
+    fn bench_compat_value_parse(b: &mut Bencher) {
+        use http;
+        let mut hheads = http::HeaderMap::new();
+        hheads.insert(http::header::CONTENT_ENCODING,
+                      "chunked, gzip".parse().unwrap());
+        b.iter(|| {
+            let val = hheads.get(http::header::CONTENT_ENCODING).unwrap();
+            ContentEncoding::parse_header(&val).unwrap();
+        })
+    }
+
+    #[cfg(feature = "nightly")]
+    #[bench]
+    #[cfg(feature = "compat")]
+    fn bench_compat_value_parse_extra_str(b: &mut Bencher) {
+        use http;
+        use header::Raw;
+        let mut hheads = http::HeaderMap::new();
+        hheads.insert(http::header::CONTENT_ENCODING,
+                      "chunked, gzip".parse().unwrap());
+        b.iter(|| {
+            let val = hheads.get(http::header::CONTENT_ENCODING).unwrap();
+            let r: Raw = val.to_str().unwrap().into();
+            ContentEncoding::parse_header(&r).unwrap();
+        })
+    }
+
+    #[cfg(feature = "nightly")]
+    #[bench]
+    #[cfg(feature = "compat")]
+    fn bench_compat_value_parse_int(b: &mut Bencher) {
+        use http;
+        let mut hheads = http::HeaderMap::new();
+        hheads.insert(http::header::CONTENT_LENGTH, "1024".parse().unwrap());
+        b.iter(|| {
+            let val = hheads.get(http::header::CONTENT_LENGTH).unwrap();
+            ContentLength::parse_header(&val).unwrap();
+        })
     }
 
     #[cfg(feature = "nightly")]

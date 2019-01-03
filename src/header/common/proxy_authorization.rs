@@ -2,7 +2,7 @@ use std::any::Any;
 use std::fmt;
 use std::str::{FromStr, from_utf8};
 use std::ops::{Deref, DerefMut};
-use header::{Header, Raw, Scheme};
+use header::{Header, RawLike, Scheme};
 
 /// `Proxy-Authorization` header, defined in [RFC7235](https://tools.ietf.org/html/rfc7235#section-4.4)
 ///
@@ -80,7 +80,9 @@ impl<S: Scheme + Any> Header for ProxyAuthorization<S> where <S as FromStr>::Err
         NAME
     }
 
-    fn parse_header(raw: &Raw) -> ::Result<ProxyAuthorization<S>> {
+    fn parse_header<'a, T>(raw: &'a T) -> ::Result<ProxyAuthorization<S>>
+    where T: RawLike<'a>
+    {
         if let Some(line) = raw.one() {
             let header = try!(from_utf8(line));
             if let Some(scheme) = <S as Scheme>::scheme() {
@@ -120,7 +122,7 @@ impl<S: Scheme> fmt::Display for ProxyAuthorization<S> {
 #[cfg(test)]
 mod tests {
     use super::ProxyAuthorization;
-    use super::super::super::{Headers, Header, Basic, Bearer};
+    use super::super::super::{Headers, Header, Raw, Basic, Bearer};
 
     #[test]
     fn test_raw_auth() {
@@ -131,7 +133,8 @@ mod tests {
 
     #[test]
     fn test_raw_auth_parse() {
-        let header: ProxyAuthorization<String> = Header::parse_header(&b"foo bar baz".as_ref().into()).unwrap();
+        let r: Raw = b"foo bar baz".as_ref().into();
+        let header: ProxyAuthorization<String> = Header::parse_header(&r).unwrap();
         assert_eq!(header.0, "foo bar baz");
     }
 
@@ -154,16 +157,16 @@ mod tests {
 
     #[test]
     fn test_basic_auth_parse() {
-        let auth: ProxyAuthorization<Basic> = Header::parse_header(
-            &b"Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==".as_ref().into()).unwrap();
+        let r: Raw = b"Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==".as_ref().into();
+        let auth: ProxyAuthorization<Basic> = Header::parse_header(&r).unwrap();
         assert_eq!(auth.0.username, "Aladdin");
         assert_eq!(auth.0.password, Some("open sesame".to_owned()));
     }
 
     #[test]
     fn test_basic_auth_parse_no_password() {
-        let auth: ProxyAuthorization<Basic> = Header::parse_header(
-            &b"Basic QWxhZGRpbjo=".as_ref().into()).unwrap();
+        let r: Raw = b"Basic QWxhZGRpbjo=".as_ref().into();
+        let auth: ProxyAuthorization<Basic> = Header::parse_header(&r).unwrap();
         assert_eq!(auth.0.username, "Aladdin");
         assert_eq!(auth.0.password, Some("".to_owned()));
     }
@@ -180,8 +183,8 @@ mod tests {
 
     #[test]
     fn test_bearer_auth_parse() {
-        let auth: ProxyAuthorization<Bearer> = Header::parse_header(
-            &b"Bearer fpKL54jvWmEGVoRdCNjG".as_ref().into()).unwrap();
+        let r: Raw = b"Bearer fpKL54jvWmEGVoRdCNjG".as_ref().into();
+        let auth: ProxyAuthorization<Bearer> = Header::parse_header(&r).unwrap();
         assert_eq!(auth.0.token, "fpKL54jvWmEGVoRdCNjG");
     }
 }
