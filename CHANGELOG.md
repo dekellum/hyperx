@@ -1,6 +1,18 @@
-## 0.14.0 (TBD)
+## 0.14.0 (2019-1-4)
 
-## 0.13.2 (2019-9-1)
+* Update the signature of `Header::parse_header` to be generic over types
+  implementing a new `RawLike` trait, which includes the existing local `Raw`
+  type as well as _http_ crate types `HeaderValue` and (`HeaderMap::get_all`)
+  `GetAll`. This avoids an allocation when directly parsing from these later
+  types.
+
+  _Expected Breakage_: Any 3rd-party custom headers directly implementing
+  `parse_header` will need to change accordingly on upgrade. Also `Into`
+  conversions to `Raw` now frequently need to be type annotated. (dekellum #8)
+
+* Improve header module rustdoc, including with parsing usage for the above.
+
+## 0.13.2 (2019-1-2)
 
 * Remove un-exported, and unused as of 0.13.1, `uri` module and related code.
 
