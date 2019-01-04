@@ -4,12 +4,16 @@
 //!
 //! Hyper <strike>has</strike> had the opinion that:
 //!
+//! > <em>
+//! >
 //! > Headers should be strongly-typed, because that's why we're using Rust in
 //! > the first place. Or, why not stringly-typed? Types give the following
 //! > advantages:
 //! > - More difficult to typo, since typos in types should be caught by the
 //! >   compiler
 //! > - Parsing to a proper type by default
+//! >
+//! > </em>
 //!
 //! However, it seems that for many applications, it is sufficient to use
 //! `http::header::HeaderMap` (byte values) and parse only the headers that
