@@ -22,13 +22,7 @@ matrix:
       os: osx
     - rust: 1.21.0
       env: WITH_LOCK=true
-    - rust: 1.27.2
-      env: WITH_LOCK=true
     - rust: stable
-    - rust: nightly
-      env: WITH_LOCK=true
-    - rust: beta
-      env: MAY_FAIL=true
     - rust: nightly
       env: MAY_FAIL=true
   allow_failures:
