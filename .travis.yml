@@ -1,5 +1,5 @@
 language: rust
-sudo: false
+dist: xenial
 script:
   - 'if [ "$WITH_LOCK" != "true" ]; then cargo update; fi'
   - 'cargo test --no-default-features'
