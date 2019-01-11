@@ -190,6 +190,7 @@ macro_rules! test_header {
     }
 }
 
+/// Create a custom header type.
 #[macro_export]
 macro_rules! header {
     // $a:meta: Attributes associated with the header item (usually docs)
