@@ -14,6 +14,13 @@ where this module was dropped in preference to the byte-oriented
 
 [Hyper]: https://github.com/hyperium/hyper
 
+## Minimum supported rust version (MSRV)
+
+1.27.2
+
+The project will fail fast on any lower rustc (via a build.rs version
+check) and is also CI tested on this version.
+
 ## License
 
 The MIT license ([LICENSE](LICENSE) or http://opensource.org/licenses/MIT)

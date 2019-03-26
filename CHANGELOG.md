@@ -1,5 +1,13 @@
 ## 0.15.0 (TBD)
 
+* Increase MSRV to 1.27.2, which enables us to revert a CI workaround
+  for the fact that base64 0.10.1 was released with this same MSRV.
+  (dekellum #10)
+
+* Add a build.rs and version_check build dependency in order to check
+  the MSRV and to fail fast with a clear error message when older
+  rustc versions are used.
+
 ## 0.14.0 (2019-1-4)
 
 * Update the signature of `Header::parse_header` to be generic over types
