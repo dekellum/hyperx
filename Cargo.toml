@@ -22,7 +22,7 @@ exclude = [
 ]
 
 [dependencies]
-base64 = ">=0.9.0, <0.11"
+base64 = ">=0.10.1, <0.11"
 bytes = "0.4.4"
 http = { version = "0.1", optional = true }
 httparse = "1.0"
