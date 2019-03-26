@@ -11,19 +11,19 @@ cache:
     - /home/travis/.cargo
 before_cache:
   - rm -rf /home/travis/.cargo/registry
+rust: 1.21.0
 env: # important!
 matrix:
   include:
     - rust: 1.21.0
+      os: osx
       env: WITH_LOCK=true
-    - rust: 1.27.2
+    - rust: stable
+      os: osx
+    - rust: 1.21.0
+      env: WITH_LOCK=true
     - rust: stable
     - rust: nightly
       env: MAY_FAIL=true
-    - rust: 1.21.0
-      os: osx
-      env: WITH_LOCK=true
-    - rust: stable
-      os: osx
   allow_failures:
     - env: MAY_FAIL=true
