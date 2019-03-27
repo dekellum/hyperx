@@ -20,6 +20,7 @@ exclude = [
     ".travis.yml",
     "appveyor.yml",
 ]
+build = "build.rs"
 
 [dependencies]
 base64 = ">=0.10.1, <0.11"
