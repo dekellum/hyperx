@@ -156,6 +156,11 @@ mod raw;
 mod shared;
 pub mod parsing;
 
+#[cfg(feature = "compat")]
+mod compat;
+
+#[cfg(feature = "compat")]
+pub use self::compat::StandardHeader;
 
 /// A trait for any object that will represent a header field and value.
 ///

@@ -75,6 +75,13 @@ impl Header for ContentLength {
     }
 }
 
+#[cfg(feature = "compat")]
+impl ::header::StandardHeader for ContentLength {
+    fn http_header_name() -> http::header::HeaderName {
+        http::header::CONTENT_LENGTH
+    }
+}
+
 impl fmt::Display for ContentLength {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
