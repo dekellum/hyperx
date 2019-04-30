@@ -15,6 +15,9 @@ pub trait TypedHeaders {
 
     fn decode_any<H>(&self) -> Result<H>
         where H: Header;
+
+    fn encode<H>(&mut self, val: &H)
+        where H: StandardHeader;
 }
 
 impl TypedHeaders for HeaderMap {
@@ -29,9 +32,16 @@ impl TypedHeaders for HeaderMap {
         where H: Header
     {
         let vals = self.get_all(H::header_name());
-        // FIXME: Performance: AsHeaderName for &str validates and down cases
-        // the name.
+        // FIXME: Perf: AsHeaderName for &str validates and down cases
         H::parse_header(&vals)
+    }
+
+    fn encode<H>(&mut self, val: &H)
+        where H: StandardHeader
+    {
+        self.insert(
+            H::http_header_name(),
+            val.to_string().parse().expect("header value"));
     }
 }
 
@@ -59,6 +69,14 @@ mod tests {
     fn test_decode() {
         let mut hmap = http::HeaderMap::new();
         hmap.insert(http::header::CONTENT_LENGTH, "11".parse().unwrap());
+        let len: ContentLength = hmap.decode().unwrap();
+        assert_eq!(*len, 11);
+    }
+
+    #[test]
+    fn test_encode_decode() {
+        let mut hmap = http::HeaderMap::new();
+        hmap.encode(&ContentLength(11));
         let len: ContentLength = hmap.decode().unwrap();
         assert_eq!(*len, 11);
     }
