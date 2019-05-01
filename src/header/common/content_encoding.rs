@@ -50,5 +50,13 @@ header! {
     }
 }
 
+#[cfg(feature = "compat")]
+impl ::header::StandardHeader for ContentEncoding {
+    #[inline]
+    fn http_header_name() -> http::header::HeaderName {
+        http::header::CONTENT_ENCODING
+    }
+}
+
 bench_header!(single, ContentEncoding, { vec![b"gzip".to_vec()] });
 bench_header!(multiple, ContentEncoding, { vec![b"gzip, deflate".to_vec()] });
