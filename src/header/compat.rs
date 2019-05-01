@@ -1,24 +1,53 @@
+//! Implementation module for various _compat_ features with the _http_ crate.
+
 use std::string::ToString;
+
 use http::header::HeaderMap;
+
 use ::Result;
 use super::Header;
 
-/// A trait for standard headers with constant names.
+/// A trait for the "standard" headers that have an associated `HeaderName`
+/// constant in the `http` crate.
 pub trait StandardHeader: Header + Sized {
-    /// The http crate HeaderName
+    /// The `HeaderName` from the _http_ crate for this header.
     fn http_header_name() -> ::http::header::HeaderName;
 }
 
+/// Extension trait for `decode` (parsing) and `encode` (serialization) of
+/// typed headers from/to a collection of headers such as `HeaderMap`.
 pub trait TypedHeaders {
+    /// Decode and return `Header` type H or `Error::Header`.
+    ///
+    /// `Error::Header` is returned on failed parse, or for a single-valued
+    /// Header type, if no values or multiple values are found in the
+    /// collection.  Multi-valued header types such as `ContentEncoding` will
+    /// instead return an empty list value if no values are found.  To
+    /// distinguish the not found case, use `try_decode` instead.
     fn decode<H>(&self) -> Result<H>
         where H: StandardHeader;
 
+    /// Decode and return `Header` type H or `Error::Header` if found, or
+    /// return `None` if not found.
+    ///
+    /// This variant will return `Option::None` if no header with the
+    /// associated key (`HeaderName`) is found in the map. If the map does
+    /// contain such a key, it will return the header type H or
+    /// `Error::Header`.
     fn try_decode<H>(&self) -> Option<Result<H>>
         where H: StandardHeader;
 
+    /// Encode and write the specified typed header value in the collection.
+    ///
+    /// This will overwrite any preexisting values with the same
+    /// key (`HeaderName`). Use `encode_append` instead to avoid this.
     fn encode<H>(&mut self, val: &H)
         where H: StandardHeader + ToString;
 
+    /// Encode and append the specified typed header value into the collection.
+    ///
+    /// If the collection previously had a value for the same key, the
+    /// additional value is appended to the end.
     fn encode_append<H>(&mut self, val: &H)
         where H: StandardHeader + ToString;
 }
@@ -64,7 +93,7 @@ impl TypedHeaders for HeaderMap {
 mod tests {
     use http;
     use super::TypedHeaders;
-    use ::header::{ContentEncoding, ContentLength, Encoding};
+    use ::header::{ContentEncoding, ContentLength, Encoding, Te, ETag};
 
     #[cfg(feature = "nightly")]
     use ::header::Header;
@@ -80,10 +109,38 @@ mod tests {
     }
 
     #[test]
+    fn test_empty_decode_etag() {
+        let hmap = http::HeaderMap::new();
+        let len = hmap.decode::<ETag>();
+        assert!(len.is_err());
+    }
+
+    #[test]
+    fn test_empty_decode_te() {
+        let hmap = http::HeaderMap::new();
+        let te = hmap.decode::<Te>().unwrap();
+        assert_eq!(te, Te(vec![]));
+    }
+
+    #[test]
+    fn test_empty_decode_content_encoding() {
+        let hmap = http::HeaderMap::new();
+        let ce = hmap.decode::<ContentEncoding>().unwrap();
+        assert_eq!(ce, ContentEncoding(vec![]));
+    }
+
+    #[test]
     fn test_empty_try_decode() {
         let hmap = http::HeaderMap::new();
         let len = hmap.try_decode::<ContentLength>();
         assert!(len.is_none());
+    }
+
+    #[test]
+    fn test_empty_try_decode_te() {
+        let hmap = http::HeaderMap::new();
+        let te = hmap.try_decode::<Te>();
+        assert!(te.is_none());
     }
 
     #[test]
