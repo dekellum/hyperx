@@ -18,6 +18,9 @@ pub trait TypedHeaders {
 
     fn encode<H>(&mut self, val: &H)
         where H: StandardHeader;
+
+    fn encode_append<H>(&mut self, val: &H)
+        where H: StandardHeader;
 }
 
 impl TypedHeaders for HeaderMap {
@@ -43,13 +46,21 @@ impl TypedHeaders for HeaderMap {
             H::http_header_name(),
             val.to_string().parse().expect("header value"));
     }
+
+    fn encode_append<H>(&mut self, val: &H)
+        where H: StandardHeader
+    {
+        self.append(
+            H::http_header_name(),
+            val.to_string().parse().expect("header value"));
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use http;
     use super::TypedHeaders;
-    use ::header::ContentLength;
+    use ::header::{ContentEncoding, ContentLength, Encoding};
 
     #[cfg(feature = "nightly")]
     use ::header::Header;
@@ -79,6 +90,19 @@ mod tests {
         hmap.encode(&ContentLength(11));
         let len: ContentLength = hmap.decode().unwrap();
         assert_eq!(*len, 11);
+    }
+
+    #[test]
+    fn test_encode_append() {
+        let mut hmap = http::HeaderMap::new();
+        hmap.encode_append(
+            &ContentEncoding(vec![Encoding::Identity]));
+        hmap.encode_append(
+            &ContentEncoding(vec![Encoding::Gzip, Encoding::Chunked]));
+        let ce: ContentEncoding = hmap.decode().unwrap();
+        assert_eq!(
+            *ce,
+            vec![Encoding::Identity, Encoding::Gzip, Encoding::Chunked]);
     }
 
     #[cfg(feature = "nightly")]
