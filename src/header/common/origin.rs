@@ -183,3 +183,5 @@ mod tests {
 }
 
 bench_header!(bench, Origin, { vec![b"https://foo.com".to_vec()] });
+
+standard_header!(Origin, ORIGIN);

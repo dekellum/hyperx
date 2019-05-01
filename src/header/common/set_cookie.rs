@@ -12,6 +12,9 @@ use std::str::from_utf8;
 /// "Set-Cookie" followed by a ":" and a cookie.  Each cookie begins with
 /// a name-value-pair, followed by zero or more attribute-value pairs.
 ///
+/// `SetCookie` _must not_ be encoded as a comma-delimited list. For this
+/// reason, it doesn't implement `fmt::Display` (and `std::string::ToString`).
+///
 /// # ABNF
 ///
 /// ```text
@@ -114,3 +117,5 @@ fn test_set_cookie_fmt() {
     ]));
     assert_eq!(headers.to_string(), "Set-Cookie: foo=bar\r\nSet-Cookie: baz=quux\r\n");
 }
+
+standard_header!(SetCookie, SET_COOKIE);

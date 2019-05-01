@@ -44,3 +44,5 @@ header! {
 }
 
 bench_header!(bench, Location, { vec![b"http://foo.com/hello:3000".to_vec()] });
+
+standard_header!(Location, LOCATION);

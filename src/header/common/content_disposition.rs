@@ -265,3 +265,5 @@ mod tests {
         assert_eq!("attachment; filename=\"colourful.csv\"".to_owned(), display_rendered);
     }
 }
+
+standard_header!(ContentDisposition, CONTENT_DISPOSITION);

@@ -73,3 +73,5 @@ header! {
         }
     }
 }
+
+standard_header!(Vary, VARY);

@@ -94,3 +94,5 @@ mod test_if_range {
     test_header!(test2, vec![b"\"xyzzy\""]);
     test_header!(test3, vec![b"this-is-invalid"], None::<IfRange>);
 }
+
+standard_header!(IfRange, IF_RANGE);

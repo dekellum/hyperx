@@ -145,3 +145,5 @@ impl Accept {
 
 
 bench_header!(bench, Accept, { vec![b"text/plain; q=0.5, text/html".to_vec()] });
+
+standard_header!(Accept, ACCEPT);

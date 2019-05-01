@@ -71,3 +71,5 @@ bench_header!(star, IfMatch, { vec![b"*".to_vec()] });
 bench_header!(single , IfMatch, { vec![b"\"xyzzy\"".to_vec()] });
 bench_header!(multi, IfMatch,
               { vec![b"\"xyzzy\", \"r2d2xxxx\", \"c3piozzzz\"".to_vec()] });
+
+standard_header!(IfMatch, IF_MATCH);

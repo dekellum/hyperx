@@ -43,3 +43,5 @@ header! {
 }
 
 bench_header!(bench, Referer, { vec![b"http://foo.com/hello:3000".to_vec()] });
+
+standard_header!(Referer, REFERER);

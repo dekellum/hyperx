@@ -93,3 +93,5 @@ header! {
 }
 
 bench_header!(bench, ETag, { vec![b"W/\"nonemptytag\"".to_vec()] });
+
+standard_header!(ETag, ETAG);

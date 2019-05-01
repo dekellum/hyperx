@@ -64,3 +64,5 @@ impl fmt::Display for Expect {
         f.write_str("100-continue")
     }
 }
+
+standard_header!(Expect, EXPECT);

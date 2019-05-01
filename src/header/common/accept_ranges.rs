@@ -103,3 +103,5 @@ impl Display for RangeUnit {
         }
     }
 }
+
+standard_header!(AcceptRanges, ACCEPT_RANGES);

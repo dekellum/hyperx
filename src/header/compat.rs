@@ -4,13 +4,12 @@ use ::Result;
 use super::Header;
 
 /// A trait for standard headers with constant names.
-pub trait StandardHeader: Header + Sized + ToString {
+pub trait StandardHeader: Header + Sized {
     /// The http crate HeaderName
-    fn http_header_name() -> http::header::HeaderName;
+    fn http_header_name() -> ::http::header::HeaderName;
 }
 
 pub trait TypedHeaders {
-
     fn decode<H>(&self) -> Result<H>
         where H: StandardHeader;
 
@@ -18,10 +17,10 @@ pub trait TypedHeaders {
         where H: StandardHeader;
 
     fn encode<H>(&mut self, val: &H)
-        where H: StandardHeader;
+        where H: StandardHeader + ToString;
 
     fn encode_append<H>(&mut self, val: &H)
-        where H: StandardHeader;
+        where H: StandardHeader + ToString;
 }
 
 impl TypedHeaders for HeaderMap {
@@ -45,7 +44,7 @@ impl TypedHeaders for HeaderMap {
     }
 
     fn encode<H>(&mut self, val: &H)
-        where H: StandardHeader
+        where H: StandardHeader + ToString
     {
         self.insert(
             H::http_header_name(),
@@ -53,7 +52,7 @@ impl TypedHeaders for HeaderMap {
     }
 
     fn encode_append<H>(&mut self, val: &H)
-        where H: StandardHeader
+        where H: StandardHeader + ToString
     {
         self.append(
             H::http_header_name(),

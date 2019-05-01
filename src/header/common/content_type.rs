@@ -125,3 +125,5 @@ impl ContentType {
 impl Eq for ContentType {}
 
 bench_header!(bench, ContentType, { vec![b"application/json".to_vec()] });
+
+standard_header!(ContentType, CONTENT_TYPE);

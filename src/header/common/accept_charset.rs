@@ -55,3 +55,5 @@ header! {
         test_header!(test1, vec![b"iso-8859-5, unicode-1-1;q=0.8"]);
     }
 }
+
+standard_header!(AcceptCharset, ACCEPT_CHARSET);

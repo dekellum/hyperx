@@ -292,3 +292,5 @@ mod tests {
 bench_header!(bench, Cookie, {
     vec![b"foo=bar; baz=quux".to_vec()]
 });
+
+standard_header!(Cookie, COOKIE);

@@ -89,3 +89,5 @@ mod test_access_control_allow_credentials {
     test_header!(only_single,  vec![b"true", b"true"], None);
     test_header!(no_gibberish, vec!["\u{645}\u{631}\u{62d}\u{628}\u{627}".as_bytes()], None);
 }
+
+standard_header!(AccessControlAllowCredentials, ACCESS_CONTROL_ALLOW_CREDENTIALS);

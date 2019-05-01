@@ -98,3 +98,5 @@ mod test_access_control_allow_origin {
     test_header!(test2, vec![b"*"]);
     test_header!(test3, vec![b"http://google.com/"]);
 }
+
+standard_header!(AccessControlAllowOrigin, ACCESS_CONTROL_ALLOW_ORIGIN);

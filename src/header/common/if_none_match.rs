@@ -87,3 +87,5 @@ mod tests {
 }
 
 bench_header!(bench, IfNoneMatch, { vec![b"W/\"nonemptytag\"".to_vec()] });
+
+standard_header!(IfNoneMatch, IF_NONE_MATCH);

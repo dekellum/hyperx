@@ -194,3 +194,5 @@ mod tests {
         }));
     }
 }
+
+standard_header!(Warning, WARNING);

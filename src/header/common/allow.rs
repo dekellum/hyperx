@@ -77,3 +77,5 @@ header! {
 
 bench_header!(bench,
     Allow, { vec![b"OPTIONS,GET,PUT,POST,DELETE,HEAD,TRACE,CONNECT,PATCH,fOObAr".to_vec()] });
+
+standard_header!(Allow, ALLOW);
