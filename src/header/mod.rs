@@ -165,7 +165,8 @@ pub trait Header: 'static + HeaderClone + Send + Sync {
     /// Returns the name of the header field this belongs to.
     ///
     /// This will become an associated constant once available.
-    fn header_name() -> &'static str where Self: Sized;
+    fn header_name() -> &'static str
+    where Self: Sized;
 
     /// Parse a header from a raw stream of bytes.
     ///
