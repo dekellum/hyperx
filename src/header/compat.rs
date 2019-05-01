@@ -10,7 +10,11 @@ pub trait StandardHeader: Header + Sized + ToString {
 }
 
 pub trait TypedHeaders {
+
     fn decode<H>(&self) -> Result<H>
+        where H: StandardHeader;
+
+    fn try_decode<H>(&self) -> Option<Result<H>>
         where H: StandardHeader;
 
     fn encode<H>(&mut self, val: &H)
@@ -26,6 +30,18 @@ impl TypedHeaders for HeaderMap {
     {
         let vals = self.get_all(H::http_header_name());
         H::parse_header(&vals)
+    }
+
+    fn try_decode<H>(&self) -> Option<Result<H>>
+        where H: StandardHeader
+    {
+        let hname = H::http_header_name();
+        if self.contains_key(&hname) {
+            let vals = self.get_all(&hname);
+            Some(H::parse_header(&vals))
+        } else {
+            None
+        }
     }
 
     fn encode<H>(&mut self, val: &H)
@@ -62,7 +78,13 @@ mod tests {
         let hmap = http::HeaderMap::new();
         let len = hmap.decode::<ContentLength>();
         assert!(len.is_err());
-        println!("{:?}", len);
+    }
+
+    #[test]
+    fn test_empty_try_decode() {
+        let hmap = http::HeaderMap::new();
+        let len = hmap.try_decode::<ContentLength>();
+        assert!(len.is_none());
     }
 
     #[test]
@@ -125,6 +147,17 @@ mod tests {
         hmap.insert(http::header::CONTENT_LENGTH, "11".parse().unwrap());
         b.iter(|| {
             let len: ContentLength = hmap.decode().unwrap();
+            assert_eq!(*len, 11);
+        })
+    }
+
+    #[cfg(feature = "nightly")]
+    #[bench]
+    fn bench_1_try_decode_int(b: &mut Bencher) {
+        let mut hmap = http::HeaderMap::new();
+        hmap.insert(http::header::CONTENT_LENGTH, "11".parse().unwrap());
+        b.iter(|| {
+            let len: ContentLength = hmap.try_decode().unwrap().unwrap();
             assert_eq!(*len, 11);
         })
     }
