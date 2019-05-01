@@ -13,9 +13,6 @@ pub trait TypedHeaders {
     fn decode<H>(&self) -> Result<H>
         where H: StandardHeader;
 
-    fn decode_any<H>(&self) -> Result<H>
-        where H: Header;
-
     fn encode<H>(&mut self, val: &H)
         where H: StandardHeader;
 
@@ -28,14 +25,6 @@ impl TypedHeaders for HeaderMap {
         where H: StandardHeader
     {
         let vals = self.get_all(H::http_header_name());
-        H::parse_header(&vals)
-    }
-
-    fn decode_any<H>(&self) -> Result<H>
-        where H: Header
-    {
-        let vals = self.get_all(H::header_name());
-        // FIXME: Perf: AsHeaderName for &str validates and down cases
         H::parse_header(&vals)
     }
 
