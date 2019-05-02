@@ -1,6 +1,6 @@
 //! Implementation module for various _compat_ features with the _http_ crate.
 
-use std::string::ToString;
+use std::fmt::Display;
 
 use http::header::HeaderMap;
 
@@ -39,17 +39,19 @@ pub trait TypedHeaders {
 
     /// Encode and write the specified typed header value in the collection.
     ///
-    /// This will overwrite any preexisting values with the same
+    /// Uses the `Display` format of the provided header value to write a single
+    /// header. This will overwrite any preexisting values with the same
     /// key (`HeaderName`). Use `encode_append` instead to avoid this.
-    fn encode<H>(&mut self, val: &H)
-        where H: StandardHeader + ToString;
+    fn encode<H>(&mut self, value: &H)
+        where H: StandardHeader + Display;
 
     /// Encode and append the specified typed header value into the collection.
     ///
-    /// If the collection previously had a value for the same key, the
-    /// additional value is appended to the end.
-    fn encode_append<H>(&mut self, val: &H)
-        where H: StandardHeader + ToString;
+    /// Uses the `Display` format of the provided header value to append a
+    /// single header. If the collection previously had a value for the same
+    /// key, the additional value is appended to the end.
+    fn encode_append<H>(&mut self, value: &H)
+        where H: StandardHeader + Display;
 }
 
 impl TypedHeaders for HeaderMap {
@@ -73,7 +75,7 @@ impl TypedHeaders for HeaderMap {
     }
 
     fn encode<H>(&mut self, val: &H)
-        where H: StandardHeader + ToString
+        where H: StandardHeader + Display
     {
         self.insert(
             H::http_header_name(),
@@ -81,7 +83,7 @@ impl TypedHeaders for HeaderMap {
     }
 
     fn encode_append<H>(&mut self, val: &H)
-        where H: StandardHeader + ToString
+        where H: StandardHeader + Display
     {
         self.append(
             H::http_header_name(),
