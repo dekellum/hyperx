@@ -165,13 +165,8 @@
 //! }
 //! ```
 use std::borrow::{Cow, ToOwned};
-#[cfg(feature = "compat")]
-use std::convert::From;
 use std::iter::{FromIterator, IntoIterator};
 use std::{mem, fmt};
-
-#[cfg(feature = "compat")]
-use http;
 
 use unicase::Ascii;
 
@@ -181,9 +176,6 @@ use self::sealed::HeaderClone;
 pub use self::shared::*;
 pub use self::common::*;
 pub use self::raw::{Raw, RawLike};
-
-#[cfg(feature = "compat")]
-pub use self::raw::{ValueMapIter};
 
 use bytes::Bytes;
 
@@ -197,7 +189,7 @@ pub mod parsing;
 mod compat;
 
 #[cfg(feature = "compat")]
-pub use self::compat::{TypedHeaders, StandardHeader};
+pub use self::compat::{TypedHeaders, StandardHeader, ValueMapIter};
 
 /// A trait for any object that will represent a header field and value.
 ///
@@ -250,7 +242,6 @@ mod sealed {
         }
     }
 }
-
 
 /// A formatter used to serialize headers to an output stream.
 #[allow(missing_debug_implementations)]
@@ -369,7 +360,6 @@ impl<'a, F: fmt::Write + 'a> fmt::Write for NewlineReplacer<'a, F> {
         fmt::write(self, args)
     }
 }
-
 
 impl Header + Send + Sync {
     // A trait object looks like this:
@@ -662,65 +652,6 @@ impl fmt::Debug for Headers {
     }
 }
 
-#[cfg(feature = "compat")]
-impl From<http::HeaderMap> for Headers {
-    fn from(mut header_map: http::HeaderMap) -> Headers {
-        let mut headers = Headers::new();
-        for (name, mut value_drain) in header_map.drain() {
-            if let Some(first_value) = value_drain.next() {
-                let mut raw: Raw = first_value.as_bytes().into();
-                for value in value_drain {
-                    raw.push(value.as_bytes());
-                }
-                headers.append_raw(name.as_str().to_string(), raw);
-            }
-        }
-        headers
-    }
-}
-
-#[cfg(feature = "compat")]
-impl<'a> From<&'a http::HeaderMap> for Headers {
-    fn from(header_map: &'a http::HeaderMap) -> Headers {
-        let mut headers = Headers::new();
-        for (name, value) in header_map.iter() {
-            headers.append_raw_str(name.as_str(), value.as_bytes());
-        }
-        headers
-    }
-}
-
-#[cfg(feature = "compat")]
-impl From<Headers> for http::HeaderMap {
-    fn from(headers: Headers) -> http::HeaderMap {
-        let mut header_map = http::HeaderMap::new();
-        for header in headers.iter() {
-            let entry = header_map.entry(header.name())
-                .expect("attempted to convert invalid header name");
-            let mut value_iter = header.raw().iter().map(|line| {
-                http::header::HeaderValue::from_bytes(line)
-                    .expect("attempted to convert invalid header value")
-            });
-            match entry {
-                http::header::Entry::Occupied(mut  occupied) => {
-                    for value in value_iter {
-                        occupied.append(value);
-                    }
-                },
-                http::header::Entry::Vacant(vacant) => {
-                    if let Some(first_value) = value_iter.next() {
-                        let mut occupied = vacant.insert_entry(first_value);
-                        for value in value_iter {
-                            occupied.append(value);
-                        }
-                    }
-                }
-            }
-        }
-        header_map
-    }
-}
-
 /// An `Iterator` over the fields in a `Headers` map.
 #[allow(missing_debug_implementations)]
 pub struct HeadersItems<'a> {
@@ -866,10 +797,9 @@ impl PartialEq<HeaderName> for str {
 #[cfg(test)]
 mod tests {
     use std::fmt;
-    use super::{Headers, Header, RawLike, ContentLength, ContentType, Host, SetCookie};
-
-    #[cfg(feature = "compat")]
-    use super::{ContentEncoding, Encoding};
+    use super::{
+        Headers, Header, RawLike, ContentLength, ContentType, Host,
+        SetCookie};
 
     #[cfg(feature = "nightly")]
     use test::Bencher;
@@ -1118,108 +1048,6 @@ mod tests {
         headers1.set(ContentLength(11));
         headers2.set(ContentLength(11));
         assert_ne!(headers1, headers2);
-    }
-
-    #[test]
-    #[cfg(feature = "compat")]
-    fn test_compat() {
-        use http;
-
-        let mut orig_hyper_headers = Headers::new();
-        orig_hyper_headers.set(ContentLength(11));
-        orig_hyper_headers.set(Host::new("foo.bar", None));
-        orig_hyper_headers.append_raw("x-foo", b"bar".to_vec());
-        orig_hyper_headers.append_raw("x-foo", b"quux".to_vec());
-
-        let mut orig_http_headers = http::HeaderMap::new();
-        orig_http_headers.insert(http::header::CONTENT_LENGTH, "11".parse().unwrap());
-        orig_http_headers.insert(http::header::HOST, "foo.bar".parse().unwrap());
-        orig_http_headers.append("x-foo", "bar".parse().unwrap());
-        orig_http_headers.append("x-foo", "quux".parse().unwrap());
-
-        let conv_hyper_headers: Headers = orig_http_headers.clone().into();
-        let conv_http_headers: http::HeaderMap = orig_hyper_headers.clone().into();
-        assert_eq!(orig_hyper_headers, conv_hyper_headers);
-        assert_eq!(orig_http_headers, conv_http_headers);
-
-        // Test Headers::from(&http::HeaderMap)
-        let conv_hyper_headers: Headers = Headers::from(&orig_http_headers);
-        assert_eq!(orig_hyper_headers, conv_hyper_headers);
-    }
-
-    #[test]
-    #[cfg(feature = "compat")]
-    fn test_compat_value_parse() {
-        use http;
-        let mut hheads = http::HeaderMap::new();
-        hheads.insert(http::header::CONTENT_ENCODING,
-                      "chunked, gzip".parse().unwrap());
-        let val = hheads.get(http::header::CONTENT_ENCODING).unwrap();
-        let ce = ContentEncoding::parse_header(&val).unwrap();
-        assert_eq!(ce, ContentEncoding(vec![Encoding::Chunked, Encoding::Gzip]))
-    }
-
-    #[test]
-    #[cfg(feature = "compat")]
-    fn test_compat_multi_value_parse() {
-        use http;
-        let mut hheads = http::HeaderMap::new();
-        hheads.insert(http::header::CONTENT_ENCODING,
-                      "chunked, gzip".parse().unwrap());
-        hheads.append(http::header::CONTENT_ENCODING,
-                      "br".parse().unwrap());
-
-        let vals = hheads.get_all(http::header::CONTENT_ENCODING);
-        let ce = ContentEncoding::parse_header(&vals).unwrap();
-        assert_eq!(
-            ce,
-            ContentEncoding(vec![
-                Encoding::Chunked, Encoding::Gzip, Encoding::Brotli
-            ])
-        )
-    }
-
-    #[cfg(feature = "nightly")]
-    #[bench]
-    #[cfg(feature = "compat")]
-    fn bench_compat_value_parse(b: &mut Bencher) {
-        use http;
-        let mut hheads = http::HeaderMap::new();
-        hheads.insert(http::header::CONTENT_ENCODING,
-                      "chunked, gzip".parse().unwrap());
-        b.iter(|| {
-            let val = hheads.get(http::header::CONTENT_ENCODING).unwrap();
-            ContentEncoding::parse_header(&val).unwrap();
-        })
-    }
-
-    #[cfg(feature = "nightly")]
-    #[bench]
-    #[cfg(feature = "compat")]
-    fn bench_compat_value_parse_extra_str(b: &mut Bencher) {
-        use http;
-        use header::Raw;
-        let mut hheads = http::HeaderMap::new();
-        hheads.insert(http::header::CONTENT_ENCODING,
-                      "chunked, gzip".parse().unwrap());
-        b.iter(|| {
-            let val = hheads.get(http::header::CONTENT_ENCODING).unwrap();
-            let r: Raw = val.to_str().unwrap().into();
-            ContentEncoding::parse_header(&r).unwrap();
-        })
-    }
-
-    #[cfg(feature = "nightly")]
-    #[bench]
-    #[cfg(feature = "compat")]
-    fn bench_compat_value_parse_int(b: &mut Bencher) {
-        use http;
-        let mut hheads = http::HeaderMap::new();
-        hheads.insert(http::header::CONTENT_LENGTH, "1024".parse().unwrap());
-        b.iter(|| {
-            let val = hheads.get(http::header::CONTENT_LENGTH).unwrap();
-            ContentLength::parse_header(&val).unwrap();
-        })
     }
 
     #[cfg(feature = "nightly")]
