@@ -31,8 +31,8 @@ pub trait TypedHeaders {
     /// return `None` if not found.
     ///
     /// This variant will return `Option::None` if no header with the
-    /// associated key (`HeaderName`) is found in the map. If the map does
-    /// contain such a key, it will return the header type H or
+    /// associated key (`HeaderName`) is found in the collection. If the
+    /// collection does contain such a key, it will return the header type H or
     /// `Error::Header`.
     fn try_decode<H>(&self) -> Option<Result<H>>
         where H: StandardHeader;

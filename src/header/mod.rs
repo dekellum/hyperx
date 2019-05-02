@@ -160,7 +160,7 @@ pub mod parsing;
 mod compat;
 
 #[cfg(feature = "compat")]
-pub use self::compat::StandardHeader;
+pub use self::compat::{TypedHeaders, StandardHeader};
 
 /// A trait for any object that will represent a header field and value.
 ///
