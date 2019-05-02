@@ -88,7 +88,7 @@
 //!     *ce,
 //!     vec![Encoding::Identity, Encoding::Gzip, Encoding::Chunked]
 //! );
-//! Ok(())
+//! # Ok(())
 //! # }
 //! # #[cfg(feature = "compat")]
 //! # fn main() {
