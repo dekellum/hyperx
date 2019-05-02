@@ -303,7 +303,7 @@ bench_header!(bearer, Authorization<Bearer>, { vec![b"Bearer fpKL54jvWmEGVoRdCNj
 
 #[cfg(feature = "compat")]
 impl<S> ::header::StandardHeader for Authorization<S>
-    where S: Scheme + Any + ::std::string::ToString
+    where S: Scheme + Any + ::std::fmt::Display
 {
     #[inline]
     fn http_header_name() -> ::http::header::HeaderName {

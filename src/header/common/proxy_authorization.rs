@@ -202,10 +202,10 @@ mod benches {
 
 #[cfg(feature = "compat")]
 impl<S> ::header::StandardHeader for ProxyAuthorization<S>
-    where S: Scheme + Any + ::std::string::ToString
+    where S: Scheme + Any + ::std::fmt::Display
 {
     #[inline]
     fn http_header_name() -> ::http::header::HeaderName {
-        ::http::header::AUTHORIZATION
+        ::http::header::PROXY_AUTHORIZATION
     }
 }
