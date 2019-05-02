@@ -62,6 +62,43 @@
 //! # }
 //! ```
 //!
+//! ## `TypedHeaders` extension to `http::HeaderMap`
+//!
+//! The [`TypedHeaders`](trait.TypedHeaders.html) extension trait provides more
+//! convenient `encode`/`decode` methods on `HeaderMap` generically for the
+//! standard header types named in the _http_ crate:
+//!
+//! ```
+//! # #[cfg(feature = "compat")]
+//! # extern crate hyperx;
+//! # #[cfg(feature = "compat")]
+//! # extern crate http;
+//! # #[cfg(feature = "compat")]
+//! # fn run() -> Result<(), Box<std::error::Error>> {
+//! use http::header::HeaderMap;
+//! use hyperx::header::{ContentEncoding, Encoding, TypedHeaders};
+//!
+//! let mut hmap = http::HeaderMap::new();
+//! hmap.encode(
+//!     &ContentEncoding(vec![Encoding::Identity]));
+//! hmap.encode_append(
+//!     &ContentEncoding(vec![Encoding::Gzip, Encoding::Chunked]));
+//! let ce: ContentEncoding = hmap.decode()?;
+//! assert_eq!(
+//!     *ce,
+//!     vec![Encoding::Identity, Encoding::Gzip, Encoding::Chunked]
+//! );
+//! Ok(())
+//! # }
+//! # #[cfg(feature = "compat")]
+//! # fn main() {
+//! #     run().unwrap();
+//! # }
+//! # #[cfg(not(feature = "compat"))]
+//! # fn main() {
+//! # }
+//! ```
+//!
 //! ## Defining Custom Headers
 //!
 //! Hyper*x* provides many of the most commonly used headers in HTTP. If you
