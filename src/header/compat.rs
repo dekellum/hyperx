@@ -131,8 +131,8 @@ impl From<Headers> for http::HeaderMap {
     }
 }
 
-impl From<&Headers> for http::HeaderMap {
-    fn from(headers: &Headers) -> http::HeaderMap {
+impl<'a> From<&'a Headers> for http::HeaderMap {
+    fn from(headers: &'a Headers) -> http::HeaderMap {
         let mut hmap = http::HeaderMap::new();
         for header in headers.iter() {
             let entry = hmap.entry(header.name())
