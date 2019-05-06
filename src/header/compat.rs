@@ -295,7 +295,7 @@ mod tests {
         heads.set_raw("connection", b"Keep-Alive".as_ref());
         heads.set_raw("accept-ranges", b"bytes".as_ref());
         heads.set_raw("etag", b"\"1544639720\"".as_ref());
-        heads.set_raw("content-encoding", b"gzip".as_ref());
+        heads.set_raw("transfer-encoding", b"gzip, chunked".as_ref());
         heads.set_raw("content-length", b"7050".as_ref());
         heads.set_raw("content-type", b"text/css; charset=utf-8".as_ref());
         heads.set_raw("last-modified", b"Wed, 12 Dec 2018 18:35:20 GMT".as_ref());
