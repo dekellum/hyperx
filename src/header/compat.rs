@@ -295,7 +295,8 @@ mod tests {
         heads.set_raw("connection", b"Keep-Alive".as_ref());
         heads.set_raw("accept-ranges", b"bytes".as_ref());
         heads.set_raw("etag", b"\"1544639720\"".as_ref());
-        heads.set_raw("transfer-encoding", b"gzip, chunked".as_ref());
+        heads.set_raw("transfer-encoding", b"gzip".as_ref());
+        heads.append_raw("transfer-encoding", b"chunked".as_ref());
         heads.set_raw("content-length", b"7050".as_ref());
         heads.set_raw("content-type", b"text/css; charset=utf-8".as_ref());
         heads.set_raw("last-modified", b"Wed, 12 Dec 2018 18:35:20 GMT".as_ref());
@@ -327,7 +328,21 @@ mod tests {
         let headers2: Headers = hmap.clone().into();
         let hmap2: http::HeaderMap = headers.clone().into();
         assert_eq!(headers, headers2);
+        assert_eq!(headers2.len(), 3);
         assert_eq!(hmap, hmap2);
+        assert_eq!(hmap2.len(), 4);
+    }
+
+    #[test]
+    fn test_convert_sample() {
+        let headers = raw_headers_sample();
+        let hmap = http::HeaderMap::from(headers.clone());
+        let headers2 = Headers::from(hmap.clone());
+        let hmap2 = http::HeaderMap::from(headers2.clone());
+        assert_eq!(headers, headers2);
+        assert_eq!(headers2.len(), 14);
+        assert_eq!(hmap2, hmap);
+        assert_eq!(hmap2.len(), 15);
     }
 
     #[test]
@@ -335,7 +350,11 @@ mod tests {
         let headers = raw_headers_sample();
         let hmap = http::HeaderMap::from(&headers);
         let headers2 = Headers::from(&hmap);
+        let hmap2 = http::HeaderMap::from(&headers2);
         assert_eq!(headers, headers2);
+        assert_eq!(headers2.len(), 14);
+        assert_eq!(hmap2, hmap);
+        assert_eq!(hmap2.len(), 15);
     }
 
     #[test]
@@ -466,7 +485,7 @@ mod tests {
         let heads = raw_headers_sample();
         b.iter(|| {
             let hmap = http::HeaderMap::from(&heads);
-            assert_eq!(hmap.len(), 14);
+            assert_eq!(hmap.len(), 15);
         })
     }
 
