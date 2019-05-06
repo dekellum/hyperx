@@ -288,53 +288,75 @@ mod tests {
             vec![Encoding::Identity, Encoding::Gzip, Encoding::Chunked]);
     }
 
-    #[test]
-    fn test_compat_convert() {
-        use http;
+    fn raw_headers_sample() -> Headers {
+        let mut heads = Headers::new();
 
-        let mut orig_hyper_headers = Headers::new();
-        orig_hyper_headers.set(ContentLength(11));
-        orig_hyper_headers.set(Host::new("foo.bar", None));
-        orig_hyper_headers.append_raw("x-foo", b"bar".to_vec());
-        orig_hyper_headers.append_raw("x-foo", b"quux".to_vec());
+        heads.set_raw("date", b"Thu, 02 May 2019 21:10:03 GMT".as_ref());
+        heads.set_raw("connection", b"Keep-Alive".as_ref());
+        heads.set_raw("accept-ranges", b"bytes".as_ref());
+        heads.set_raw("etag", b"\"1544639720\"".as_ref());
+        heads.set_raw("content-encoding", b"gzip".as_ref());
+        heads.set_raw("content-length", b"7050".as_ref());
+        heads.set_raw("content-type", b"text/css; charset=utf-8".as_ref());
+        heads.set_raw("last-modified", b"Wed, 12 Dec 2018 18:35:20 GMT".as_ref());
+        heads.set_raw("x-hello-human",
+                      b"Say hello back! @getBootstrapCDN on Twitter".as_ref());
+        heads.set_raw("access-control-allow-origin", b"*".as_ref());
+        heads.set_raw("vary", b"Accept-Encoding".as_ref());
+        heads.set_raw("x-cache", b"HIT".as_ref());
+        heads.set_raw("timing-allow-origin", b"*".as_ref());
+        heads.set_raw("cache-control", b"public, max-age=31536000".as_ref());
 
-        let mut orig_http_headers = http::HeaderMap::new();
-        orig_http_headers.insert(http::header::CONTENT_LENGTH, "11".parse().unwrap());
-        orig_http_headers.insert(http::header::HOST, "foo.bar".parse().unwrap());
-        orig_http_headers.append("x-foo", "bar".parse().unwrap());
-        orig_http_headers.append("x-foo", "quux".parse().unwrap());
-
-        let conv_hyper_headers: Headers = orig_http_headers.clone().into();
-        let conv_http_headers: http::HeaderMap = orig_hyper_headers.clone().into();
-        assert_eq!(orig_hyper_headers, conv_hyper_headers);
-        assert_eq!(orig_http_headers, conv_http_headers);
-
-        // Test Headers::from(&http::HeaderMap)
-        let conv_hyper_headers: Headers = Headers::from(&orig_http_headers);
-        assert_eq!(orig_hyper_headers, conv_hyper_headers);
+        heads
     }
 
     #[test]
-    fn test_compat_value_parse() {
-        use http;
-        let mut hheads = http::HeaderMap::new();
-        hheads.insert(http::header::CONTENT_ENCODING,
-                      "chunked, gzip".parse().unwrap());
-        let val = hheads.get(http::header::CONTENT_ENCODING).unwrap();
+    fn test_convert_mixed() {
+        let mut headers = Headers::new();
+        headers.set(ContentLength(11));
+        headers.set(Host::new("foo.bar", None));
+        headers.append_raw("x-foo", b"bar".to_vec());
+        headers.append_raw("x-foo", b"quux".to_vec());
+
+        let mut hmap = http::HeaderMap::new();
+        hmap.insert(http::header::CONTENT_LENGTH, "11".parse().unwrap());
+        hmap.insert(http::header::HOST, "foo.bar".parse().unwrap());
+        hmap.append("x-foo", "bar".parse().unwrap());
+        hmap.append("x-foo", "quux".parse().unwrap());
+
+        let headers2: Headers = hmap.clone().into();
+        let hmap2: http::HeaderMap = headers.clone().into();
+        assert_eq!(headers, headers2);
+        assert_eq!(hmap, hmap2);
+    }
+
+    #[test]
+    fn test_convert_by_ref() {
+        let headers = raw_headers_sample();
+        let hmap = http::HeaderMap::from(&headers);
+        let headers2 = Headers::from(&hmap);
+        assert_eq!(headers, headers2);
+    }
+
+    #[test]
+    fn test_value_parse() {
+        let mut hmap = http::HeaderMap::new();
+        hmap.insert(http::header::CONTENT_ENCODING,
+                    "chunked, gzip".parse().unwrap());
+        let val = hmap.get(http::header::CONTENT_ENCODING).unwrap();
         let ce = ContentEncoding::parse_header(&val).unwrap();
         assert_eq!(ce, ContentEncoding(vec![Encoding::Chunked, Encoding::Gzip]))
     }
 
     #[test]
-    fn test_compat_multi_value_parse() {
-        use http;
-        let mut hheads = http::HeaderMap::new();
-        hheads.insert(http::header::CONTENT_ENCODING,
-                      "chunked, gzip".parse().unwrap());
-        hheads.append(http::header::CONTENT_ENCODING,
-                      "br".parse().unwrap());
+    fn test_multi_value_parse() {
+        let mut hmap = http::HeaderMap::new();
+        hmap.insert(http::header::CONTENT_ENCODING,
+                    "chunked, gzip".parse().unwrap());
+        hmap.append(http::header::CONTENT_ENCODING,
+                    "br".parse().unwrap());
 
-        let vals = hheads.get_all(http::header::CONTENT_ENCODING);
+        let vals = hmap.get_all(http::header::CONTENT_ENCODING);
         let ce = ContentEncoding::parse_header(&vals).unwrap();
         assert_eq!(
             ce,
@@ -347,12 +369,11 @@ mod tests {
     #[cfg(feature = "nightly")]
     #[bench]
     fn bench_0_value_parse(b: &mut Bencher) {
-        use http;
-        let mut hheads = http::HeaderMap::new();
-        hheads.insert(http::header::CONTENT_ENCODING,
-                      "chunked, gzip".parse().unwrap());
+        let mut hmap = http::HeaderMap::new();
+        hmap.insert(http::header::CONTENT_ENCODING,
+                    "chunked, gzip".parse().unwrap());
         b.iter(|| {
-            let val = hheads.get(http::header::CONTENT_ENCODING).unwrap();
+            let val = hmap.get(http::header::CONTENT_ENCODING).unwrap();
             ContentEncoding::parse_header(&val).unwrap();
         })
     }
@@ -360,13 +381,12 @@ mod tests {
     #[cfg(feature = "nightly")]
     #[bench]
     fn bench_0_value_parse_extra_str(b: &mut Bencher) {
-        use http;
         use header::Raw;
-        let mut hheads = http::HeaderMap::new();
-        hheads.insert(http::header::CONTENT_ENCODING,
-                      "chunked, gzip".parse().unwrap());
+        let mut hmap = http::HeaderMap::new();
+        hmap.insert(http::header::CONTENT_ENCODING,
+                    "chunked, gzip".parse().unwrap());
         b.iter(|| {
-            let val = hheads.get(http::header::CONTENT_ENCODING).unwrap();
+            let val = hmap.get(http::header::CONTENT_ENCODING).unwrap();
             let r: Raw = val.to_str().unwrap().into();
             ContentEncoding::parse_header(&r).unwrap();
         })
@@ -375,11 +395,10 @@ mod tests {
     #[cfg(feature = "nightly")]
     #[bench]
     fn bench_0_value_parse_int(b: &mut Bencher) {
-        use http;
-        let mut hheads = http::HeaderMap::new();
-        hheads.insert(http::header::CONTENT_LENGTH, "1024".parse().unwrap());
+        let mut hmap = http::HeaderMap::new();
+        hmap.insert(http::header::CONTENT_LENGTH, "1024".parse().unwrap());
         b.iter(|| {
-            let val = hheads.get(http::header::CONTENT_LENGTH).unwrap();
+            let val = hmap.get(http::header::CONTENT_LENGTH).unwrap();
             ContentLength::parse_header(&val).unwrap();
         })
     }
@@ -438,6 +457,27 @@ mod tests {
         b.iter(|| {
             let len: &ContentLength = hdrs.get().unwrap();
             assert_eq!(**len, 11);
+        })
+    }
+
+    #[cfg(feature = "nightly")]
+    #[bench]
+    fn bench_4_map_from_headers(b: &mut Bencher) {
+        let heads = raw_headers_sample();
+        b.iter(|| {
+            let hmap = http::HeaderMap::from(&heads);
+            assert_eq!(hmap.len(), 14);
+        })
+    }
+
+    #[cfg(feature = "nightly")]
+    #[bench]
+    fn bench_4_headers_from_map(b: &mut Bencher) {
+        let heads = raw_headers_sample();
+        let hmap: http::HeaderMap = heads.into();
+        b.iter(|| {
+            let heads = Headers::from(&hmap);
+            assert_eq!(heads.len(), 14);
         })
     }
 }
