@@ -460,7 +460,7 @@ macro_rules! header {
 macro_rules! standard_header {
     ($local:ident, $hname:ident) => {
         #[cfg(feature = "compat")]
-        impl ::header::StandardHeader for $local {
+        impl $crate::header::StandardHeader for $local {
             #[inline]
             fn http_header_name() -> ::http::header::HeaderName {
                 ::http::header::$hname
