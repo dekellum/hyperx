@@ -499,4 +499,15 @@ mod tests {
             assert_eq!(heads.len(), 14);
         })
     }
+
+    #[cfg(feature = "nightly")]
+    #[bench]
+    fn bench_4_headers_from_map_by_value(b: &mut Bencher) {
+        let heads = raw_headers_sample();
+        let hmap: http::HeaderMap = heads.into();
+        b.iter(|| {
+            let heads = Headers::from(hmap.clone());
+            assert_eq!(heads.len(), 14);
+        })
+    }
 }
