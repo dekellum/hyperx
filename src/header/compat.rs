@@ -125,14 +125,21 @@ impl<'a> From<&'a http::HeaderMap> for Headers {
 }
 
 impl From<Headers> for http::HeaderMap {
+    #[inline]
     fn from(headers: Headers) -> http::HeaderMap {
-        let mut header_map = http::HeaderMap::new();
+        http::HeaderMap::from(&headers)
+    }
+}
+
+impl From<&Headers> for http::HeaderMap {
+    fn from(headers: &Headers) -> http::HeaderMap {
+        let mut hmap = http::HeaderMap::new();
         for header in headers.iter() {
-            let entry = header_map.entry(header.name())
-                .expect("attempted to convert invalid header name");
+            let entry = hmap.entry(header.name())
+                .expect("convert invalid header name");
             let mut value_iter = header.raw().iter().map(|line| {
                 http::header::HeaderValue::from_bytes(line)
-                    .expect("attempted to convert invalid header value")
+                    .expect("convert invalid header value")
             });
             match entry {
                 http::header::Entry::Occupied(mut  occupied) => {
@@ -150,7 +157,7 @@ impl From<Headers> for http::HeaderMap {
                 }
             }
         }
-        header_map
+        hmap
     }
 }
 
