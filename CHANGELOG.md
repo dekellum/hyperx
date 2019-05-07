@@ -1,11 +1,19 @@
 ## 0.15.0 (TBD)
 
-* Increase MSRV to 1.27.2, which enables us to revert a CI workaround
-  for the fact that base64 0.10.1 was released with this same MSRV.
-  (dekellum #10)
+* Add a `TypedHeaders` extension trait providing more convenient generic
+  encode/decode methods to `http::HeaderMap` for _hyperx_ typed headers,
+  implemented using a new `StandardHeader` trait and `standard_header!` macro,
+  with an associate function for the `HeaderName` constants of the _http_
+  crate. (#13)
 
-* Add a build.rs to check MSRV and fail fast with a clear error message when
-  older rustc versions are used.
+* Add reference based `impl From<&'a Headers> for http::HeaderMap` for symmetry
+  and performance, e.g. avoiding a `clone`. (#13)
+
+* Increase MSRV to 1.27.2, which enables us to revert a CI workaround for the
+  fact that base64 0.10.1 was released with this same MSRV. (#10 #12)
+
+* Add a build.rs to check MSRV and fail fast with a clear error when older
+  rustc versions are used. (#12)
 
 ## 0.14.0 (2019-1-4)
 
@@ -17,7 +25,7 @@
 
   _Expected Breakage_: Any 3rd-party custom headers directly implementing
   `parse_header` will need to change accordingly on upgrade. Also `Into`
-  conversions to `Raw` now frequently need to be type annotated. (dekellum #8)
+  conversions to `Raw` now frequently need to be type annotated. (#8)
 
 * Improve header module rustdoc, including with parsing usage for the above.
 
@@ -33,7 +41,7 @@
 ## 0.13.1 (2018-6-26)
 
 * Remove `error::UriError` re-export and `error::Canceled` which are unused
-  internally and where not exported from this crate.  (dekellum #5)
+  internally and where not exported from this crate. (#5)
 
 ## 0.13.0 (2018-6-18)
 
