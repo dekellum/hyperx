@@ -7,8 +7,7 @@ use http;
 use http::header::{GetAll, HeaderMap, HeaderValue, ValueIter};
 
 use ::Result;
-use super::{Header, Headers};
-use super::raw::{Raw, RawLike};
+use super::{Header, Headers, Raw, RawLike};
 
 /// A trait for the "standard" headers that have an associated `HeaderName`
 /// constant in the _http_ crate.
