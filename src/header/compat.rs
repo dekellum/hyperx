@@ -211,11 +211,14 @@ impl<'a> RawLike<'a> for &'a HeaderValue {
 mod tests {
     use http;
     use ::header::{
-        ContentEncoding, ContentLength, Encoding, ETag, Host, Te,
-        Header, Headers, TypedHeaders};
+        ContentEncoding, ContentLength, Encoding, ETag,
+        Header, Headers, Host, Te, TypedHeaders};
 
     #[cfg(feature = "nightly")]
     use test::Bencher;
+
+    #[cfg(feature = "nightly")]
+    use ::header::EntityTag;
 
     #[test]
     fn test_empty_decode() {
@@ -273,6 +276,25 @@ mod tests {
         hmap.encode(&ContentLength(11));
         let len: ContentLength = hmap.decode().unwrap();
         assert_eq!(*len, 11);
+    }
+
+    #[test]
+    fn test_empty_encode() {
+        let mut hmap = http::HeaderMap::new();
+        hmap.encode(&ContentEncoding(vec![]));
+        assert_eq!(hmap.len(), 1);
+        let ce: ContentEncoding = hmap.decode().unwrap();
+        assert_eq!(*ce, vec![]);
+    }
+
+    #[test]
+    fn test_empty_encode_2() {
+        let mut hmap = http::HeaderMap::new();
+        hmap.encode(&ContentEncoding(vec![]));
+        hmap.encode_append(&ContentEncoding(vec![]));
+        assert_eq!(hmap.len(), 2);
+        let ce: ContentEncoding = hmap.decode().unwrap();
+        assert_eq!(*ce, vec![]);
     }
 
     #[test]
@@ -481,7 +503,33 @@ mod tests {
 
     #[cfg(feature = "nightly")]
     #[bench]
-    fn bench_4_map_from_headers(b: &mut Bencher) {
+    fn bench_4_encode_int(b: &mut Bencher) {
+        b.iter(|| {
+            let mut hmap = http::HeaderMap::new();
+            hmap.encode(&ContentLength(11));
+            assert_eq!(hmap.len(), 1);
+        })
+    }
+
+    #[cfg(feature = "nightly")]
+    #[bench]
+    fn bench_4_encode_multi(b: &mut Bencher) {
+        b.iter(|| {
+            let mut hmap = http::HeaderMap::new();
+            hmap.encode(
+                &ContentEncoding(vec![Encoding::Identity]));
+            hmap.encode_append(
+                &ContentEncoding(vec![Encoding::Gzip, Encoding::Chunked]));
+            hmap.encode(&ContentLength(11));
+            hmap.encode(
+                &ETag(EntityTag::strong("pMMV3zmCrXr-n4ZZLR9".to_owned())));
+            assert_eq!(hmap.len(), 4);
+        })
+    }
+
+    #[cfg(feature = "nightly")]
+    #[bench]
+    fn bench_5_map_from_headers(b: &mut Bencher) {
         let heads = raw_headers_sample();
         b.iter(|| {
             let hmap = http::HeaderMap::from(&heads);
@@ -491,7 +539,7 @@ mod tests {
 
     #[cfg(feature = "nightly")]
     #[bench]
-    fn bench_4_headers_from_map(b: &mut Bencher) {
+    fn bench_5_headers_from_map(b: &mut Bencher) {
         let heads = raw_headers_sample();
         let hmap: http::HeaderMap = heads.into();
         b.iter(|| {
@@ -502,7 +550,7 @@ mod tests {
 
     #[cfg(feature = "nightly")]
     #[bench]
-    fn bench_4_headers_from_map_by_value(b: &mut Bencher) {
+    fn bench_5_headers_from_map_by_value(b: &mut Bencher) {
         let heads = raw_headers_sample();
         let hmap: http::HeaderMap = heads.into();
         b.iter(|| {
