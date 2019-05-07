@@ -1,13 +1,12 @@
 //! Implementation module for various _compat_ features with the _http_ crate.
 
 use std::convert::From;
-use std::fmt::Display;
 
 use http;
 use http::header::{GetAll, HeaderMap, HeaderValue, ValueIter};
 
 use ::Result;
-use super::{Header, Headers, Raw, RawLike};
+use super::{Header, Headers, Formatter, Multi, raw, Raw, RawLike};
 
 /// A trait for the "standard" headers that have an associated `HeaderName`
 /// constant in the _http_ crate.
@@ -45,7 +44,7 @@ pub trait TypedHeaders {
     /// header. This will overwrite any preexisting values with the same
     /// key (`HeaderName`). Use `encode_append` instead to avoid this.
     fn encode<H>(&mut self, value: &H)
-        where H: StandardHeader + Display;
+        where H: StandardHeader;
 
     /// Encode and append the specified typed header value into the collection.
     ///
@@ -53,7 +52,7 @@ pub trait TypedHeaders {
     /// single header. If the collection previously had a value for the same
     /// key, the additional value is appended to the end.
     fn encode_append<H>(&mut self, value: &H)
-        where H: StandardHeader + Display;
+        where H: StandardHeader;
 }
 
 /// Iterator adaptor for HeaderValue
@@ -81,19 +80,37 @@ impl TypedHeaders for HeaderMap {
     }
 
     fn encode<H>(&mut self, val: &H)
-        where H: StandardHeader + Display
+        where H: StandardHeader
     {
-        self.insert(
-            H::http_header_name(),
-            val.to_string().parse().expect("header value"));
+        let mut raw = raw::new();
+        val.fmt_header(&mut Formatter(Multi::Raw(&mut raw)))
+            .expect("fmt_header failed");
+        let mut first = true;
+        for line in raw.iter() {
+            if first {
+                self.insert(
+                    H::http_header_name(),
+                    HeaderValue::from_bytes(line).expect("header value"));
+                first = false;
+            } else {
+                self.append(
+                    H::http_header_name(),
+                    HeaderValue::from_bytes(line).expect("header value"));
+            }
+        }
     }
 
     fn encode_append<H>(&mut self, val: &H)
-        where H: StandardHeader + Display
+        where H: StandardHeader
     {
-        self.append(
-            H::http_header_name(),
-            val.to_string().parse().expect("header value"));
+        let mut raw = raw::new();
+        val.fmt_header(&mut Formatter(Multi::Raw(&mut raw)))
+            .expect("fmt_header failed");
+        for line in raw.iter() {
+            self.append(
+                H::http_header_name(),
+                HeaderValue::from_bytes(line).expect("header value"));
+        }
     }
 }
 
