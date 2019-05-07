@@ -45,3 +45,5 @@ header! {
         test_header!(absolute, vec![b"http://www.example.org/hypertext/Overview.html"]);
     }
 }
+
+standard_header!(ContentLocation, CONTENT_LOCATION);

@@ -69,3 +69,5 @@ header! {
         test_header!(test3, vec![b""]);
     }
 }
+
+standard_header!(Te, TE);

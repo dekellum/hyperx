@@ -59,3 +59,5 @@ header! {
         test_header!(test1, vec![b"accept-language, date"]);
     }
 }
+
+standard_header!(AccessControlAllowHeaders, ACCESS_CONTROL_ALLOW_HEADERS);

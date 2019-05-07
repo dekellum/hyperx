@@ -300,3 +300,13 @@ mod tests {
 bench_header!(raw, Authorization<String>, { vec![b"foo bar baz".to_vec()] });
 bench_header!(basic, Authorization<Basic>, { vec![b"Basic QWxhZGRpbjpuIHNlc2FtZQ==".to_vec()] });
 bench_header!(bearer, Authorization<Bearer>, { vec![b"Bearer fpKL54jvWmEGVoRdCNjG".to_vec()] });
+
+#[cfg(feature = "compat")]
+impl<S> ::header::StandardHeader for Authorization<S>
+    where S: Scheme + Any + ::std::fmt::Display
+{
+    #[inline]
+    fn http_header_name() -> ::http::header::HeaderName {
+        ::http::header::AUTHORIZATION
+    }
+}

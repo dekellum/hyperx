@@ -70,3 +70,5 @@ header! {
 
 bench_header!(bench, AcceptLanguage,
               { vec![b"en-us;q=1.0, en;q=0.5, fr".to_vec()] });
+
+standard_header!(AcceptLanguage, ACCEPT_LANGUAGE);

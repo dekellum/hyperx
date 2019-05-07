@@ -50,5 +50,7 @@ header! {
     }
 }
 
+standard_header!(ContentEncoding, CONTENT_ENCODING);
+
 bench_header!(single, ContentEncoding, { vec![b"gzip".to_vec()] });
 bench_header!(multiple, ContentEncoding, { vec![b"gzip, deflate".to_vec()] });

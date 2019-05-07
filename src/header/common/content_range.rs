@@ -188,3 +188,5 @@ impl Display for ContentRangeSpec {
         }
     }
 }
+
+standard_header!(ContentRange, CONTENT_RANGE);

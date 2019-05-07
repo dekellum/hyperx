@@ -2,9 +2,6 @@ use std::borrow::Cow;
 use std::fmt;
 use bytes::Bytes;
 
-#[cfg(feature = "compat")]
-use http::header::{GetAll, HeaderValue, ValueIter};
-
 /// Trait for raw bytes parsing access to header values (aka lines) for a single
 /// header name.
 pub trait RawLike<'a> {
@@ -209,60 +206,6 @@ impl From<Bytes> for Raw {
     #[inline]
     fn from(val: Bytes) -> Raw {
         Raw(Lines::One(val))
-    }
-}
-
-/// Iterator adaptor for HeaderValue
-#[cfg(feature = "compat")]
-#[derive(Debug)]
-pub struct ValueMapIter<'a>(ValueIter<'a, HeaderValue>);
-
-#[cfg(feature = "compat")]
-impl<'a> Iterator for ValueMapIter<'a> {
-    type Item = &'a [u8];
-
-    fn next(&mut self) -> Option<Self::Item> {
-        self.0.next().map(HeaderValue::as_bytes)
-    }
-}
-
-#[cfg(feature = "compat")]
-impl<'a> RawLike<'a> for GetAll<'a, HeaderValue> {
-    type IntoIter = ValueMapIter<'a>;
-
-    fn len(&'a self) -> usize {
-        self.iter().count()
-    }
-
-    fn one(&'a self) -> Option<&'a [u8]> {
-        let mut iter = self.iter();
-        if let Some(v) = iter.next() {
-            if iter.next().is_none() {
-                return Some(v.as_bytes());
-            }
-        }
-        None
-    }
-
-    fn iter(&'a self) -> ValueMapIter<'a> {
-        ValueMapIter(self.iter())
-    }
-}
-
-#[cfg(feature = "compat")]
-impl<'a> RawLike<'a> for &'a HeaderValue {
-    type IntoIter = ::std::iter::Once<&'a [u8]>;
-
-    fn len(&'a self) -> usize {
-        1
-    }
-
-    fn one(&'a self) -> Option<&'a [u8]> {
-        Some(self.as_bytes())
-    }
-
-    fn iter(&'a self) -> Self::IntoIter {
-        ::std::iter::once(self.as_bytes())
     }
 }
 

@@ -29,3 +29,5 @@ header! {
         test_header!(test1, vec![b"531"]);
     }
 }
+
+standard_header!(AccessControlMaxAge, ACCESS_CONTROL_MAX_AGE);

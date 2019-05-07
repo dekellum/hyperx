@@ -131,3 +131,5 @@ mod tests {
         assert_eq!(a, b);
     }
 }
+
+standard_header!(ReferrerPolicy, REFERRER_POLICY);

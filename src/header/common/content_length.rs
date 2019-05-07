@@ -75,6 +75,8 @@ impl Header for ContentLength {
     }
 }
 
+standard_header!(ContentLength, CONTENT_LENGTH);
+
 impl fmt::Display for ContentLength {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

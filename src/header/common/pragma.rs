@@ -92,3 +92,5 @@ fn test_parse_header() {
     let e: ::Result<Pragma> = Header::parse_header(&r);
     assert_eq!(e.ok(), None);
 }
+
+standard_header!(Pragma, PRAGMA);

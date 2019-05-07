@@ -61,3 +61,5 @@ header! {
         test_header!(test2, vec![b"mi, en"]);
     }
 }
+
+standard_header!(ContentLanguage, CONTENT_LANGUAGE);

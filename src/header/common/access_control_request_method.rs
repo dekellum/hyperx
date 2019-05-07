@@ -30,3 +30,5 @@ header! {
         test_header!(test1, vec![b"GET"]);
     }
 }
+
+standard_header!(AccessControlRequestMethod, ACCESS_CONTROL_REQUEST_METHOD);

@@ -199,3 +199,13 @@ mod benches {
     bench_header!(basic, ProxyAuthorization<Basic>, { vec![b"Basic QWxhZGRpbjpuIHNlc2FtZQ==".to_vec()] });
     bench_header!(bearer, ProxyAuthorization<Bearer>, { vec![b"Bearer fpKL54jvWmEGVoRdCNjG".to_vec()] });
 }
+
+#[cfg(feature = "compat")]
+impl<S> ::header::StandardHeader for ProxyAuthorization<S>
+    where S: Scheme + Any + ::std::fmt::Display
+{
+    #[inline]
+    fn http_header_name() -> ::http::header::HeaderName {
+        ::http::header::PROXY_AUTHORIZATION
+    }
+}

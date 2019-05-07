@@ -61,3 +61,5 @@ header! {
         test_header!(test1, vec![b"etag, content-length"]);
     }
 }
+
+standard_header!(AccessControlExposeHeaders, ACCESS_CONTROL_EXPOSE_HEADERS);

@@ -412,3 +412,5 @@ mod tests {
 
 bench_header!(bytes_multi, Range, { vec![b"bytes=1-1001,2001-3001,10001-".to_vec()]});
 bench_header!(custom_unit, Range, { vec![b"other=0-100000".to_vec()]});
+
+standard_header!(Range, RANGE);

@@ -36,3 +36,5 @@ header! {
 }
 
 bench_header!(bench, Server, { vec![b"Some String".to_vec()] });
+
+standard_header!(Server, SERVER);

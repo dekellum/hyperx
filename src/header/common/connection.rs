@@ -144,3 +144,5 @@ mod tests {
             parse_option(b"upgrade".to_vec()));
     }
 }
+
+standard_header!(Connection, CONNECTION);

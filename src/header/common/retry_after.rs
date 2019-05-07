@@ -182,3 +182,5 @@ mod tests {
         assert_eq!(retry_after, RetryAfter::DateTime(expected));
     }
 }
+
+standard_header!(RetryAfter, RETRY_AFTER);

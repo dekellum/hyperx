@@ -44,3 +44,5 @@ header! {
         test_header!(test2, vec![b"Bunnies"], Some(UserAgent::new("Bunnies")));
     }
 }
+
+standard_header!(UserAgent, USER_AGENT);

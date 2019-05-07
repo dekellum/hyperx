@@ -455,6 +455,19 @@ macro_rules! header {
     };
 }
 
+#[doc(hidden)]
+#[macro_export]
+macro_rules! standard_header {
+    ($local:ident, $hname:ident) => {
+        #[cfg(feature = "compat")]
+        impl $crate::header::StandardHeader for $local {
+            #[inline]
+            fn http_header_name() -> ::http::header::HeaderName {
+                ::http::header::$hname
+            }
+        }
+    }
+}
 
 mod accept_charset;
 mod accept_encoding;

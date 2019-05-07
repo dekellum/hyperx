@@ -70,3 +70,5 @@ header! {
         test_header!(test5, vec![b"gzip, identity; q=0.5, *;q=0"]);
     }
 }
+
+standard_header!(AcceptEncoding, ACCEPT_ENCODING);

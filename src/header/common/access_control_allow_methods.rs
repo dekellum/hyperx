@@ -49,3 +49,5 @@ header! {
         test_header!(test1, vec![b"PUT, DELETE, XMODIFY"]);
     }
 }
+
+standard_header!(AccessControlAllowMethods, ACCESS_CONTROL_ALLOW_METHODS);

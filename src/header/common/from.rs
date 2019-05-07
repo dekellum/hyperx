@@ -27,3 +27,5 @@ header! {
         test_header!(test1, vec![b"webmaster@example.org"]);
     }
 }
+
+standard_header!(From, FROM);
