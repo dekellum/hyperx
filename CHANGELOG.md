@@ -1,4 +1,4 @@
-## 0.15.0 (TBD)
+## 0.15.0 (2019-5-8)
 
 * Add a `TypedHeaders` extension trait providing more convenient generic
   encode/decode methods to `http::HeaderMap` for _hyperx_ typed headers,
