@@ -4,7 +4,6 @@ name = "hyperx"
 version = "0.15.0" # don't forget to update html_root_url
 description = "Hyper's typed header module, eXtracted and improved"
 readme = "README.md"
-homepage = "https://hyper.rs"
 documentation = "https://docs.rs/hyperx"
 repository = "https://github.com/dekellum/hyperx"
 license = "MIT"
