@@ -33,17 +33,17 @@ fn rustc_version() -> Vec<u16> {
     let out = String::from_utf8(out.stdout).unwrap();
     for l in out.lines() {
         if l.starts_with("rustc ") {
-            let v = &l[6..];
+            let mut v = &l[6..];
             if let Some(e) = v.find(" ") {
-                let v = &v[..e];
-                let mut vp = v.split("-");
-                if let Some(v) = vp.next() {
-                    let vs: Vec<u16> = v.split(".")
-                        .filter_map(|vss| vss.parse().ok())
-                        .collect();
-                    if !vs.is_empty() {
-                        return vs;
-                    }
+                v = &v[..e];
+            }
+            let mut vp = v.split("-");
+            if let Some(v) = vp.next() {
+                let vs: Vec<u16> = v.split(".")
+                    .filter_map(|vss| vss.parse().ok())
+                    .collect();
+                if !vs.is_empty() {
+                    return vs;
                 }
             }
         }
