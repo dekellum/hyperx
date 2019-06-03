@@ -1,4 +1,6 @@
-## 0.15.1 (TBD)
+## 0.15.1 (2019-6-3)
+
+* Fix build.rs for `rustc --version` not including git metadata (alyssais #14)
 
 ## 0.15.0 (2019-5-8)
 
