@@ -14,11 +14,11 @@ where this module was dropped in preference to the byte-oriented
 
 [Hyper]: https://github.com/hyperium/hyper
 
-## Minimum supported rust version (MSRV)
+## Minimum supported rust version
 
-1.27.2
+MSRV := 1.27.2
 
-The project will fail fast on any lower rustc (via a build.rs version
+The crate will fail fast on any lower rustc (via a build.rs version
 check) and is also CI tested on this version.
 
 ## License
