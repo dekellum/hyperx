@@ -9,7 +9,7 @@ use header::{Header, Formatter, Multi, raw, Raw, RawLike};
 #[derive(Clone)]
 pub struct Item {
     raw: OptCell<Raw>,
-    typed: PtrMapCell<Header + Send + Sync>
+    typed: PtrMapCell<dyn Header + Send + Sync>
 }
 
 impl Item {
@@ -109,9 +109,9 @@ impl Item {
 }
 
 #[inline]
-fn parse<H: Header>(raw: &Raw) -> Option<Box<Header + Send + Sync>> {
+fn parse<H: Header>(raw: &Raw) -> Option<Box<dyn Header + Send + Sync>> {
     H::parse_header(raw).map(|h| {
-        let h: Box<Header + Send + Sync> = Box::new(h);
+        let h: Box<dyn Header + Send + Sync> = Box::new(h);
         h
     }).ok()
 }

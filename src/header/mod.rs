@@ -233,12 +233,12 @@ mod sealed {
 
     #[doc(hidden)]
     pub trait HeaderClone {
-        fn clone_box(&self) -> Box<Header + Send + Sync>;
+        fn clone_box(&self) -> Box<dyn Header + Send + Sync>;
     }
 
     impl<T: Header + Clone> HeaderClone for T {
         #[inline]
-        fn clone_box(&self) -> Box<Header + Send + Sync> {
+        fn clone_box(&self) -> Box<dyn Header + Send + Sync> {
             Box::new(self.clone())
         }
     }
@@ -267,7 +267,7 @@ impl<'a, 'b> Formatter<'a, 'b> {
     /// The main example here is `Set-Cookie`, which requires that every
     /// cookie being set be specified in a separate line. Almost every other
     /// case should only format as 1 single line.
-    pub fn fmt_line(&mut self, line: &fmt::Display) -> fmt::Result {
+    pub fn fmt_line(&mut self, line: &dyn fmt::Display) -> fmt::Result {
         use std::fmt::Write;
         match self.0 {
             Multi::Line(name, ref mut f) => {
@@ -362,7 +362,7 @@ impl<'a, F: fmt::Write + 'a> fmt::Write for NewlineReplacer<'a, F> {
     }
 }
 
-impl Header + Send + Sync {
+impl dyn Header + Send + Sync {
     // A trait object looks like this:
     //
     // TraitObject { data: *mut (), vtable: *mut () }
@@ -387,9 +387,9 @@ impl Header + Send + Sync {
     }
 }
 
-impl Clone for Box<Header + Send + Sync> {
+impl Clone for Box<dyn Header + Send + Sync> {
     #[inline]
-    fn clone(&self) -> Box<Header + Send + Sync> {
+    fn clone(&self) -> Box<dyn Header + Send + Sync> {
         self.clone_box()
     }
 }

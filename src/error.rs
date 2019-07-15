@@ -69,7 +69,7 @@ impl StdError for Error {
         }
     }
 
-    fn cause(&self) -> Option<&StdError> {
+    fn cause(&self) -> Option<&dyn StdError> {
         match *self {
             Utf8(ref error) => Some(error),
             Error::__Nonexhaustive(..) =>  unreachable!(),
