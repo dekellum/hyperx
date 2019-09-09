@@ -146,15 +146,18 @@ impl FromStr for Protocol {
     type Err =();
     fn from_str(s: &str) -> Result<Protocol, ()> {
         let mut parts = s.splitn(2, '/');
-        Ok(Protocol::new(try!(parts.next().unwrap().parse()), parts.next().map(|x| x.to_owned())))
+        Ok(Protocol::new(
+            parts.next().unwrap().parse()?,
+            parts.next().map(|x| x.to_owned())
+        ))
     }
 }
 
 impl Display for Protocol {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        try!(fmt::Display::fmt(&self.name, f));
+        fmt::Display::fmt(&self.name, f)?;
         if let Some(ref version) = self.version {
-            try!(write!(f, "/{}", version));
+            write!(f, "/{}", version)?;
         }
         Ok(())
     }

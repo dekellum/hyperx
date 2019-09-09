@@ -123,20 +123,20 @@ impl FromStr for ContentRangeSpec {
     fn from_str(s: &str) -> ::Result<Self> {
         let res = match split_in_two(s, ' ') {
             Some(("bytes", resp)) => {
-                let (range, instance_length) = try!(split_in_two(resp, '/').ok_or(::Error::Header));
+                let (range, instance_length) = split_in_two(resp, '/').ok_or(::Error::Header)?;
 
                 let instance_length = if instance_length == "*" {
                     None
                 } else {
-                    Some(try!(instance_length.parse().map_err(|_| ::Error::Header)))
+                    Some(instance_length.parse().map_err(|_| ::Error::Header)?)
                 };
 
                 let range = if range == "*" {
                     None
                 } else {
-                    let (first_byte, last_byte) = try!(split_in_two(range, '-').ok_or(::Error::Header));
-                    let first_byte = try!(first_byte.parse().map_err(|_| ::Error::Header));
-                    let last_byte = try!(last_byte.parse().map_err(|_| ::Error::Header));
+                    let (first_byte, last_byte) = split_in_two(range, '-').ok_or(::Error::Header)?;
+                    let first_byte = first_byte.parse().map_err(|_| ::Error::Header)?;
+                    let last_byte = last_byte.parse().map_err(|_| ::Error::Header)?;
                     if last_byte < first_byte {
                         return Err(::Error::Header);
                     }
@@ -164,16 +164,16 @@ impl Display for ContentRangeSpec {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
             ContentRangeSpec::Bytes { range, instance_length } => {
-                try!(f.write_str("bytes "));
+                f.write_str("bytes ")?;
                 match range {
                     Some((first_byte, last_byte)) => {
-                        try!(write!(f, "{}-{}", first_byte, last_byte));
+                        write!(f, "{}-{}", first_byte, last_byte)?;
                     },
                     None => {
-                        try!(f.write_str("*"));
+                        f.write_str("*")?;
                     }
                 };
-                try!(f.write_str("/"));
+                f.write_str("/")?;
                 if let Some(v) = instance_length {
                     write!(f, "{}", v)
                 } else {
@@ -181,8 +181,8 @@ impl Display for ContentRangeSpec {
                 }
             }
             ContentRangeSpec::Unregistered { ref unit, ref resp } => {
-                try!(f.write_str(&unit));
-                try!(f.write_str(" "));
+                f.write_str(&unit)?;
+                f.write_str(" ")?;
                 f.write_str(resp)
             }
         }

@@ -61,7 +61,7 @@ impl Header for PreferenceApplied {
     fn parse_header<'a, T>(raw: &'a T) -> ::Result<PreferenceApplied>
     where T: RawLike<'a>
     {
-        let preferences = try!(from_comma_delimited(raw));
+        let preferences = from_comma_delimited(raw)?;
         if !preferences.is_empty() {
             Ok(PreferenceApplied(preferences))
         } else {

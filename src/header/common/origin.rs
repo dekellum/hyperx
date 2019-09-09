@@ -128,7 +128,7 @@ impl FromStr for Origin {
         };
         // idx + 3 because that's how long "://" is
         let (scheme, etc) = (&s[..idx], &s[idx + 3..]);
-        let host = try!(Host::from_str(etc));
+        let host = Host::from_str(etc)?;
         let scheme = match scheme {
             "http"  => Cow::Borrowed(HTTP),
             "https" => Cow::Borrowed(HTTPS),

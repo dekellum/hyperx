@@ -65,7 +65,7 @@ impl Header for ReferrerPolicy {
     {
         use self::ReferrerPolicy::*;
         // See https://www.w3.org/TR/referrer-policy/#determine-policy-for-token
-        let headers: Vec<String> = try!(parsing::from_comma_delimited(raw));
+        let headers: Vec<String> = parsing::from_comma_delimited(raw)?;
 
         for h in headers.iter().rev() {
             let slice = &h.to_ascii_lowercase()[..];

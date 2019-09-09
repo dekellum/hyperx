@@ -101,7 +101,7 @@ impl Header for SetCookie {
 
     fn fmt_header(&self, f: &mut ::header::Formatter) -> fmt::Result {
         for cookie in &self.0 {
-            try!(f.fmt_line(cookie));
+            f.fmt_line(cookie)?;
         }
         Ok(())
     }

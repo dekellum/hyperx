@@ -64,7 +64,7 @@ impl<T: fmt::Display> fmt::Display for QualityItem<T> {
     // as used below, deprecated in 1.33.0
     #[allow(deprecated)]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        try!(fmt::Display::fmt(&self.item, f));
+        fmt::Display::fmt(&self.item, f)?;
         match self.quality.0 {
             1000 => Ok(()),
             0 => f.write_str("; q=0"),

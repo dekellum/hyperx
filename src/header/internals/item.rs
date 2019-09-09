@@ -90,7 +90,7 @@ impl Item {
                 for part in raw.iter() {
                     match from_utf8(&part[..]) {
                         Ok(s) => {
-                            try!(f.fmt_line(&s));
+                            f.fmt_line(&s)?;
                         },
                         Err(_) => {
                             error!("raw header value is not utf8, value={:?}", part);

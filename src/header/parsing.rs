@@ -24,7 +24,7 @@ where R: RawLike<'a>, T: str::FromStr
 
 /// Reads a raw string into a value.
 pub fn from_raw_str<T: str::FromStr>(raw: &[u8]) -> ::Result<T> {
-    let s = try!(str::from_utf8(raw)).trim();
+    let s = str::from_utf8(raw)?.trim();
     T::from_str(s).or(Err(::Error::Header))
 }
 
@@ -35,7 +35,7 @@ where R: RawLike<'a>, T: str::FromStr
 {
     let mut result = Vec::new();
     for s in raw.iter() {
-        let s = try!(str::from_utf8(s.as_ref()));
+        let s = str::from_utf8(s.as_ref())?;
         result.extend(s.split(',')
                       .filter_map(|x| match x.trim() {
                           "" => None,
@@ -50,11 +50,11 @@ where R: RawLike<'a>, T: str::FromStr
 pub fn fmt_comma_delimited<T: Display>(f: &mut fmt::Formatter, parts: &[T]) -> fmt::Result {
     let mut iter = parts.iter();
     if let Some(part) = iter.next() {
-        try!(Display::fmt(part, f));
+        Display::fmt(part, f)?;
     }
     for part in iter {
-        try!(f.write_str(", "));
-        try!(Display::fmt(part, f));
+        f.write_str(", ")?;
+        Display::fmt(part, f)?;
     }
     Ok(())
 }
@@ -114,7 +114,7 @@ pub fn parse_extended_value(val: &str) -> ::Result<ExtendedValue> {
     // Interpret the first piece as a Charset
     let charset: Charset = match parts.next() {
         None => return Err(::Error::Header),
-        Some(n) => try!(FromStr::from_str(n)),
+        Some(n) => FromStr::from_str(n)?,
     };
 
     // Interpret the second piece as a language tag

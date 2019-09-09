@@ -271,14 +271,14 @@ impl<'a, 'b> Formatter<'a, 'b> {
         use std::fmt::Write;
         match self.0 {
             Multi::Line(name, ref mut f) => {
-                try!(f.write_str(name));
-                try!(f.write_str(": "));
-                try!(write!(NewlineReplacer(*f), "{}", line));
+                f.write_str(name)?;
+                f.write_str(": ")?;
+                write!(NewlineReplacer(*f), "{}", line)?;
                 f.write_str("\r\n")
             },
             Multi::Join(ref mut first, ref mut f) => {
                 if !*first {
-                    try!(f.write_str(", "));
+                    f.write_str(", ")?;
                 } else {
                     *first = false;
                 }
@@ -286,7 +286,7 @@ impl<'a, 'b> Formatter<'a, 'b> {
             }
             Multi::Raw(ref mut raw) => {
                 let mut s = String::new();
-                try!(write!(NewlineReplacer(&mut s), "{}", line));
+                write!(NewlineReplacer(&mut s), "{}", line)?;
                 raw.push(s);
                 Ok(())
             }
@@ -297,14 +297,14 @@ impl<'a, 'b> Formatter<'a, 'b> {
         use std::fmt::Write;
         match self.0 {
             Multi::Line(name, ref mut f) => {
-                try!(f.write_str(name));
-                try!(f.write_str(": "));
-                try!(fmt::Display::fmt(line, f));
+                f.write_str(name)?;
+                f.write_str(": ")?;
+                fmt::Display::fmt(line, f)?;
                 f.write_str("\r\n")
             },
             Multi::Join(ref mut first, ref mut f) => {
                 if !*first {
-                    try!(f.write_str(", "));
+                    f.write_str(", ")?;
                 } else {
                     *first = false;
                 }
@@ -312,7 +312,7 @@ impl<'a, 'b> Formatter<'a, 'b> {
             }
             Multi::Raw(ref mut raw) => {
                 let mut s = String::new();
-                try!(write!(s, "{}", line));
+                write!(s, "{}", line)?;
                 raw.push(s);
                 Ok(())
             }
@@ -324,8 +324,8 @@ struct ValueString<'a>(&'a Item);
 
 impl<'a> fmt::Debug for ValueString<'a> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        try!(f.write_str("\""));
-        try!(self.0.write_h1(&mut Formatter(Multi::Join(true, f))));
+        f.write_str("\"")?;
+        self.0.write_h1(&mut Formatter(Multi::Join(true, f)))?;
         f.write_str("\"")
     }
 }
@@ -344,8 +344,8 @@ impl<'a, F: fmt::Write + 'a> fmt::Write for NewlineReplacer<'a, F> {
         let mut since = 0;
         for (i, &byte) in s.as_bytes().iter().enumerate() {
             if byte == b'\r' || byte == b'\n' {
-                try!(self.0.write_str(&s[since..i]));
-                try!(self.0.write_str(" "));
+                self.0.write_str(&s[since..i])?;
+                self.0.write_str(" ")?;
                 since = i + 1;
             }
         }
@@ -638,7 +638,7 @@ impl fmt::Display for Headers {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         for header in self.iter() {
-            try!(fmt::Display::fmt(&header, f));
+            fmt::Display::fmt(&header, f)?;
         }
         Ok(())
     }
@@ -837,7 +837,7 @@ mod tests {
             use std::str::FromStr;
 
             if let Some(line) = raw.one() {
-                let s = try!(from_utf8(line).map(|s| FromStr::from_str(s).map_err(|_| ::Error::Header)));
+                let s = from_utf8(line).map(|s| FromStr::from_str(s).map_err(|_| ::Error::Header))?;
                 s.map(|u| CrazyLength(Some(false), u))
             } else {
                 Err(::Error::Header)

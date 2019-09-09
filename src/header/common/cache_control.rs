@@ -62,7 +62,7 @@ impl Header for CacheControl {
     fn parse_header<'a, T>(raw: &'a T) -> ::Result<CacheControl>
     where T: RawLike<'a>
     {
-        let directives = try!(from_comma_delimited(raw));
+        let directives = from_comma_delimited(raw)?;
         if !directives.is_empty() {
             Ok(CacheControl(directives))
         } else {

@@ -121,7 +121,7 @@ impl Header for Cookie {
     {
         let mut vec_map = VecMap::with_capacity(raw.len());
         for cookies_raw in raw.iter() {
-            let cookies_str = try!(from_utf8(&cookies_raw[..]));
+            let cookies_str = from_utf8(&cookies_raw[..])?;
             for cookie_str in cookies_str.split(';') {
                 let mut key_val = cookie_str.splitn(2, '=');
                 let key_val = (key_val.next(), key_val.next());
@@ -170,10 +170,10 @@ impl fmt::Display for Cookie {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let mut iter = self.0.iter();
         if let Some(&(ref key, ref val)) = iter.next() {
-            try!(write!(f, "{}={}", key, val));
+            write!(f, "{}={}", key, val)?;
         }
         for &(ref key, ref val) in iter {
-            try!(write!(f, "; {}={}", key, val));
+            write!(f, "; {}={}", key, val)?;
         }
         Ok(())
     }

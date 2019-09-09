@@ -68,7 +68,7 @@ impl Header for AccessControlAllowOrigin {
             Ok(match line {
                 b"*" => AccessControlAllowOrigin::Any,
                 b"null" => AccessControlAllowOrigin::Null,
-                _ => AccessControlAllowOrigin::Value(try!(str::from_utf8(line)).into())
+                _ => AccessControlAllowOrigin::Value(str::from_utf8(line)?.into())
             })
         } else {
             Err(::Error::Header)

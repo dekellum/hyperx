@@ -84,7 +84,7 @@ impl<S: Scheme + Any> Header for ProxyAuthorization<S> where <S as FromStr>::Err
     where T: RawLike<'a>
     {
         if let Some(line) = raw.one() {
-            let header = try!(from_utf8(line));
+            let header = from_utf8(line)?;
             if let Some(scheme) = <S as Scheme>::scheme() {
                 if header.starts_with(scheme) && header.len() > scheme.len() + 1 {
                     match header[scheme.len() + 1..].parse::<S>().map(ProxyAuthorization) {
@@ -113,7 +113,7 @@ impl<S: Scheme + Any> Header for ProxyAuthorization<S> where <S as FromStr>::Err
 impl<S: Scheme> fmt::Display for ProxyAuthorization<S> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         if let Some(scheme) = <S as Scheme>::scheme() {
-            try!(write!(f, "{} ", scheme))
+            write!(f, "{} ", scheme)?
         };
         self.0.fmt_scheme(f)
     }

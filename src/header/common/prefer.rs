@@ -62,7 +62,7 @@ impl Header for Prefer {
     fn parse_header<'a, T>(raw: &'a T) -> ::Result<Prefer>
     where T: RawLike<'a>
     {
-        let preferences = try!(from_comma_delimited(raw));
+        let preferences = from_comma_delimited(raw)?;
         if !preferences.is_empty() {
             Ok(Prefer(preferences))
         } else {
@@ -115,12 +115,12 @@ impl fmt::Display for Preference {
             Wait(secs) => return write!(f, "wait={}", secs),
 
             Extension(ref name, ref value, ref params) => {
-                try!(write!(f, "{}", name));
-                if value != "" { try!(write!(f, "={}", value)); }
+                write!(f, "{}", name)?;
+                if value != "" { write!(f, "={}", value)?; }
                 if !params.is_empty() {
                     for &(ref name, ref value) in params {
-                        try!(write!(f, "; {}", name));
-                        if value != "" { try!(write!(f, "={}", value)); }
+                        write!(f, "; {}", name)?;
+                        if value != "" { write!(f, "={}", value)?; }
                     }
                 }
                 return Ok(());
