@@ -22,7 +22,7 @@ extern crate httparse;
 extern crate language_tags;
 #[macro_use] extern crate log;
 pub extern crate mime;
-#[macro_use] extern crate percent_encoding;
+extern crate percent_encoding;
 extern crate time;
 extern crate unicase;
 

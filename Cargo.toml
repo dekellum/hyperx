@@ -29,7 +29,7 @@ httparse = "1.0"
 language-tags = "0.2"
 log = "0.4"
 mime = "0.3.2"
-percent-encoding = "1.0"
+percent-encoding = ">=2.1.0, <2.2"
 time = ">=0.1.37, <0.2"
 unicase = "2.0"
 
