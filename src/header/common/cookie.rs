@@ -230,7 +230,6 @@ mod tests {
         cookie2.append("bar", "foo");
         assert_ne!(cookie, cookie2);
 
-
         // right has more params, and matching KV
         cookie2.append("foo", "bar");
         assert_ne!(cookie, cookie2);

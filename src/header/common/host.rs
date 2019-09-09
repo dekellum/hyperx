@@ -109,7 +109,6 @@ mod tests {
     use super::Host;
     use header::{Header, Raw};
 
-
     #[test]
     fn test_host() {
         let r: Raw = vec![b"foo.com".to_vec()].into();

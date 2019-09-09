@@ -2,7 +2,6 @@ use header::{Header, RawLike};
 use std::fmt;
 use std::str::from_utf8;
 
-
 /// `Set-Cookie` header, defined [RFC6265](http://tools.ietf.org/html/rfc6265#section-4.1)
 ///
 /// The Set-Cookie HTTP response header is used to send cookies from the

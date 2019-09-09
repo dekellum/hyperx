@@ -14,7 +14,7 @@ use header::parsing::{from_one_raw_str};
 /// # ABNF
 ///
 /// ```text
-/// Range =	byte-ranges-specifier / other-ranges-specifier
+/// Range = byte-ranges-specifier / other-ranges-specifier
 /// other-ranges-specifier = other-range-unit "=" other-range-set
 /// other-range-set = 1*VCHAR
 ///
@@ -95,7 +95,7 @@ impl ByteRangeSpec {
     ///
     /// This function closely follows [RFC 7233][1] section 2.1.
     /// As such, it considers ranges to be satisfiable if they meet the following
-    /// conditions: 
+    /// conditions:
     ///
     /// > If a valid byte-range-set includes at least one byte-range-spec with
     /// a first-byte-pos that is less than the current length of the
@@ -164,7 +164,6 @@ impl Range {
     }
 }
 
-
 impl fmt::Display for ByteRangeSpec {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
@@ -174,7 +173,6 @@ impl fmt::Display for ByteRangeSpec {
         }
     }
 }
-
 
 impl fmt::Display for Range {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

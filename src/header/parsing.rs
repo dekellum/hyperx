@@ -9,7 +9,6 @@ use percent_encoding;
 use header::RawLike;
 use header::shared::Charset;
 
-
 /// Reads a single raw string when parsing a header.
 pub fn from_one_raw_str<'a, R, T>(raw: &'a R) -> ::Result<T>
 where R: RawLike<'a>, T: str::FromStr
@@ -139,7 +138,6 @@ pub fn parse_extended_value(val: &str) -> ::Result<ExtendedValue> {
         value: value,
     })
 }
-
 
 impl Display for ExtendedValue {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

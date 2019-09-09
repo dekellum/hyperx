@@ -10,7 +10,6 @@ use error::Error;
 use self::Method::{Options, Get, Post, Put, Delete, Head, Trace, Connect, Patch,
                    Extension};
 
-
 /// The Request Method (VERB)
 ///
 /// Currently includes 8 variants representing the 8 methods defined in

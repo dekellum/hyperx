@@ -171,7 +171,6 @@ mod test {
         assert_eq!(stored,Some(3));
     }
 
-
     #[test]
     fn test_ptr_map_cell_none() {
         let type_id = TypeId::of::<u32>();
@@ -212,7 +211,6 @@ mod test {
         assert_eq!(pm.get(id2), Some(&"b".to_string()));
         assert_eq!(pm.get(id3), Some(&"c".to_string()));
     }
-
 
     #[test]
     fn test_ptr_map_cell_clone() {

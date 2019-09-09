@@ -8,7 +8,7 @@ use header::parsing::from_one_raw_str;
 /// The `Warning` header field can be be used to carry additional information
 /// about the status or transformation of a message that might not be reflected
 /// in the status code. This header is sometimes used as backwards
-/// compatible way to notify of a deprecated API. 
+/// compatible way to notify of a deprecated API.
 ///
 /// # ABNF
 ///
@@ -30,7 +30,7 @@ use header::parsing::from_one_raw_str;
 /// * `Warning: 112 - "network down" "Sat, 25 Aug 2012 23:34:45 GMT"`
 /// * `Warning: 299 - "Deprecated API " "Tue, 15 Nov 1994 08:12:31 GMT"`
 /// * `Warning: 299 api.hyper.rs:8080 "Deprecated API : use newapi.hyper.rs instead."`
-/// * `Warning: 299 api.hyper.rs:8080 "Deprecated API : use newapi.hyper.rs instead." "Tue, 15 Nov 1994 08:12:31 GMT"` 
+/// * `Warning: 299 api.hyper.rs:8080 "Deprecated API : use newapi.hyper.rs instead." "Tue, 15 Nov 1994 08:12:31 GMT"`
 ///
 /// # Examples
 ///

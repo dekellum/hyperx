@@ -81,7 +81,6 @@ pub enum RangeUnit {
     Unregistered(String),
 }
 
-
 impl FromStr for RangeUnit {
     type Err = ::Error;
     fn from_str(s: &str) -> ::Result<Self> {
