@@ -33,11 +33,6 @@ percent-encoding    = { version=">=1.0, <1.1" }
 time                = { version=">=0.1.37, <0.2" }
 unicase             = { version=">=2.1.0, <2.6" }
 
-# Unused, transitive constraints to preserve our MSRV
-# cfg-if (via log) 0.1.10 release has MSRV 1.31.0
-# alexcrichton/cfg-if@171ba7f
-cfg-if              = { version=">=0.1.2, <0.1.10" }
-
 [features]
 default = [ "compat" ]
 nightly = []
