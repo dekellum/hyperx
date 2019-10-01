@@ -22,16 +22,16 @@ exclude = [
 build = "build.rs"
 
 [dependencies]
-base64 = ">=0.10.1, <0.11"
-bytes = "0.4.4"
-http = { version = "0.1", optional = true }
-httparse = "1.0"
-language-tags = "0.2"
-log = "0.4"
-mime = "0.3.2"
-percent-encoding = "1.0"
-time = ">=0.1.37, <0.2"
-unicase = "2.0"
+base64              = { version=">=0.10.1, <0.11" }
+bytes               = { version=">=0.4.4, <0.5" }
+http                = { version=">=0.1, <0.2", optional=true }
+httparse            = { version=">=1.0, <1.4" }
+language-tags       = { version=">=0.2, <0.3" }
+log                 = { version=">=0.4, <0.5" }
+mime                = { version=">=0.3.2, <0.4" }
+percent-encoding    = { version=">=1.0, <1.1" }
+time                = { version=">=0.1.37, <0.2" }
+unicase             = { version=">=2.0, <2.6" }
 
 [features]
 default = [ "compat" ]
