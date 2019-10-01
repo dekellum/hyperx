@@ -1,5 +1,11 @@
 ## 0.15.2 (TBD)
 
+* Constrain transitive _cfg-if_ dependency to <0.1.10 to preserve MSRV 1.27.2.
+
+* Narrow various other dependencies for future reliability.  We may
+  subsequently make PATCH releases which _broaden_ private or public
+  dependencies to include new releases found compatible.
+
 ## 0.15.1 (2019-6-3)
 
 * Fix build.rs for `rustc --version` not including git metadata (alyssais #14)
