@@ -1,7 +1,6 @@
 language: rust
 dist: xenial
 script:
-  - 'if [ "$WITH_LOCK" != "true" ]; then cargo update; fi'
   - 'cargo test --no-default-features'
   - 'cargo test'
   - 'if [ "$TRAVIS_RUST_VERSION" = "nightly" ]; then cargo test --features nightly; fi'
@@ -15,14 +14,11 @@ env: # important!
 matrix:
   include:
     - rust: 1.27.2
+    - rust: stable
     - rust: 1.27.2
       os: osx
-      env: WITH_LOCK=true
     - rust: stable
       os: osx
-    - rust: 1.27.2
-      env: WITH_LOCK=true
-    - rust: stable
     - rust: nightly
       env: MAY_FAIL=true
   allow_failures:
