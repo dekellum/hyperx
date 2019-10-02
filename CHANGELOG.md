@@ -1,5 +1,14 @@
 ## 0.16.0 (TBD)
 
+* Upgrade (unconstrain) _cfg-if_ dependency to (0.1.10 is MSRV 1.31.0)
+
+* Upgrade _unicase_ to (min) 2.1.0 to avoid compile failures with older
+  releases.
+
+* Upgrade to _percent-encoding_ 2.1.0 \w API changes, MSRV 1.33.0 (#15)
+
+* MSRV is now 1.33.0, based on above upgrades.
+
 ## 0.15.2 (2019-10-1)
 
 * Constrain transitive _cfg-if_ dependency to <0.1.10 to preserve MSRV 1.27.2.
