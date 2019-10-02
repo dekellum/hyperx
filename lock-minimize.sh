@@ -10,6 +10,8 @@ cargo -Z minimal-versions generate-lockfile
 #         ├── hyperx v0.15.2 (/home/david/src/hyperx)
 #         └── mime v0.3.2
 #             └── hyperx v0.15.2 (/home/david/src/hyperx) (*)
+# fixed directly, but never released
+# https://github.com/hyperium/mime/commit/c9d43b13c4a74b1168a268bd1e241d754992c15e
 cargo update -p unicase --precise 2.1.0
 
 # from iovec failure due to libc:
