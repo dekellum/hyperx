@@ -3,7 +3,7 @@ use std::process::Command;
 
 fn main() {
     static PACKAGE: &'static str = "hyperx";
-    let msrv = vec![1, 27, 2];
+    let msrv = vec![1, 33];
 
     static VERSION: &'static str = env!("CARGO_PKG_VERSION");
     static M_V: &'static str = "minimum supported rust version (MSRV)";
