@@ -28,6 +28,7 @@ impl<K: PartialEq, V> VecMap<K, V> {
         self.vec.push((key, value));
     }
 
+    #[cfg(feature = "headers")]
     #[inline]
     pub fn entry(&mut self, key: K) -> Entry<K, V> {
         match self.pos(&key) {
@@ -47,11 +48,13 @@ impl<K: PartialEq, V> VecMap<K, V> {
         self.find(key).map(|entry| &entry.1)
     }
 
+    #[cfg(feature = "headers")]
     #[inline]
     pub fn get_mut<K2: PartialEq<K> + ?Sized>(&mut self, key: &K2) -> Option<&mut V> {
         self.find_mut(key).map(|entry| &mut entry.1)
     }
 
+    #[cfg(feature = "headers")]
     #[inline]
     pub fn contains_key<K2: PartialEq<K> + ?Sized>(&self, key: &K2) -> bool {
         self.find(key).is_some()
@@ -65,6 +68,7 @@ impl<K: PartialEq, V> VecMap<K, V> {
         self.vec.iter()
     }
 
+    #[cfg(feature = "headers")]
     #[inline]
     pub fn remove<K2: PartialEq<K> + ?Sized>(&mut self, key: &K2) -> Option<V> {
         self.pos(key).map(|pos| self.vec.remove(pos)).map(|(_, v)| v)
@@ -80,6 +84,7 @@ impl<K: PartialEq, V> VecMap<K, V> {
         }
     }
 
+    #[cfg(feature = "headers")]
     #[inline]
     pub fn clear(&mut self) {
         self.vec.clear();
@@ -95,6 +100,7 @@ impl<K: PartialEq, V> VecMap<K, V> {
         None
     }
 
+    #[cfg(feature = "headers")]
     #[inline]
     fn find_mut<K2: PartialEq<K> + ?Sized>(&mut self, key: &K2) -> Option<&mut (K, V)> {
         for entry in &mut self.vec {
@@ -105,22 +111,26 @@ impl<K: PartialEq, V> VecMap<K, V> {
         None
     }
 
+    #[cfg(feature = "headers")]
     #[inline]
     fn pos<K2: PartialEq<K> + ?Sized>(&self, key: &K2) -> Option<usize> {
         self.vec.iter().position(|entry| key == &entry.0)
     }
 }
 
+#[cfg(feature = "headers")]
 pub enum Entry<'a, K: 'a, V: 'a> {
     Vacant(VacantEntry<'a, K, V>),
     Occupied(OccupiedEntry<'a, K, V>)
 }
 
+#[cfg(feature = "headers")]
 pub struct VacantEntry<'a, K: 'a, V: 'a> {
     vec: &'a mut Vec<(K, V)>,
     key: K,
 }
 
+#[cfg(feature = "headers")]
 impl<'a, K, V> VacantEntry<'a, K, V> {
     pub fn insert(self, val: V) -> &'a mut V {
         self.vec.push((self.key, val));
@@ -129,11 +139,13 @@ impl<'a, K, V> VacantEntry<'a, K, V> {
     }
 }
 
+#[cfg(feature = "headers")]
 pub struct OccupiedEntry<'a, K: 'a, V: 'a> {
     vec: &'a mut Vec<(K, V)>,
     pos: usize,
 }
 
+#[cfg(feature = "headers")]
 impl<'a, K, V> OccupiedEntry<'a, K, V> {
     pub fn into_mut(self) -> &'a mut V {
         &mut self.vec[self.pos].1

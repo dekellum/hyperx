@@ -150,15 +150,22 @@
 //!     }
 //! }
 //! ```
-use std::borrow::{Cow, ToOwned};
+use std::borrow::Cow;
+
+#[cfg(feature = "headers")]
+use std::borrow::ToOwned;
 
 #[cfg(feature = "headers")]
 use std::iter::{FromIterator, IntoIterator};
 
-use std::{mem, fmt};
+use std::fmt;
+
+#[cfg(feature = "headers")]
+use std::mem;
 
 use unicase::Ascii;
 
+#[cfg(feature = "headers")]
 use self::internals::{Item};
 
 #[cfg(feature = "headers")]
@@ -174,6 +181,7 @@ pub use self::raw::{Raw, RawLike};
 use bytes::Bytes;
 
 mod common;
+
 mod internals;
 mod raw;
 mod shared;
@@ -312,8 +320,10 @@ impl<'a, 'b> Formatter<'a, 'b> {
     }
 }
 
+#[cfg(feature = "headers")]
 struct ValueString<'a>(&'a Item);
 
+#[cfg(feature = "headers")]
 impl<'a> fmt::Debug for ValueString<'a> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.write_str("\"")?;
@@ -322,6 +332,7 @@ impl<'a> fmt::Debug for ValueString<'a> {
     }
 }
 
+#[cfg(feature = "headers")]
 impl<'a> fmt::Display for ValueString<'a> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         self.0.write_h1(&mut Formatter(Multi::Join(true, f)))
@@ -363,16 +374,19 @@ impl dyn Header + Send + Sync {
     // order the compiler has chosen to represent a TraitObject.
     //
     // It has been assured that this order will be stable.
+    #[cfg(feature = "headers")]
     #[inline]
     unsafe fn downcast_ref_unchecked<T: 'static>(&self) -> &T {
         &*(mem::transmute::<*const _, (*const (), *const ())>(self).0 as *const T)
     }
 
+    #[cfg(feature = "headers")]
     #[inline]
     unsafe fn downcast_mut_unchecked<T: 'static>(&mut self) -> &mut T {
         &mut *(mem::transmute::<*mut _, (*mut (), *mut ())>(self).0 as *mut T)
     }
 
+    #[cfg(feature = "headers")]
     #[inline]
     unsafe fn downcast_unchecked<T: 'static>(self: Box<Self>) -> T {
         *Box::from_raw(mem::transmute::<*mut _, (*mut (), *mut ())>(Box::into_raw(self)).0 as *mut T)
@@ -386,6 +400,7 @@ impl Clone for Box<dyn Header + Send + Sync> {
     }
 }
 
+#[cfg(feature = "headers")]
 #[inline]
 fn header_name<T: Header>() -> &'static str {
     <T as Header>::header_name()
@@ -407,6 +422,7 @@ impl Default for Headers {
 
 macro_rules! literals {
     ($($len:expr => $($header:path),+;)+) => (
+        #[cfg(feature = "headers")]
         fn maybe_literal(s: &str) -> Cow<'static, str> {
             match s.len() {
                 $($len => {
@@ -652,11 +668,13 @@ impl fmt::Debug for Headers {
 }
 
 /// An `Iterator` over the fields in a `Headers` map.
+#[cfg(feature = "headers")]
 #[allow(missing_debug_implementations)]
 pub struct HeadersItems<'a> {
     inner: ::std::slice::Iter<'a, (HeaderName, Item)>
 }
 
+#[cfg(feature = "headers")]
 impl<'a> Iterator for HeadersItems<'a> {
     type Item = HeaderView<'a>;
 
@@ -666,8 +684,10 @@ impl<'a> Iterator for HeadersItems<'a> {
 }
 
 /// Returned with the `HeadersItems` iterator.
+#[cfg(feature = "headers")]
 pub struct HeaderView<'a>(&'a HeaderName, &'a Item);
 
+#[cfg(feature = "headers")]
 impl<'a> HeaderView<'a> {
     /// Check if a HeaderView is a certain Header.
     #[inline]
@@ -705,6 +725,7 @@ impl<'a> HeaderView<'a> {
     }
 }
 
+#[cfg(feature = "headers")]
 impl<'a> fmt::Display for HeaderView<'a> {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -712,6 +733,7 @@ impl<'a> fmt::Display for HeaderView<'a> {
     }
 }
 
+#[cfg(feature = "headers")]
 impl<'a> fmt::Debug for HeaderView<'a> {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -799,12 +821,10 @@ impl PartialEq<HeaderName> for str {
 #[cfg(test)]
 mod tests {
     use std::fmt;
-    use super::{
-        Header, RawLike, ContentLength, ContentType, Host,
-        SetCookie};
+    use super::{Header, RawLike};
 
     #[cfg(feature = "headers")]
-    use super::Headers;
+    use super::{Headers, ContentLength, ContentType, Host, SetCookie};
 
     #[cfg(feature = "nightly")]
     use test::Bencher;

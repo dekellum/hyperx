@@ -226,10 +226,10 @@ mod tests {
     use http;
     use ::header::{
         ContentEncoding, ContentLength, Encoding, ETag,
-        Header, Host, Te, TypedHeaders};
+        Header, Te, TypedHeaders};
 
     #[cfg(feature = "headers")]
-    use ::header::Headers;
+    use ::header::{Headers, Host};
 
     #[cfg(feature = "nightly")]
     use test::Bencher;
