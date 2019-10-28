@@ -249,8 +249,11 @@ mod sealed {
 pub struct Formatter<'a, 'b: 'a>(Multi<'a, 'b>);
 
 enum Multi<'a, 'b: 'a> {
+    #[allow(unused)]
     Line(&'a str, &'a mut fmt::Formatter<'b>),
+    #[allow(unused)]
     Join(bool, &'a mut fmt::Formatter<'b>),
+    #[allow(unused)]
     Raw(&'a mut Raw),
 }
 
