@@ -200,7 +200,6 @@ mod benches {
     bench_header!(bearer, ProxyAuthorization<Bearer>, { vec![b"Bearer fpKL54jvWmEGVoRdCNjG".to_vec()] });
 }
 
-#[cfg(feature = "compat")]
 impl<S> ::header::StandardHeader for ProxyAuthorization<S>
     where S: Scheme + Any + ::std::fmt::Display
 {

@@ -1,4 +1,5 @@
-//! Implementation module for various _compat_ features with the _http_ crate.
+//! Implementation module for various compatibility features with the _http_
+//! crate.
 
 use std::convert::From;
 use std::fmt::Display;

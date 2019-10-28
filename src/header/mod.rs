@@ -21,16 +21,13 @@
 //!
 //! ## Parsing `http::header::HeaderValue`s
 //!
-//! With the default *compat* feature enabled, `HeaderValue`(s) implement the
-//! `RawLike` trait which allows for parsing with less copying than going
-//! through `HeaderValue::to_str` or the `Raw` type. See example usage below:
+//! `HeaderValue`(s) implement the `RawLike` trait which allows for parsing
+//! with less copying than going through `HeaderValue::to_str` or the `Raw`
+//! type. See example usage below:
 //!
 //! ```
-//! # #[cfg(feature = "compat")]
 //! # extern crate hyperx;
-//! # #[cfg(feature = "compat")]
 //! # extern crate http;
-//! # #[cfg(feature = "compat")]
 //! # fn run() -> Result<(), Box<std::error::Error>> {
 //! use http::header::{HeaderMap, CONTENT_ENCODING};
 //! use hyperx::header::{ContentEncoding, Encoding, Header};
@@ -53,12 +50,8 @@
 //! ));
 //! # Ok(())
 //! # }
-//! # #[cfg(feature = "compat")]
 //! # fn main() {
 //! #     run().unwrap();
-//! # }
-//! # #[cfg(not(feature = "compat"))]
-//! # fn main() {
 //! # }
 //! ```
 //!
@@ -69,11 +62,8 @@
 //! standard header types named in the _http_ crate:
 //!
 //! ```
-//! # #[cfg(feature = "compat")]
 //! # extern crate hyperx;
-//! # #[cfg(feature = "compat")]
 //! # extern crate http;
-//! # #[cfg(feature = "compat")]
 //! # fn run() -> Result<(), Box<std::error::Error>> {
 //! use http::header::HeaderMap;
 //! use hyperx::header::{ContentEncoding, Encoding, TypedHeaders};
@@ -90,12 +80,8 @@
 //! );
 //! # Ok(())
 //! # }
-//! # #[cfg(feature = "compat")]
 //! # fn main() {
 //! #     run().unwrap();
-//! # }
-//! # #[cfg(not(feature = "compat"))]
-//! # fn main() {
 //! # }
 //! ```
 //!
@@ -185,10 +171,8 @@ mod raw;
 mod shared;
 pub mod parsing;
 
-#[cfg(feature = "compat")]
 mod compat;
 
-#[cfg(feature = "compat")]
 pub use self::compat::{TypedHeaders, StandardHeader, ValueMapIter};
 
 /// A trait for any object that will represent a header field and value.

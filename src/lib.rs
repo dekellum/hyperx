@@ -16,7 +16,6 @@
 
 extern crate base64;
 extern crate bytes;
-#[cfg(feature = "compat")]
 extern crate http;
 extern crate httparse;
 extern crate language_tags;
