@@ -362,6 +362,7 @@ mod tests {
         assert_eq!(r.ok(), None);
     }
 
+    #[cfg(feature = "headers")]
     #[test]
     fn test_fmt() {
         use header::Headers;

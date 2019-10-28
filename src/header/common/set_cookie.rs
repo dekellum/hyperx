@@ -106,6 +106,7 @@ impl Header for SetCookie {
     }
 }
 
+#[cfg(feature = "headers")]
 #[test]
 fn test_set_cookie_fmt() {
     use ::header::Headers;

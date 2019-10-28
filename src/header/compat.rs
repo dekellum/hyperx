@@ -1,14 +1,24 @@
 //! Implementation module for various compatibility features with the _http_
 //! crate.
 
+#[cfg(feature = "headers")]
 use std::convert::From;
+
 use std::fmt::Display;
 
+#[cfg(feature = "headers")]
 use http;
+
 use http::header::{GetAll, HeaderMap, HeaderValue, ValueIter};
 
 use ::Result;
-use super::{Header, Headers, Raw, RawLike};
+use super::{Header, RawLike};
+
+#[cfg(feature = "headers")]
+use super::Raw;
+
+#[cfg(feature = "headers")]
+use super::Headers;
 
 /// A trait for the "standard" headers that have an associated `HeaderName`
 /// constant in the _http_ crate.
@@ -98,6 +108,7 @@ impl TypedHeaders for HeaderMap {
     }
 }
 
+#[cfg(feature = "headers")]
 impl From<http::HeaderMap> for Headers {
     fn from(mut header_map: http::HeaderMap) -> Headers {
         let mut headers = Headers::new();
@@ -114,6 +125,7 @@ impl From<http::HeaderMap> for Headers {
     }
 }
 
+#[cfg(feature = "headers")]
 impl<'a> From<&'a http::HeaderMap> for Headers {
     fn from(header_map: &'a http::HeaderMap) -> Headers {
         let mut headers = Headers::new();
@@ -124,6 +136,7 @@ impl<'a> From<&'a http::HeaderMap> for Headers {
     }
 }
 
+#[cfg(feature = "headers")]
 impl From<Headers> for http::HeaderMap {
     #[inline]
     fn from(headers: Headers) -> http::HeaderMap {
@@ -131,6 +144,7 @@ impl From<Headers> for http::HeaderMap {
     }
 }
 
+#[cfg(feature = "headers")]
 impl<'a> From<&'a Headers> for http::HeaderMap {
     fn from(headers: &'a Headers) -> http::HeaderMap {
         let mut hmap = http::HeaderMap::new();
@@ -212,7 +226,10 @@ mod tests {
     use http;
     use ::header::{
         ContentEncoding, ContentLength, Encoding, ETag,
-        Header, Headers, Host, Te, TypedHeaders};
+        Header, Host, Te, TypedHeaders};
+
+    #[cfg(feature = "headers")]
+    use ::header::Headers;
 
     #[cfg(feature = "nightly")]
     use test::Bencher;
@@ -310,6 +327,7 @@ mod tests {
             vec![Encoding::Identity, Encoding::Gzip, Encoding::Chunked]);
     }
 
+    #[cfg(feature = "headers")]
     fn raw_headers_sample() -> Headers {
         let mut heads = Headers::new();
 
@@ -333,6 +351,7 @@ mod tests {
         heads
     }
 
+    #[cfg(feature = "headers")]
     #[test]
     fn test_convert_mixed() {
         let mut headers = Headers::new();
@@ -356,6 +375,7 @@ mod tests {
     }
 
     #[test]
+    #[cfg(feature = "headers")]
     fn test_convert_sample() {
         let headers = raw_headers_sample();
         let hmap = http::HeaderMap::from(headers.clone());
@@ -368,6 +388,7 @@ mod tests {
     }
 
     #[test]
+    #[cfg(feature = "headers")]
     fn test_convert_by_ref() {
         let headers = raw_headers_sample();
         let hmap = http::HeaderMap::from(&headers);
@@ -527,7 +548,7 @@ mod tests {
         })
     }
 
-    #[cfg(feature = "nightly")]
+    #[cfg(all(feature = "nightly", feature = "headers"))]
     #[bench]
     fn bench_5_map_from_headers(b: &mut Bencher) {
         let heads = raw_headers_sample();
@@ -537,7 +558,7 @@ mod tests {
         })
     }
 
-    #[cfg(feature = "nightly")]
+    #[cfg(all(feature = "nightly", feature = "headers"))]
     #[bench]
     fn bench_5_headers_from_map(b: &mut Bencher) {
         let heads = raw_headers_sample();
@@ -548,7 +569,7 @@ mod tests {
         })
     }
 
-    #[cfg(feature = "nightly")]
+    #[cfg(all(feature = "nightly", feature = "headers"))]
     #[bench]
     fn bench_5_headers_from_map_by_value(b: &mut Bencher) {
         let heads = raw_headers_sample();

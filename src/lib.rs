@@ -29,7 +29,10 @@ extern crate unicase;
 extern crate test;
 
 pub use error::{Result, Error};
+
+#[cfg(feature = "headers")]
 pub use header::Headers;
+
 pub use method::Method;
 
 mod error;

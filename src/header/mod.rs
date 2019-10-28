@@ -151,18 +151,26 @@
 //! }
 //! ```
 use std::borrow::{Cow, ToOwned};
+
+#[cfg(feature = "headers")]
 use std::iter::{FromIterator, IntoIterator};
+
 use std::{mem, fmt};
 
 use unicase::Ascii;
 
-use self::internals::{Item, VecMap, Entry};
+use self::internals::{Item};
+
+#[cfg(feature = "headers")]
+use self::internals::{VecMap, Entry};
+
 use self::sealed::HeaderClone;
 
 pub use self::shared::*;
 pub use self::common::*;
 pub use self::raw::{Raw, RawLike};
 
+#[cfg(feature = "headers")]
 use bytes::Bytes;
 
 mod common;
@@ -384,11 +392,13 @@ fn header_name<T: Header>() -> &'static str {
 }
 
 /// A map of header fields on requests and responses.
+#[cfg(feature = "headers")]
 #[derive(Clone)]
 pub struct Headers {
     data: VecMap<HeaderName, Item>,
 }
 
+#[cfg(feature = "headers")]
 impl Default for Headers {
     fn default() -> Headers {
         Headers::new()
@@ -442,6 +452,7 @@ literals! {
     27 => AccessControlAllowOrigin;
 }
 
+#[cfg(feature = "headers")]
 impl Headers {
 
     /// Creates a new, empty headers map.
@@ -602,6 +613,7 @@ impl Headers {
 
 }
 
+#[cfg(feature = "headers")]
 impl PartialEq for Headers {
     fn eq(&self, other: &Headers) -> bool {
         if self.len() != other.len() {
@@ -618,6 +630,7 @@ impl PartialEq for Headers {
     }
 }
 
+#[cfg(feature = "headers")]
 impl fmt::Display for Headers {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -628,6 +641,7 @@ impl fmt::Display for Headers {
     }
 }
 
+#[cfg(feature = "headers")]
 impl fmt::Debug for Headers {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -705,6 +719,7 @@ impl<'a> fmt::Debug for HeaderView<'a> {
     }
 }
 
+#[cfg(feature = "headers")]
 impl<'a> Extend<HeaderView<'a>> for Headers {
     fn extend<I: IntoIterator<Item=HeaderView<'a>>>(&mut self, iter: I) {
         for header in iter {
@@ -713,6 +728,7 @@ impl<'a> Extend<HeaderView<'a>> for Headers {
     }
 }
 
+#[cfg(feature = "headers")]
 impl<'a> Extend<(&'a str, Bytes)> for Headers {
     fn extend<I: IntoIterator<Item=(&'a str, Bytes)>>(&mut self, iter: I) {
         for (name, value) in iter {
@@ -731,6 +747,7 @@ impl<'a> Extend<(&'a str, Bytes)> for Headers {
     }
 }
 
+#[cfg(feature = "headers")]
 impl<'a> FromIterator<HeaderView<'a>> for Headers {
     fn from_iter<I: IntoIterator<Item=HeaderView<'a>>>(iter: I) -> Headers {
         let mut headers = Headers::new();
@@ -783,12 +800,16 @@ impl PartialEq<HeaderName> for str {
 mod tests {
     use std::fmt;
     use super::{
-        Headers, Header, RawLike, ContentLength, ContentType, Host,
+        Header, RawLike, ContentLength, ContentType, Host,
         SetCookie};
+
+    #[cfg(feature = "headers")]
+    use super::Headers;
 
     #[cfg(feature = "nightly")]
     use test::Bencher;
 
+    #[cfg(feature = "headers")]
     macro_rules! make_header {
         ($name:expr, $value:expr) => ({
             let mut headers = Headers::new();
@@ -801,6 +822,8 @@ mod tests {
             make_header!(&bytes[..colon], &bytes[colon + 2..])
         })
     }
+
+    #[cfg(feature = "headers")]
     #[test]
     fn test_from_raw() {
         let headers = make_header!(b"Content-Length", b"10");
@@ -840,6 +863,7 @@ mod tests {
         }
     }
 
+    #[cfg(feature = "headers")]
     #[test]
     fn test_different_structs_for_same_header() {
         let headers = make_header!(b"Content-Length: 10");
@@ -847,12 +871,14 @@ mod tests {
         assert_eq!(headers.get::<CrazyLength>(), Some(&CrazyLength(Some(false), 10)));
     }
 
+    #[cfg(feature = "headers")]
     #[test]
     fn test_trailing_whitespace() {
         let headers = make_header!(b"Content-Length: 10   ");
         assert_eq!(headers.get::<ContentLength>(), Some(&ContentLength(10)));
     }
 
+    #[cfg(feature = "headers")]
     #[test]
     fn test_multiple_reads() {
         let headers = make_header!(b"Content-Length: 10");
@@ -861,6 +887,7 @@ mod tests {
         assert_eq!(one, two);
     }
 
+    #[cfg(feature = "headers")]
     #[test]
     fn test_different_reads() {
         let mut headers = Headers::new();
@@ -870,6 +897,7 @@ mod tests {
         let ContentType(_) = *headers.get::<ContentType>().unwrap();
     }
 
+    #[cfg(feature = "headers")]
     #[test]
     fn test_typed_get_raw() {
         let mut headers = Headers::new();
@@ -883,6 +911,7 @@ mod tests {
         assert_eq!(headers.get_raw("set-cookie").unwrap(), &["foo=bar", "baz=quux; Path=/path"][..]);
     }
 
+    #[cfg(feature = "headers")]
     #[test]
     fn test_get_mutable() {
         let mut headers = make_header!(b"Content-Length: 10");
@@ -891,6 +920,7 @@ mod tests {
         assert_eq!(*headers.get::<ContentLength>().unwrap(), ContentLength(20));
     }
 
+    #[cfg(feature = "headers")]
     #[test]
     fn test_headers_to_string() {
         let mut headers = Headers::new();
@@ -902,6 +932,7 @@ mod tests {
         assert!(s.contains("Content-Length: 15\r\n"));
     }
 
+    #[cfg(feature = "headers")]
     #[test]
     fn test_headers_to_string_raw() {
         let mut headers = make_header!(b"Content-Length: 10");
@@ -910,6 +941,7 @@ mod tests {
         assert_eq!(s, "Content-Length: 10\r\nx-foo: foo\r\nx-foo: bar\r\n");
     }
 
+    #[cfg(feature = "headers")]
     #[test]
     fn test_set_raw() {
         let mut headers = Headers::new();
@@ -919,6 +951,7 @@ mod tests {
         assert_eq!(headers.get(), Some(&ContentLength(20)));
     }
 
+    #[cfg(feature = "headers")]
     #[test]
     fn test_append_raw() {
         let mut headers = Headers::new();
@@ -929,6 +962,7 @@ mod tests {
         assert_eq!(headers.get_raw("x-foo").unwrap(), &[b"bar".to_vec()][..]);
     }
 
+    #[cfg(feature = "headers")]
     #[test]
     fn test_remove_raw() {
         let mut headers = Headers::new();
@@ -937,6 +971,7 @@ mod tests {
         assert_eq!(headers.get_raw("Content-length"), None);
     }
 
+    #[cfg(feature = "headers")]
     #[test]
     fn test_remove() {
         let mut headers = Headers::new();
@@ -950,6 +985,7 @@ mod tests {
         assert_eq!(headers.len(), 0);
     }
 
+    #[cfg(feature = "headers")]
     #[test]
     fn test_len() {
         let mut headers = Headers::new();
@@ -962,6 +998,7 @@ mod tests {
         assert_eq!(headers.len(), 2);
     }
 
+    #[cfg(feature = "headers")]
     #[test]
     fn test_clear() {
         let mut headers = Headers::new();
@@ -972,6 +1009,7 @@ mod tests {
         assert_eq!(headers.len(), 0);
     }
 
+    #[cfg(feature = "headers")]
     #[test]
     fn test_iter() {
         let mut headers = Headers::new();
@@ -984,6 +1022,7 @@ mod tests {
         }
     }
 
+    #[cfg(feature = "headers")]
     #[test]
     fn test_header_view_value_string() {
         let mut headers = Headers::new();
@@ -994,6 +1033,7 @@ mod tests {
         }
     }
 
+    #[cfg(feature = "headers")]
     #[test]
     fn test_header_view_raw() {
         let mut headers = Headers::new();
@@ -1005,6 +1045,7 @@ mod tests {
         }
     }
 
+    #[cfg(feature = "headers")]
     #[test]
     fn test_eq() {
         let mut headers1 = Headers::new();
@@ -1035,7 +1076,7 @@ mod tests {
         assert_ne!(headers1, headers2);
     }
 
-    #[cfg(feature = "nightly")]
+    #[cfg(all(feature = "nightly", feature = "headers"))]
     #[bench]
     fn bench_headers_new(b: &mut Bencher) {
         b.iter(|| {
@@ -1045,7 +1086,7 @@ mod tests {
         })
     }
 
-    #[cfg(feature = "nightly")]
+    #[cfg(all(feature = "nightly", feature = "headers"))]
     #[bench]
     fn bench_headers_get(b: &mut Bencher) {
         let mut headers = Headers::new();
@@ -1053,14 +1094,14 @@ mod tests {
         b.iter(|| assert_eq!(headers.get::<ContentLength>(), Some(&ContentLength(11))))
     }
 
-    #[cfg(feature = "nightly")]
+    #[cfg(all(feature = "nightly", feature = "headers"))]
     #[bench]
     fn bench_headers_get_miss(b: &mut Bencher) {
         let headers = Headers::new();
         b.iter(|| assert!(headers.get::<ContentLength>().is_none()))
     }
 
-    #[cfg(feature = "nightly")]
+    #[cfg(all(feature = "nightly", feature = "headers"))]
     #[bench]
     fn bench_headers_get_miss_previous_10(b: &mut Bencher) {
         let mut headers = Headers::new();
@@ -1070,14 +1111,14 @@ mod tests {
         b.iter(|| assert!(headers.get::<ContentLength>().is_none()))
     }
 
-    #[cfg(feature = "nightly")]
+    #[cfg(all(feature = "nightly", feature = "headers"))]
     #[bench]
     fn bench_headers_set(b: &mut Bencher) {
         let mut headers = Headers::new();
         b.iter(|| headers.set(ContentLength(12)))
     }
 
-    #[cfg(feature = "nightly")]
+    #[cfg(all(feature = "nightly", feature = "headers"))]
     #[bench]
     fn bench_headers_set_previous_10(b: &mut Bencher) {
         let mut headers = Headers::new();
@@ -1087,14 +1128,14 @@ mod tests {
         b.iter(|| headers.set(ContentLength(12)))
     }
 
-    #[cfg(feature = "nightly")]
+    #[cfg(all(feature = "nightly", feature = "headers"))]
     #[bench]
     fn bench_headers_set_raw(b: &mut Bencher) {
         let mut headers = Headers::new();
         b.iter(|| headers.set_raw("non-standard", "hello"))
     }
 
-    #[cfg(feature = "nightly")]
+    #[cfg(all(feature = "nightly", feature = "headers"))]
     #[bench]
     fn bench_headers_set_raw_previous_10(b: &mut Bencher) {
         let mut headers = Headers::new();
@@ -1104,7 +1145,7 @@ mod tests {
         b.iter(|| headers.set_raw("non-standard", "hello"))
     }
 
-    #[cfg(feature = "nightly")]
+    #[cfg(all(feature = "nightly", feature = "headers"))]
     #[bench]
     fn bench_headers_has(b: &mut Bencher) {
         let mut headers = Headers::new();
@@ -1112,7 +1153,7 @@ mod tests {
         b.iter(|| assert!(headers.has::<ContentLength>()))
     }
 
-    #[cfg(feature = "nightly")]
+    #[cfg(all(feature = "nightly", feature = "headers"))]
     #[bench]
     fn bench_headers_view_is(b: &mut Bencher) {
         let mut headers = Headers::new();
@@ -1122,7 +1163,7 @@ mod tests {
         b.iter(|| assert!(view.is::<ContentLength>()))
     }
 
-    #[cfg(feature = "nightly")]
+    #[cfg(all(feature = "nightly", feature = "headers"))]
     #[bench]
     fn bench_headers_fmt(b: &mut Bencher) {
         use std::fmt::Write;

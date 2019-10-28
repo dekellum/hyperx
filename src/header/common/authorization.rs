@@ -230,8 +230,12 @@ impl FromStr for Bearer {
 #[cfg(test)]
 mod tests {
     use super::{Authorization, Basic, Bearer};
-    use super::super::super::{Headers, Header, Raw};
+    use super::super::super::{Header, Raw};
 
+    #[cfg(feature = "headers")]
+    use super::super::super::Headers;
+
+    #[cfg(feature = "headers")]
     #[test]
     fn test_raw_auth() {
         let mut headers = Headers::new();
@@ -246,6 +250,7 @@ mod tests {
         assert_eq!(header.0, "foo bar baz");
     }
 
+    #[cfg(feature = "headers")]
     #[test]
     fn test_basic_auth() {
         let mut headers = Headers::new();
@@ -256,6 +261,7 @@ mod tests {
             "Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==\r\n".to_owned());
     }
 
+    #[cfg(feature = "headers")]
     #[test]
     fn test_basic_auth_no_password() {
         let mut headers = Headers::new();
@@ -279,6 +285,7 @@ mod tests {
         assert_eq!(auth.0.password, Some("".to_owned()));
     }
 
+    #[cfg(feature = "headers")]
     #[test]
     fn test_bearer_auth() {
         let mut headers = Headers::new();
