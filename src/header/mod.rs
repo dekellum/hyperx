@@ -151,25 +151,9 @@
 //! }
 //! ```
 use std::borrow::Cow;
-
-#[cfg(feature = "headers")]
-use std::borrow::ToOwned;
-
-#[cfg(feature = "headers")]
-use std::iter::{FromIterator, IntoIterator};
-
 use std::fmt;
 
-#[cfg(feature = "headers")]
-use std::mem;
-
 use unicase::Ascii;
-
-#[cfg(feature = "headers")]
-use self::internals::{Item};
-
-#[cfg(feature = "headers")]
-use self::internals::{VecMap, Entry};
 
 use self::sealed::HeaderClone;
 
@@ -178,18 +162,26 @@ pub use self::common::*;
 pub use self::raw::{Raw, RawLike};
 
 #[cfg(feature = "headers")]
+use std::{
+    borrow::ToOwned,
+    iter::{FromIterator, IntoIterator},
+    mem,
+};
+
+#[cfg(feature = "headers")]
+use self::internals::{Item, VecMap, Entry};
+
+#[cfg(feature = "headers")]
 use bytes::Bytes;
 
-mod common;
+pub use self::compat::{TypedHeaders, StandardHeader, ValueMapIter};
 
+mod common;
 mod internals;
 mod raw;
 mod shared;
 pub mod parsing;
-
 mod compat;
-
-pub use self::compat::{TypedHeaders, StandardHeader, ValueMapIter};
 
 /// A trait for any object that will represent a header field and value.
 ///

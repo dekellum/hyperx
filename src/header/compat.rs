@@ -1,13 +1,7 @@
 //! Implementation module for various compatibility features with the _http_
 //! crate.
 
-#[cfg(feature = "headers")]
-use std::convert::From;
-
 use std::fmt::Display;
-
-#[cfg(feature = "headers")]
-use http;
 
 use http::header::{GetAll, HeaderMap, HeaderValue, ValueIter};
 
@@ -15,10 +9,13 @@ use ::Result;
 use super::{Header, RawLike};
 
 #[cfg(feature = "headers")]
-use super::Raw;
+use std::convert::From;
 
 #[cfg(feature = "headers")]
-use super::Headers;
+use http;
+
+#[cfg(feature = "headers")]
+use super::{Raw, Headers};
 
 /// A trait for the "standard" headers that have an associated `HeaderName`
 /// constant in the _http_ crate.
