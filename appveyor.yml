@@ -23,7 +23,8 @@ install:
 build: false
 
 test_script:
-  - cargo test --no-default-features
   - cargo test
+  - cargo test --features headers
   - cargo update
   - cargo test
+  - cargo test --features headers
