@@ -60,15 +60,12 @@ impl<T: PartialEq> cmp::PartialOrd for QualityItem<T> {
 
 impl<T: fmt::Display> fmt::Display for QualityItem<T> {
 
-    // FIXME: 1.30.0 intoduces trim_end_matches, to replace trim_right_matches
-    // as used below, deprecated in 1.33.0
-    #[allow(deprecated)]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         fmt::Display::fmt(&self.item, f)?;
         match self.quality.0 {
             1000 => Ok(()),
             0 => f.write_str("; q=0"),
-            x => write!(f, "; q=0.{}", format!("{:03}", x).trim_right_matches('0'))
+            x => write!(f, "; q=0.{}", format!("{:03}", x).trim_end_matches('0'))
         }
     }
 }
