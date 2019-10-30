@@ -508,7 +508,7 @@ mod tests {
         })
     }
 
-    #[cfg(feature = "nightly")]
+    #[cfg(all(feature = "nightly", feature = "headers"))]
     #[bench]
     fn bench_3_get_orig_int(b: &mut Bencher) {
         let mut hdrs = ::header::Headers::new();
