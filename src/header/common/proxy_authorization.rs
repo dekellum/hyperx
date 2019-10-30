@@ -211,7 +211,7 @@ mod benches {
 }
 
 impl<S> ::header::StandardHeader for ProxyAuthorization<S>
-    where S: Scheme + Any + ::std::fmt::Display
+    where S: Scheme + Any
 {
     #[inline]
     fn http_header_name() -> ::http::header::HeaderName {

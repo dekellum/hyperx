@@ -311,7 +311,7 @@ bench_header!(basic, Authorization<Basic>, { vec![b"Basic QWxhZGRpbjpuIHNlc2FtZQ
 bench_header!(bearer, Authorization<Bearer>, { vec![b"Bearer fpKL54jvWmEGVoRdCNjG".to_vec()] });
 
 impl<S> ::header::StandardHeader for Authorization<S>
-    where S: Scheme + Any + ::std::fmt::Display
+    where S: Scheme + Any
 {
     #[inline]
     fn http_header_name() -> ::http::header::HeaderName {
