@@ -38,3 +38,6 @@ nightly = []
 raw_status = []
 compat = [] # no-op for backward compatibility
 headers = []
+
+[package.metadata.docs.rs]
+features = ["headers"]
