@@ -404,7 +404,12 @@ fn header_name<T: Header>() -> &'static str {
     <T as Header>::header_name()
 }
 
-/// A map of header fields on requests and responses.
+/// A specialized map of typed headers.
+///
+/// This type is only available with the non-default _headers_ feature
+/// enabled. The type is preserved for compatibly, but its use is no longer
+/// required nor recommended. Consider replacing with `http::HeaderMap` and its
+/// [`TypedHeaders`](trait.TypedHeaders.html) extension.
 #[cfg(feature = "headers")]
 #[derive(Clone)]
 pub struct Headers {

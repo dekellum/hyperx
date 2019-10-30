@@ -25,7 +25,7 @@ pub trait StandardHeader: Header + Sized {
 }
 
 /// Extension trait for `decode` (parsing) and `encode` (serialization) of
-/// typed headers from/to a collection of headers such as `HeaderMap`.
+/// typed headers from/to a collection of headers such as `http::HeaderMap`.
 pub trait TypedHeaders {
     /// Decode and return `Header` type H or `Error::Header`.
     ///
