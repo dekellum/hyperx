@@ -29,10 +29,11 @@ use header::{Header, RawLike, parsing};
 /// # Example
 ///
 /// ```
-/// use hyperx::header::{Headers, ReferrerPolicy};
+/// # extern crate http;
+/// use hyperx::header::{ReferrerPolicy, TypedHeaders};
 ///
-/// let mut headers = Headers::new();
-/// headers.set(ReferrerPolicy::NoReferrer);
+/// let mut headers = http::HeaderMap::new();
+/// headers.encode(&ReferrerPolicy::NoReferrer);
 /// ```
 #[derive(Clone, PartialEq, Eq, Debug)]
 pub enum ReferrerPolicy {

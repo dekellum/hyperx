@@ -73,24 +73,26 @@ header! {
     /// # Examples
     ///
     /// ```
-    /// use hyperx::header::{Headers, Connection};
+    /// # extern crate http;
+    /// use hyperx::header::{Connection, TypedHeaders};
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(Connection::keep_alive());
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(&Connection::keep_alive());
     /// ```
     ///
     /// ```
+    /// # extern crate http;
     /// # extern crate hyperx;
     /// # extern crate unicase;
     /// # fn main() {
     /// // extern crate unicase;
     ///
-    /// use hyperx::header::{Headers, Connection, ConnectionOption};
+    /// use hyperx::header::{Connection, ConnectionOption, TypedHeaders};
     /// use unicase::Ascii;
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(
-    ///     Connection(vec![
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(
+    ///     &Connection(vec![
     ///         ConnectionOption::ConnectionHeader(Ascii::new("upgrade".to_owned())),
     ///     ])
     /// );

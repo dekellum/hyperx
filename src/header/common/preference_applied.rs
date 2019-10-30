@@ -24,19 +24,25 @@ use header::parsing::{from_comma_delimited, fmt_comma_delimited};
 /// # Examples
 ///
 /// ```
-/// use hyperx::header::{Headers, PreferenceApplied, Preference};
+/// # extern crate http;
+/// use hyperx::header::{PreferenceApplied, Preference, TypedHeaders};
 ///
-/// let mut headers = Headers::new();
-/// headers.set(
-///     PreferenceApplied(vec![Preference::RespondAsync])
+/// let mut headers = http::HeaderMap::new();
+/// headers.insert(
+///     "preference-applied",
+///     PreferenceApplied(vec![
+///         Preference::RespondAsync
+///     ]).to_string().parse().unwrap()
 /// );
 /// ```
 ///
 /// ```
-/// use hyperx::header::{Headers, PreferenceApplied, Preference};
+/// # extern crate http;
+/// use hyperx::header::{PreferenceApplied, Preference, TypedHeaders};
 ///
-/// let mut headers = Headers::new();
-/// headers.set(
+/// let mut headers = http::HeaderMap::new();
+/// headers.insert(
+///     "preference-applied",
 ///     PreferenceApplied(vec![
 ///         Preference::RespondAsync,
 ///         Preference::ReturnRepresentation,
@@ -44,7 +50,7 @@ use header::parsing::{from_comma_delimited, fmt_comma_delimited};
 ///         Preference::Extension("foo".to_owned(),
 ///                               "bar".to_owned(),
 ///                               vec![]),
-///     ])
+///     ]).to_string().parse().unwrap()
 /// );
 /// ```
 #[derive(PartialEq, Clone, Debug)]

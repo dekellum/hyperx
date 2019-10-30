@@ -30,37 +30,41 @@ header! {
     ///
     /// # Examples
     /// ```
-    /// use hyperx::header::{Headers, Accept, qitem};
+    /// # extern crate http;
+    /// use hyperx::header::{Accept, qitem, TypedHeaders};
     /// use hyperx::mime;
     ///
-    /// let mut headers = Headers::new();
+    /// let mut headers = http::HeaderMap::new();
     ///
-    /// headers.set(
-    ///     Accept(vec![
+    /// headers.encode(
+    ///     &Accept(vec![
     ///         qitem(mime::TEXT_HTML),
     ///     ])
     /// );
     /// ```
     ///
     /// ```
-    /// use hyperx::header::{Headers, Accept, qitem};
+    /// # extern crate http;
+    /// use hyperx::header::{Accept, qitem, TypedHeaders};
     /// use hyperx::mime;
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(
-    ///     Accept(vec![
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(
+    ///     &Accept(vec![
     ///         qitem(mime::APPLICATION_JSON),
     ///     ])
     /// );
     /// ```
+    ///
     /// ```
-    /// use hyperx::header::{Headers, Accept, QualityItem, q, qitem};
+    /// # extern crate http;
+    /// use hyperx::header::{Accept, QualityItem, q, qitem, TypedHeaders};
     /// use hyperx::mime;
     ///
-    /// let mut headers = Headers::new();
+    /// let mut headers = http::HeaderMap::new();
     ///
-    /// headers.set(
-    ///     Accept(vec![
+    /// headers.encode(
+    ///     &Accept(vec![
     ///         qitem(mime::TEXT_HTML),
     ///         qitem("application/xhtml+xml".parse().unwrap()),
     ///         QualityItem::new(

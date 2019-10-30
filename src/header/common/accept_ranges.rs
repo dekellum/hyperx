@@ -22,25 +22,28 @@ header! {
     ///
     /// # Examples
     /// ```
-    /// use hyperx::header::{Headers, AcceptRanges, RangeUnit};
+    /// # extern crate http;
+    /// use hyperx::header::{AcceptRanges, RangeUnit, TypedHeaders};
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(AcceptRanges(vec![RangeUnit::Bytes]));
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(&AcceptRanges(vec![RangeUnit::Bytes]));
     /// ```
     ///
     /// ```
-    /// use hyperx::header::{Headers, AcceptRanges, RangeUnit};
+    /// # extern crate http;
+    /// use hyperx::header::{AcceptRanges, RangeUnit, TypedHeaders};
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(AcceptRanges(vec![RangeUnit::None]));
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(&AcceptRanges(vec![RangeUnit::None]));
     /// ```
     ///
     /// ```
-    /// use hyperx::header::{Headers, AcceptRanges, RangeUnit};
+    /// # extern crate http;
+    /// use hyperx::header::{AcceptRanges, RangeUnit, TypedHeaders};
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(
-    ///     AcceptRanges(vec![
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(
+    ///     &AcceptRanges(vec![
     ///         RangeUnit::Unregistered("nibbles".to_owned()),
     ///         RangeUnit::Bytes,
     ///         RangeUnit::Unregistered("doublets".to_owned()),

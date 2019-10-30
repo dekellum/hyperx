@@ -30,10 +30,11 @@ header! {
     /// # Example
     ///
     /// ```
-    /// use hyperx::header::{Headers, UserAgent};
+    /// # extern crate http;
+    /// use hyperx::header::{TypedHeaders, UserAgent};
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(UserAgent::new("hyper/0.5.2"));
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(&UserAgent::new("hyper/0.5.2"));
     /// ```
     (UserAgent, "User-Agent") => Cow[str]
 

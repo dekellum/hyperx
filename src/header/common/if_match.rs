@@ -30,18 +30,20 @@ header! {
     /// # Examples
     ///
     /// ```
-    /// use hyperx::header::{Headers, IfMatch};
+    /// # extern crate http;
+    /// use hyperx::header::{IfMatch, TypedHeaders};
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(IfMatch::Any);
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(&IfMatch::Any);
     /// ```
     ///
     /// ```
-    /// use hyperx::header::{Headers, IfMatch, EntityTag};
+    /// # extern crate http;
+    /// use hyperx::header::{IfMatch, EntityTag, TypedHeaders};
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(
-    ///     IfMatch::Items(vec![
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(
+    ///     &IfMatch::Items(vec![
     ///         EntityTag::new(false, "xyzzy".to_owned()),
     ///         EntityTag::new(false, "foobar".to_owned()),
     ///         EntityTag::new(false, "bazquux".to_owned()),

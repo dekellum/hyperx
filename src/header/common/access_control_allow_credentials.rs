@@ -28,13 +28,14 @@ use header::{Header, RawLike};
 /// # Examples
 ///
 /// ```
+/// # extern crate http;
 /// # extern crate hyperx;
 /// # fn main() {
 ///
-/// use hyperx::header::{Headers, AccessControlAllowCredentials};
+/// use hyperx::header::{AccessControlAllowCredentials, TypedHeaders};
 ///
-/// let mut headers = Headers::new();
-/// headers.set(AccessControlAllowCredentials);
+/// let mut headers = http::HeaderMap::new();
+/// headers.encode(&AccessControlAllowCredentials);
 /// # }
 /// ```
 #[derive(Clone, PartialEq, Debug)]

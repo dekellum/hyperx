@@ -24,17 +24,19 @@ header! {
     /// # Examples
     ///
     /// ```
-    /// use hyperx::header::{Headers, ContentLocation};
+    /// # extern crate http;
+    /// use hyperx::header::{ContentLocation, TypedHeaders};
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(ContentLocation("/hypertext/Overview.html".to_owned()));
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(&ContentLocation("/hypertext/Overview.html".to_owned()));
     /// ```
     ///
     /// ```
-    /// use hyperx::header::{Headers, ContentLocation};
+    /// # extern crate http;
+    /// use hyperx::header::{ContentLocation, TypedHeaders};
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(ContentLocation("http://www.example.org/hypertext/Overview.html".to_owned()));
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(&ContentLocation("http://www.example.org/hypertext/Overview.html".to_owned()));
     /// ```
     // TODO: use URL
     (ContentLocation, "Content-Location") => [String]

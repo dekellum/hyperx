@@ -58,15 +58,16 @@ use header::{Header, RawLike};
 /// # Examples
 ///
 /// ```
-/// use hyperx::header::{Headers, Link, LinkValue, RelationType};
+/// # extern crate http;
+/// use hyperx::header::{Link, LinkValue, RelationType, TypedHeaders};
 ///
 /// let link_value = LinkValue::new("http://example.com/TheBook/chapter2")
 ///     .push_rel(RelationType::Previous)
 ///     .set_title("previous chapter");
 ///
-/// let mut headers = Headers::new();
-/// headers.set(
-///     Link::new(vec![link_value])
+/// let mut headers = http::HeaderMap::new();
+/// headers.encode(
+///     &Link::new(vec![link_value])
 /// );
 /// ```
 #[derive(Clone, PartialEq, Debug)]

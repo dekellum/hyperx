@@ -19,11 +19,12 @@ header! {
     /// # Example
     ///
     /// ```
-    /// use hyperx::header::{Headers, Date};
+    /// # extern crate http;
+    /// use hyperx::header::{Date, TypedHeaders};
     /// use std::time::SystemTime;
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(Date(SystemTime::now().into()));
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(&Date(SystemTime::now().into()));
     /// ```
     (Date, "Date") => [HttpDate]
 

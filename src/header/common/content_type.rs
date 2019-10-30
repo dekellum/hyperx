@@ -30,23 +30,25 @@ header! {
     /// # Examples
     ///
     /// ```
-    /// use hyperx::header::{Headers, ContentType};
+    /// # extern crate http;
+    /// use hyperx::header::{ContentType, TypedHeaders};
     ///
-    /// let mut headers = Headers::new();
+    /// let mut headers = http::HeaderMap::new();
     ///
-    /// headers.set(
-    ///     ContentType::json()
+    /// headers.encode(
+    ///     &ContentType::json()
     /// );
     /// ```
     ///
     /// ```
-    /// use hyperx::header::{Headers, ContentType};
+    /// # extern crate http;
+    /// use hyperx::header::{ContentType, TypedHeaders};
     /// use hyperx::mime;
     ///
-    /// let mut headers = Headers::new();
+    /// let mut headers = http::HeaderMap::new();
     ///
-    /// headers.set(
-    ///     ContentType(mime::TEXT_HTML)
+    /// headers.encode(
+    ///     &ContentType(mime::TEXT_HTML)
     /// );
     /// ```
     (ContentType, "Content-Type") => danger [Mime]

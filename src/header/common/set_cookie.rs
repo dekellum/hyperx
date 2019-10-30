@@ -60,15 +60,16 @@ use std::str::from_utf8;
 /// # Example
 ///
 /// ```
-/// use hyperx::header::{Headers, SetCookie};
+/// # extern crate http;
+/// use hyperx::header::{SetCookie, TypedHeaders};
 ///
-/// let mut headers = Headers::new();
+/// let mut headers = http::HeaderMap::new();
 ///
-/// headers.set(
-///     SetCookie(vec![
-///         String::from("foo=bar; Path=/path; Domain=example.com")
-///     ])
+/// headers.append(
+///     http::header::SET_COOKIE,
+///     "foo=bar; Path=/path; Domain=example.com".parse().unwrap()
 /// );
+/// let cookie: SetCookie = headers.decode().unwrap();
 /// ```
 #[derive(Clone, PartialEq, Debug)]
 pub struct SetCookie(pub Vec<String>);

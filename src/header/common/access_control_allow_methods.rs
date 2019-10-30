@@ -20,22 +20,24 @@ header! {
     /// # Examples
     ///
     /// ```
-    /// use hyperx::header::{Headers, AccessControlAllowMethods};
+    /// # extern crate http;
+    /// use hyperx::header::{AccessControlAllowMethods, TypedHeaders};
     /// use hyperx::Method;
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(
-    ///     AccessControlAllowMethods(vec![Method::Get])
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(
+    ///     &AccessControlAllowMethods(vec![Method::Get])
     /// );
     /// ```
     ///
     /// ```
-    /// use hyperx::header::{Headers, AccessControlAllowMethods};
+    /// # extern crate http;
+    /// use hyperx::header::{AccessControlAllowMethods, TypedHeaders};
     /// use hyperx::Method;
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(
-    ///     AccessControlAllowMethods(vec![
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(
+    ///     &AccessControlAllowMethods(vec![
     ///         Method::Get,
     ///         Method::Post,
     ///         Method::Patch,

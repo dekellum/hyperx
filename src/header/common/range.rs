@@ -39,25 +39,27 @@ use header::parsing::{from_one_raw_str};
 /// # Examples
 ///
 /// ```
-/// use hyperx::header::{Headers, Range, ByteRangeSpec};
+/// # extern crate http;
+/// use hyperx::header::{Range, ByteRangeSpec, TypedHeaders};
 ///
-/// let mut headers = Headers::new();
-/// headers.set(Range::Bytes(
+/// let mut headers = http::HeaderMap::new();
+/// headers.encode(&Range::Bytes(
 ///     vec![ByteRangeSpec::FromTo(1, 100), ByteRangeSpec::AllFrom(200)]
 /// ));
 ///
 /// headers.clear();
-/// headers.set(Range::Unregistered("letters".to_owned(), "a-f".to_owned()));
+/// headers.encode(&Range::Unregistered("letters".to_owned(), "a-f".to_owned()));
 /// ```
 ///
 /// ```
-/// use hyperx::header::{Headers, Range};
+/// # extern crate http;
+/// use hyperx::header::{Range, TypedHeaders};
 ///
-/// let mut headers = Headers::new();
-/// headers.set(Range::bytes(1, 100));
+/// let mut headers = http::HeaderMap::new();
+/// headers.encode(&Range::bytes(1, 100));
 ///
 /// headers.clear();
-/// headers.set(Range::bytes_multi(vec![(1, 100), (200, 300)]));
+/// headers.encode(&Range::bytes_multi(vec![(1, 100), (200, 300)]));
 /// ```
 #[derive(PartialEq, Clone, Debug)]
 pub enum Range {

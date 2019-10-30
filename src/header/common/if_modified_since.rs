@@ -22,12 +22,13 @@ header! {
     /// # Example
     ///
     /// ```
-    /// use hyperx::header::{Headers, IfModifiedSince};
+    /// # extern crate http;
+    /// use hyperx::header::{IfModifiedSince, TypedHeaders};
     /// use std::time::{SystemTime, Duration};
     ///
-    /// let mut headers = Headers::new();
+    /// let mut headers = http::HeaderMap::new();
     /// let modified = SystemTime::now() - Duration::from_secs(60 * 60 * 24);
-    /// headers.set(IfModifiedSince(modified.into()));
+    /// headers.encode(&IfModifiedSince(modified.into()));
     /// ```
     (IfModifiedSince, "If-Modified-Since") => [HttpDate]
 

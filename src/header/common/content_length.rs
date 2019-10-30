@@ -34,10 +34,11 @@ use header::{Header, RawLike, parsing};
 /// # Example
 ///
 /// ```
-/// use hyperx::header::{Headers, ContentLength};
+/// # extern crate http;
+/// use hyperx::header::{ContentLength, TypedHeaders};
 ///
-/// let mut headers = Headers::new();
-/// headers.set(ContentLength(1024u64));
+/// let mut headers = http::HeaderMap::new();
+/// headers.encode(&ContentLength(1024u64));
 /// ```
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct ContentLength(pub u64);

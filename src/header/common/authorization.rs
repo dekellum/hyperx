@@ -26,17 +26,19 @@ use header::{Header, RawLike};
 /// # Examples
 ///
 /// ```
-/// use hyperx::header::{Headers, Authorization};
+/// # extern crate http;
+/// use hyperx::header::{Authorization, TypedHeaders};
 ///
-/// let mut headers = Headers::new();
-/// headers.set(Authorization("let me in".to_owned()));
+/// let mut headers = http::HeaderMap::new();
+/// headers.encode(&Authorization("let me in".to_owned()));
 /// ```
 /// ```
-/// use hyperx::header::{Headers, Authorization, Basic};
+/// # extern crate http;
+/// use hyperx::header::{Authorization, Basic, TypedHeaders};
 ///
-/// let mut headers = Headers::new();
-/// headers.set(
-///    Authorization(
+/// let mut headers = http::HeaderMap::new();
+/// headers.encode(
+///    &Authorization(
 ///        Basic {
 ///            username: "Aladdin".to_owned(),
 ///            password: Some("open sesame".to_owned())
@@ -46,11 +48,11 @@ use header::{Header, RawLike};
 /// ```
 ///
 /// ```
-/// use hyperx::header::{Headers, Authorization, Bearer};
+/// use hyperx::header::{Authorization, Bearer, TypedHeaders};
 ///
-/// let mut headers = Headers::new();
-/// headers.set(
-///    Authorization(
+/// let mut headers = http::HeaderMap::new();
+/// headers.encode(
+///    &Authorization(
 ///        Bearer {
 ///            token: "QWxhZGRpbjpvcGVuIHNlc2FtZQ".to_owned()
 ///        }

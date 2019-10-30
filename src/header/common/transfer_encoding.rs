@@ -29,11 +29,12 @@ header! {
     /// # Example
     ///
     /// ```
-    /// use hyperx::header::{Headers, TransferEncoding, Encoding};
+    /// # extern crate http;
+    /// use hyperx::header::{TransferEncoding, Encoding, TypedHeaders};
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(
-    ///     TransferEncoding(vec![
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(
+    ///     &TransferEncoding(vec![
     ///         Encoding::Gzip,
     ///         Encoding::Chunked,
     ///     ])

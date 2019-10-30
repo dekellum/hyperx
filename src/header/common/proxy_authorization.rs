@@ -26,17 +26,19 @@ use header::{Header, RawLike, Scheme};
 /// # Examples
 ///
 /// ```
-/// use hyperx::header::{Headers, ProxyAuthorization};
+/// # extern crate http;
+/// use hyperx::header::{ProxyAuthorization, TypedHeaders};
 ///
-/// let mut headers = Headers::new();
-/// headers.set(ProxyAuthorization("let me in".to_owned()));
+/// let mut headers = http::HeaderMap::new();
+/// headers.encode(&ProxyAuthorization("let me in".to_owned()));
 /// ```
 /// ```
-/// use hyperx::header::{Headers, ProxyAuthorization, Basic};
+/// # extern crate http;
+/// use hyperx::header::{ProxyAuthorization, Basic, TypedHeaders};
 ///
-/// let mut headers = Headers::new();
-/// headers.set(
-///    ProxyAuthorization(
+/// let mut headers = http::HeaderMap::new();
+/// headers.encode(
+///    &ProxyAuthorization(
 ///        Basic {
 ///            username: "Aladdin".to_owned(),
 ///            password: Some("open sesame".to_owned())
@@ -46,11 +48,12 @@ use header::{Header, RawLike, Scheme};
 /// ```
 ///
 /// ```
-/// use hyperx::header::{Headers, ProxyAuthorization, Bearer};
+/// # extern crate http;
+/// use hyperx::header::{ProxyAuthorization, Bearer, TypedHeaders};
 ///
-/// let mut headers = Headers::new();
-/// headers.set(
-///    ProxyAuthorization(
+/// let mut headers = http::HeaderMap::new();
+/// headers.encode(
+///    &ProxyAuthorization(
 ///        Bearer {
 ///            token: "QWxhZGRpbjpvcGVuIHNlc2FtZQ".to_owned()
 ///        }

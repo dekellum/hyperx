@@ -23,27 +23,30 @@ use header::{Header, RawLike};
 ///
 /// # Examples
 /// ```
-/// use hyperx::header::{Headers, AccessControlAllowOrigin};
+/// # extern crate http;
+/// use hyperx::header::{AccessControlAllowOrigin, TypedHeaders};
 ///
-/// let mut headers = Headers::new();
-/// headers.set(
-///     AccessControlAllowOrigin::Any
+/// let mut headers = http::HeaderMap::new();
+/// headers.encode(
+///     &AccessControlAllowOrigin::Any
 /// );
 /// ```
 /// ```
-/// use hyperx::header::{Headers, AccessControlAllowOrigin};
+/// # extern crate http;
+/// use hyperx::header::{AccessControlAllowOrigin, TypedHeaders};
 ///
-/// let mut headers = Headers::new();
-/// headers.set(
-///     AccessControlAllowOrigin::Null,
+/// let mut headers = http::HeaderMap::new();
+/// headers.encode(
+///     &AccessControlAllowOrigin::Null,
 /// );
 /// ```
 /// ```
-/// use hyperx::header::{Headers, AccessControlAllowOrigin};
+/// # extern crate http;
+/// use hyperx::header::{AccessControlAllowOrigin, TypedHeaders};
 ///
-/// let mut headers = Headers::new();
-/// headers.set(
-///     AccessControlAllowOrigin::Value("http://hyper.rs".to_owned())
+/// let mut headers = http::HeaderMap::new();
+/// headers.encode(
+///     &AccessControlAllowOrigin::Value("http://hyper.rs".to_owned())
 /// );
 /// ```
 #[derive(Clone, PartialEq, Debug)]

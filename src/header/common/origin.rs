@@ -17,20 +17,22 @@ use header::parsing::from_one_raw_str;
 /// # Examples
 ///
 /// ```
-/// use hyperx::header::{Headers, Origin};
+/// # extern crate http;
+/// use hyperx::header::{Origin, TypedHeaders};
 ///
-/// let mut headers = Headers::new();
-/// headers.set(
-///     Origin::new("http", "hyper.rs", None)
+/// let mut headers = http::HeaderMap::new();
+/// headers.encode(
+///     &Origin::new("http", "hyper.rs", None)
 /// );
 /// ```
 ///
 /// ```
-/// use hyperx::header::{Headers, Origin};
+/// # extern crate http;
+/// use hyperx::header::{Origin, TypedHeaders};
 ///
-/// let mut headers = Headers::new();
-/// headers.set(
-///     Origin::new("https", "wikipedia.org", Some(443))
+/// let mut headers = http::HeaderMap::new();
+/// headers.encode(
+///     &Origin::new("https", "wikipedia.org", Some(443))
 /// );
 /// ```
 #[derive(PartialEq, Clone, Debug)]

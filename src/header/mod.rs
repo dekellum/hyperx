@@ -87,20 +87,23 @@
 //!
 //! ## Defining Custom Headers
 //!
-//! Hyper*x* provides many of the most commonly used headers in HTTP. If you
+//! Hyper*x* provides all commonly used headers in HTTP. If you
 //! need to define a custom header, it's easy to do while still taking
 //! advantage of the type system. Hyper*x* includes a `header!` macro for
 //! defining many wrapper-style headers.
 //!
 //! ```
+//! # extern crate http;
 //! # #[macro_use] extern crate hyperx;
-//! use hyperx::header::Headers;
 //! header! { (XRequestGuid, "X-Request-Guid") => [String] }
 //!
 //! fn main () {
-//!     let mut headers = Headers::new();
+//!     let mut headers = http::HeaderMap::new();
 //!
-//!     headers.set(XRequestGuid("a proper guid".to_owned()))
+//!     headers.insert(
+//!         "x-request-guid",
+//!         XRequestGuid("a proper guid".to_owned()).to_string().parse().unwrap()
+//!     );
 //! }
 //! ```
 //!
@@ -125,7 +128,7 @@
 //!     }
 //!
 //!     fn parse_header<'a, T>(raw: &'a T) -> hyperx::Result<Dnt>
-//!     where T: RawLike<'a>
+//!         where T: RawLike<'a>
 //!     {
 //!         if let Some(line) = raw.one() {
 //!             if line.len() == 1 {
