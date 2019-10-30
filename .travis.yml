@@ -4,7 +4,7 @@ script:
   - 'if [ "$WITH_LOCK" != "true" ]; then cargo update; fi'
   - 'cargo test'
   - 'cargo test --features headers'
-  - 'if [ "$TRAVIS_RUST_VERSION" = "nightly" ]; then cargo test --features nightly; fi'
+  - 'if [ "$TRAVIS_RUST_VERSION" = "nightly" ]; then cargo test --all-features; fi'
 # See https://levans.fr/rust_travis_cache.html
 cache:
   directories:
