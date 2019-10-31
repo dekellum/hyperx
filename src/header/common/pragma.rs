@@ -1,6 +1,4 @@
 use std::fmt;
-#[allow(unused, deprecated)]
-use std::ascii::AsciiExt;
 
 use header::{Header, RawLike, parsing};
 
