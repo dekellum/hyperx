@@ -7,7 +7,9 @@
 
 * Upgrade to _percent-encoding_ 2.1.0 \w API changes, MSRV 1.33.0 (#15)
 
-* MSRV is now 1.33.0, based on above upgrades.
+* Broaden _base64_ dependency to include 0.12.0 (MSRV 1.34.0)
+
+* MSRV is now 1.34.0, based on above upgrades.
 
 ## 0.15.2 (2019-10-1)
 
