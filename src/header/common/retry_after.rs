@@ -53,22 +53,24 @@ use header::shared::HttpDate;
 ///
 /// # Examples
 /// ```
+/// # extern crate http;
 /// use std::time::Duration;
-/// use hyperx::header::{Headers, RetryAfter};
+/// use hyperx::header::{RetryAfter, TypedHeaders};
 ///
-/// let mut headers = Headers::new();
-/// headers.set(
-///     RetryAfter::Delay(Duration::from_secs(300))
+/// let mut headers = http::HeaderMap::new();
+/// headers.encode(
+///     &RetryAfter::Delay(Duration::from_secs(300))
 /// );
 /// ```
 /// ```
+/// # extern crate http;
 /// use std::time::{SystemTime, Duration};
-/// use hyperx::header::{Headers, RetryAfter};
+/// use hyperx::header::{RetryAfter, TypedHeaders};
 ///
-/// let mut headers = Headers::new();
+/// let mut headers = http::HeaderMap::new();
 /// let date = SystemTime::now() + Duration::from_secs(300);
-/// headers.set(
-///     RetryAfter::DateTime(date.into())
+/// headers.encode(
+///     &RetryAfter::DateTime(date.into())
 /// );
 /// ```
 

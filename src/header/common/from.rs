@@ -15,10 +15,11 @@ header! {
     /// # Example
     ///
     /// ```
-    /// use hyperx::header::{Headers, From};
+    /// # extern crate http;
+    /// use hyperx::header::{From, TypedHeaders};
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(From("webmaster@example.org".to_owned()));
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(&From("webmaster@example.org".to_owned()));
     /// ```
     // FIXME: Maybe use mailbox?
     (From, "From") => [String]

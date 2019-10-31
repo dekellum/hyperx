@@ -27,20 +27,22 @@ header! {
     /// # Examples
     ///
     /// ```
-    /// use hyperx::header::{Headers, Te, Encoding, qitem};
+    /// # extern crate http;
+    /// use hyperx::header::{Te, Encoding, qitem, TypedHeaders};
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(
-    ///     Te(vec![qitem(Encoding::Trailers)])
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(
+    ///     &Te(vec![qitem(Encoding::Trailers)])
     /// );
     /// ```
     ///
     /// ```
-    /// use hyperx::header::{Headers, Te, Encoding, qitem};
+    /// # extern crate http;
+    /// use hyperx::header::{Te, Encoding, qitem, TypedHeaders};
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(
-    ///     Te(vec![
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(
+    ///     &Te(vec![
     ///         qitem(Encoding::Trailers),
     ///         qitem(Encoding::Gzip),
     ///         qitem(Encoding::Deflate),
@@ -49,11 +51,12 @@ header! {
     /// ```
     ///
     /// ```
-    /// use hyperx::header::{Headers, Te, Encoding, QualityItem, q, qitem};
+    /// # extern crate http;
+    /// use hyperx::header::{Te, Encoding, QualityItem, q, qitem, TypedHeaders};
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(
-    ///     Te(vec![
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(
+    ///     &Te(vec![
     ///         qitem(Encoding::Trailers),
     ///         QualityItem::new(Encoding::Gzip, q(600)),
     ///         QualityItem::new(Encoding::EncodingExt("*".to_owned()), q(0)),

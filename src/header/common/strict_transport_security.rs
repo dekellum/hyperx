@@ -34,14 +34,15 @@ use header::{Header, RawLike, parsing};
 /// # Example
 ///
 /// ```
+/// # extern crate http;
 /// # extern crate hyperx;
 /// # fn main() {
-/// use hyperx::header::{Headers, StrictTransportSecurity};
+/// use hyperx::header::{StrictTransportSecurity, TypedHeaders};
 ///
-/// let mut headers = Headers::new();
+/// let mut headers = http::HeaderMap::new();
 ///
-/// headers.set(
-///    StrictTransportSecurity::including_subdomains(31536000u64)
+/// headers.encode(
+///    &StrictTransportSecurity::including_subdomains(31536000u64)
 /// );
 /// # }
 /// ```

@@ -30,19 +30,21 @@ use header::{self, Header, RawLike, EntityTag, HttpDate};
 /// # Examples
 ///
 /// ```
-/// use hyperx::header::{Headers, IfRange, EntityTag};
+/// # extern crate http;
+/// use hyperx::header::{IfRange, EntityTag, TypedHeaders};
 ///
-/// let mut headers = Headers::new();
-/// headers.set(IfRange::EntityTag(EntityTag::new(false, "xyzzy".to_owned())));
+/// let mut headers = http::HeaderMap::new();
+/// headers.encode(&IfRange::EntityTag(EntityTag::new(false, "xyzzy".to_owned())));
 /// ```
 ///
 /// ```
-/// use hyperx::header::{Headers, IfRange};
+/// # extern crate http;
+/// use hyperx::header::{IfRange, TypedHeaders};
 /// use std::time::{SystemTime, Duration};
 ///
-/// let mut headers = Headers::new();
+/// let mut headers = http::HeaderMap::new();
 /// let fetched = SystemTime::now() - Duration::from_secs(60 * 60 * 24);
-/// headers.set(IfRange::Date(fetched.into()));
+/// headers.encode(&IfRange::Date(fetched.into()));
 /// ```
 #[derive(Clone, Debug, PartialEq)]
 pub enum IfRange {

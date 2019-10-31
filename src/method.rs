@@ -3,7 +3,6 @@ use std::fmt;
 use std::str::FromStr;
 use std::convert::AsRef;
 
-#[cfg(feature = "compat")]
 use http;
 
 use error::Error;
@@ -158,7 +157,6 @@ impl Default for Method {
     }
 }
 
-#[cfg(feature = "compat")]
 impl From<http::Method> for Method {
     fn from(method: http::Method) -> Method {
         match method {
@@ -188,7 +186,6 @@ impl From<http::Method> for Method {
     }
 }
 
-#[cfg(feature = "compat")]
 impl From<Method> for http::Method {
     fn from(method: Method) -> http::Method {
         use http::HttpTryFrom;
@@ -276,7 +273,6 @@ mod tests {
     }
 
     #[test]
-    #[cfg(feature = "compat")]
     fn test_compat() {
         use http::{self, HttpTryFrom};
 

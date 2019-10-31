@@ -18,11 +18,12 @@ header! {
     /// # Examples
     ///
     /// ```
-    /// use hyperx::header::{Headers, AccessControlRequestMethod};
+    /// # extern crate http;
+    /// use hyperx::header::{AccessControlRequestMethod, TypedHeaders};
     /// use hyperx::Method;
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(AccessControlRequestMethod(Method::Get));
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(&AccessControlRequestMethod(Method::Get));
     /// ```
     (AccessControlRequestMethod, "Access-Control-Request-Method") => [Method]
 

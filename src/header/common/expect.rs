@@ -16,9 +16,10 @@ use header::{Header, RawLike};
 ///
 /// # Example
 /// ```
-/// use hyperx::header::{Headers, Expect};
-/// let mut headers = Headers::new();
-/// headers.set(Expect::Continue);
+/// # extern crate http;
+/// use hyperx::header::{Expect, TypedHeaders};
+/// let mut headers = http::HeaderMap::new();
+/// headers.encode(&Expect::Continue);
 /// ```
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub enum Expect {

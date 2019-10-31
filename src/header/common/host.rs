@@ -12,21 +12,21 @@ use header::parsing::from_one_raw_str;
 ///
 /// # Examples
 /// ```
-/// use hyperx::header::{Headers, Host};
+/// # extern crate http;
+/// use hyperx::header::{Host, TypedHeaders};
 ///
-/// let mut headers = Headers::new();
-/// headers.set(
-///     Host::new("hyper.rs", None)
+/// let mut headers = http::HeaderMap::new();
+/// headers.encode(
+///     &Host::new("hyper.rs", None)
 /// );
 /// ```
 /// ```
-/// use hyperx::header::{Headers, Host};
+/// # extern crate http;
+/// use hyperx::header::{Host, TypedHeaders};
 ///
-/// let mut headers = Headers::new();
-/// headers.set(
-///     // In Rust 1.12+
-///     // Host::new("hyper.rs", 8080)
-///     Host::new("hyper.rs", Some(8080))
+/// let mut headers = http::HeaderMap::new();
+/// headers.encode(
+///     &Host::new("hyper.rs", 8080)
 /// );
 /// ```
 #[derive(Clone, PartialEq, Debug)]

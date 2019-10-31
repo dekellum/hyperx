@@ -16,10 +16,14 @@ use header::{self, Header, RawLike};
 ///
 /// # Example
 /// ```
-/// use hyperx::header::{Headers, LastEventId};
+/// # extern crate http;
+/// use hyperx::header::LastEventId;
 ///
-/// let mut headers = Headers::new();
-/// headers.set(LastEventId("1".to_owned()));
+/// let mut headers = http::HeaderMap::new();
+/// headers.insert(
+///     "last-event-id",
+///     LastEventId("1".to_owned()).to_string().parse().unwrap()
+/// );
 /// ```
 #[derive(Clone, Debug, PartialEq)]
 pub struct LastEventId(pub String);

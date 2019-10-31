@@ -18,10 +18,11 @@ header! {
     /// # Examples
     ///
     /// ```
-    /// use hyperx::header::{Headers, AccessControlMaxAge};
+    /// # extern crate http;
+    /// use hyperx::header::{AccessControlMaxAge, TypedHeaders};
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(AccessControlMaxAge(1728000u32));
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(&AccessControlMaxAge(1728000u32));
     /// ```
     (AccessControlMaxAge, "Access-Control-Max-Age") => [u32]
 

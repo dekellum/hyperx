@@ -22,30 +22,33 @@ header! {
     ///
     /// # Examples
     /// ```
-    /// use hyperx::header::{Headers, AcceptCharset, Charset, qitem};
+    /// # extern crate http;
+    /// use hyperx::header::{AcceptCharset, Charset, qitem, TypedHeaders};
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(
-    ///     AcceptCharset(vec![qitem(Charset::Us_Ascii)])
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(
+    ///     &AcceptCharset(vec![qitem(Charset::Us_Ascii)])
     /// );
     /// ```
     /// ```
-    /// use hyperx::header::{Headers, AcceptCharset, Charset, q, QualityItem};
+    /// # extern crate http;
+    /// use hyperx::header::{AcceptCharset, Charset, q, QualityItem, TypedHeaders};
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(
-    ///     AcceptCharset(vec![
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(
+    ///     &AcceptCharset(vec![
     ///         QualityItem::new(Charset::Us_Ascii, q(900)),
     ///         QualityItem::new(Charset::Iso_8859_10, q(200)),
     ///     ])
     /// );
     /// ```
     /// ```
-    /// use hyperx::header::{Headers, AcceptCharset, Charset, qitem};
+    /// # extern crate http;
+    /// use hyperx::header::{AcceptCharset, Charset, qitem, TypedHeaders};
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(
-    ///     AcceptCharset(vec![qitem(Charset::Ext("utf-8".to_owned()))])
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(
+    ///     &AcceptCharset(vec![qitem(Charset::Ext("utf-8".to_owned()))])
     /// );
     /// ```
     (AcceptCharset, "Accept-Charset") => (QualityItem<Charset>)+

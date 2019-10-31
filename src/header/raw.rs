@@ -209,14 +209,17 @@ impl From<Bytes> for Raw {
     }
 }
 
+#[cfg(feature = "headers")]
 pub fn parsed(val: Bytes) -> Raw {
     Raw(Lines::One(From::from(val)))
 }
 
+#[cfg(feature = "headers")]
 pub fn push(raw: &mut Raw, val: Bytes) {
     raw.push_line(val);
 }
 
+#[cfg(feature = "headers")]
 pub fn new() -> Raw {
     Raw(Lines::Empty)
 }

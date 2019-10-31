@@ -21,17 +21,19 @@ header! {
     /// # Examples
     ///
     /// ```
-    /// use hyperx::header::{Headers, Referer};
+    /// # extern crate http;
+    /// use hyperx::header::{Referer, TypedHeaders};
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(Referer::new("/People.html#tim"));
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(&Referer::new("/People.html#tim"));
     /// ```
     ///
     /// ```
-    /// use hyperx::header::{Headers, Referer};
+    /// # extern crate http;
+    /// use hyperx::header::{Referer, TypedHeaders};
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(Referer::new("http://www.example.com/index.html"));
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(&Referer::new("http://www.example.com/index.html"));
     /// ```
     // TODO Use URL
     (Referer, "Referer") => Cow[str]

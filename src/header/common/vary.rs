@@ -23,26 +23,28 @@ header! {
     /// # Example
     ///
     /// ```
-    /// use hyperx::header::{Headers, Vary};
+    /// # extern crate http;
+    /// use hyperx::header::{TypedHeaders, Vary};
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(Vary::Any);
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(&Vary::Any);
     /// ```
     ///
     /// # Example
     ///
     /// ```
+    /// # extern crate http;
     /// # extern crate hyperx;
     /// # extern crate unicase;
     /// # fn main() {
     /// // extern crate unicase;
     ///
-    /// use hyperx::header::{Headers, Vary};
+    /// use hyperx::header::{TypedHeaders, Vary};
     /// use unicase::Ascii;
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(
-    ///     Vary::Items(vec![
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(
+    ///     &Vary::Items(vec![
     ///         Ascii::new("accept-encoding".to_owned()),
     ///         Ascii::new("accept-language".to_owned()),
     ///     ])

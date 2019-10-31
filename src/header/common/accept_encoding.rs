@@ -26,19 +26,21 @@ header! {
     ///
     /// # Examples
     /// ```
-    /// use hyperx::header::{Headers, AcceptEncoding, Encoding, qitem};
+    /// # extern crate http;
+    /// use hyperx::header::{AcceptEncoding, Encoding, qitem, TypedHeaders};
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(
-    ///     AcceptEncoding(vec![qitem(Encoding::Chunked)])
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(
+    ///     &AcceptEncoding(vec![qitem(Encoding::Chunked)])
     /// );
     /// ```
     /// ```
-    /// use hyperx::header::{Headers, AcceptEncoding, Encoding, qitem};
+    /// # extern crate http;
+    /// use hyperx::header::{AcceptEncoding, Encoding, qitem, TypedHeaders};
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(
-    ///     AcceptEncoding(vec![
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(
+    ///     &AcceptEncoding(vec![
     ///         qitem(Encoding::Chunked),
     ///         qitem(Encoding::Gzip),
     ///         qitem(Encoding::Deflate),
@@ -46,11 +48,12 @@ header! {
     /// );
     /// ```
     /// ```
-    /// use hyperx::header::{Headers, AcceptEncoding, Encoding, QualityItem, q, qitem};
+    /// # extern crate http;
+    /// use hyperx::header::{AcceptEncoding, Encoding, QualityItem, q, qitem, TypedHeaders};
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(
-    ///     AcceptEncoding(vec![
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(
+    ///     &AcceptEncoding(vec![
     ///         qitem(Encoding::Chunked),
     ///         QualityItem::new(Encoding::Gzip, q(600)),
     ///         QualityItem::new(Encoding::EncodingExt("*".to_owned()), q(0)),

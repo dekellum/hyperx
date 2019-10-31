@@ -32,18 +32,20 @@ header! {
     /// # Examples
     ///
     /// ```
-    /// use hyperx::header::{Headers, Upgrade, Protocol, ProtocolName};
+    /// # extern crate http;
+    /// use hyperx::header::{Upgrade, Protocol, ProtocolName, TypedHeaders};
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(Upgrade(vec![Protocol::new(ProtocolName::WebSocket, None)]));
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(&Upgrade(vec![Protocol::new(ProtocolName::WebSocket, None)]));
     /// ```
     ///
     /// ```
-    /// use hyperx::header::{Headers, Upgrade, Protocol, ProtocolName};
+    /// # extern crate http;
+    /// use hyperx::header::{Upgrade, Protocol, ProtocolName, TypedHeaders};
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(
-    ///     Upgrade(vec![
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(
+    ///     &Upgrade(vec![
     ///         Protocol::new(ProtocolName::Http, Some("2.0".to_owned())),
     ///         Protocol::new(ProtocolName::Unregistered("SHTTP".to_owned()),
     ///             Some("1.3".to_owned())),

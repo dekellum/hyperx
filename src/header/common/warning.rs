@@ -35,11 +35,12 @@ use header::parsing::from_one_raw_str;
 /// # Examples
 ///
 /// ```
-/// use hyperx::header::{Headers, Warning};
+/// # extern crate http;
+/// use hyperx::header::{TypedHeaders, Warning};
 ///
-/// let mut headers = Headers::new();
-/// headers.set(
-///     Warning{
+/// let mut headers = http::HeaderMap::new();
+/// headers.encode(
+///     &Warning {
 ///         code: 299,
 ///         agent: "api.hyper.rs".to_owned(),
 ///         text: "Deprecated".to_owned(),
@@ -49,11 +50,12 @@ use header::parsing::from_one_raw_str;
 /// ```
 ///
 /// ```
-/// use hyperx::header::{Headers, HttpDate, Warning};
+/// # extern crate http;
+/// use hyperx::header::{TypedHeaders, HttpDate, Warning};
 ///
-/// let mut headers = Headers::new();
-/// headers.set(
-///     Warning{
+/// let mut headers = http::HeaderMap::new();
+/// headers.encode(
+///     &Warning {
 ///         code: 299,
 ///         agent: "api.hyper.rs".to_owned(),
 ///         text: "Deprecated".to_owned(),
@@ -63,12 +65,13 @@ use header::parsing::from_one_raw_str;
 /// ```
 ///
 /// ```
+/// # extern crate http;
 /// use std::time::SystemTime;
-/// use hyperx::header::{Headers, Warning};
+/// use hyperx::header::{TypedHeaders, Warning};
 ///
-/// let mut headers = Headers::new();
-/// headers.set(
-///     Warning{
+/// let mut headers = http::HeaderMap::new();
+/// headers.encode(
+///     &Warning {
 ///         code: 199,
 ///         agent: "api.hyper.rs".to_owned(),
 ///         text: "Deprecated".to_owned(),

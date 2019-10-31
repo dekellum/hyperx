@@ -20,33 +20,35 @@ header! {
     /// # Examples
     ///
     /// ```
+    /// # extern crate http;
     /// # extern crate hyperx;
     /// # extern crate unicase;
     /// # fn main() {
     /// // extern crate unicase;
     ///
-    /// use hyperx::header::{Headers, AccessControlRequestHeaders};
+    /// use hyperx::header::{AccessControlRequestHeaders, TypedHeaders};
     /// use unicase::Ascii;
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(
-    ///     AccessControlRequestHeaders(vec![Ascii::new("date".to_owned())])
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(
+    ///     &AccessControlRequestHeaders(vec![Ascii::new("date".to_owned())])
     /// );
     /// # }
     /// ```
     ///
     /// ```
+    /// # extern crate http;
     /// # extern crate hyperx;
     /// # extern crate unicase;
     /// # fn main() {
     /// // extern crate unicase;
     ///
-    /// use hyperx::header::{Headers, AccessControlRequestHeaders};
+    /// use hyperx::header::{AccessControlRequestHeaders, TypedHeaders};
     /// use unicase::Ascii;
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(
-    ///     AccessControlRequestHeaders(vec![
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(
+    ///     &AccessControlRequestHeaders(vec![
     ///         Ascii::new("accept-language".to_owned()),
     ///         Ascii::new("date".to_owned()),
     ///     ])

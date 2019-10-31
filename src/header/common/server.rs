@@ -21,10 +21,11 @@ header! {
     /// # Example
     ///
     /// ```
-    /// use hyperx::header::{Headers, Server};
+    /// # extern crate http;
+    /// use hyperx::header::{Server, TypedHeaders};
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(Server::new("hyper/0.5.2"));
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(&Server::new("hyper/0.5.2"));
     /// ```
     // TODO: Maybe parse as defined in the spec?
     (Server, "Server") => Cow[str]

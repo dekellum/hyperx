@@ -28,16 +28,18 @@ header! {
     /// # Examples
     ///
     /// ```
-    /// use hyperx::header::{Headers, ETag, EntityTag};
+    /// # extern crate http;
+    /// use hyperx::header::{ETag, EntityTag, TypedHeaders};
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(ETag(EntityTag::new(false, "xyzzy".to_owned())));
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(&ETag(EntityTag::new(false, "xyzzy".to_owned())));
     /// ```
     /// ```
-    /// use hyperx::header::{Headers, ETag, EntityTag};
+    /// # extern crate http;
+    /// use hyperx::header::{ETag, EntityTag, TypedHeaders};
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(ETag(EntityTag::new(true, "xyzzy".to_owned())));
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(&ETag(EntityTag::new(true, "xyzzy".to_owned())));
     /// ```
     (ETag, "ETag") => [EntityTag]
 

@@ -20,17 +20,19 @@ use header::{Header, RawLike, parsing};
 /// # Examples
 ///
 /// ```
-/// use hyperx::header::{Headers, Pragma};
+/// # extern crate http;
+/// use hyperx::header::{Pragma, TypedHeaders};
 ///
-/// let mut headers = Headers::new();
-/// headers.set(Pragma::NoCache);
+/// let mut headers = http::HeaderMap::new();
+/// headers.encode(&Pragma::NoCache);
 /// ```
 ///
 /// ```
-/// use hyperx::header::{Headers, Pragma};
+/// # extern crate http;
+/// use hyperx::header::{Pragma, TypedHeaders};
 ///
-/// let mut headers = Headers::new();
-/// headers.set(Pragma::Ext("foobar".to_owned()));
+/// let mut headers = http::HeaderMap::new();
+/// headers.encode(&Pragma::Ext("foobar".to_owned()));
 /// ```
 #[derive(Clone, PartialEq, Debug)]
 pub enum Pragma {

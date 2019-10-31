@@ -26,17 +26,19 @@ use header::{Header, RawLike, Scheme};
 /// # Examples
 ///
 /// ```
-/// use hyperx::header::{Headers, ProxyAuthorization};
+/// # extern crate http;
+/// use hyperx::header::{ProxyAuthorization, TypedHeaders};
 ///
-/// let mut headers = Headers::new();
-/// headers.set(ProxyAuthorization("let me in".to_owned()));
+/// let mut headers = http::HeaderMap::new();
+/// headers.encode(&ProxyAuthorization("let me in".to_owned()));
 /// ```
 /// ```
-/// use hyperx::header::{Headers, ProxyAuthorization, Basic};
+/// # extern crate http;
+/// use hyperx::header::{ProxyAuthorization, Basic, TypedHeaders};
 ///
-/// let mut headers = Headers::new();
-/// headers.set(
-///    ProxyAuthorization(
+/// let mut headers = http::HeaderMap::new();
+/// headers.encode(
+///    &ProxyAuthorization(
 ///        Basic {
 ///            username: "Aladdin".to_owned(),
 ///            password: Some("open sesame".to_owned())
@@ -46,11 +48,12 @@ use header::{Header, RawLike, Scheme};
 /// ```
 ///
 /// ```
-/// use hyperx::header::{Headers, ProxyAuthorization, Bearer};
+/// # extern crate http;
+/// use hyperx::header::{ProxyAuthorization, Bearer, TypedHeaders};
 ///
-/// let mut headers = Headers::new();
-/// headers.set(
-///    ProxyAuthorization(
+/// let mut headers = http::HeaderMap::new();
+/// headers.encode(
+///    &ProxyAuthorization(
 ///        Bearer {
 ///            token: "QWxhZGRpbjpvcGVuIHNlc2FtZQ".to_owned()
 ///        }
@@ -122,8 +125,12 @@ impl<S: Scheme> fmt::Display for ProxyAuthorization<S> {
 #[cfg(test)]
 mod tests {
     use super::ProxyAuthorization;
-    use super::super::super::{Headers, Header, Raw, Basic, Bearer};
+    use super::super::super::{Header, Raw, Basic, Bearer};
 
+    #[cfg(feature = "headers")]
+    use super::super::super::Headers;
+
+    #[cfg(feature = "headers")]
     #[test]
     fn test_raw_auth() {
         let mut headers = Headers::new();
@@ -138,6 +145,7 @@ mod tests {
         assert_eq!(header.0, "foo bar baz");
     }
 
+    #[cfg(feature = "headers")]
     #[test]
     fn test_basic_auth() {
         let mut headers = Headers::new();
@@ -148,6 +156,7 @@ mod tests {
             "Proxy-Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==\r\n".to_owned());
     }
 
+    #[cfg(feature = "headers")]
     #[test]
     fn test_basic_auth_no_password() {
         let mut headers = Headers::new();
@@ -171,6 +180,7 @@ mod tests {
         assert_eq!(auth.0.password, Some("".to_owned()));
     }
 
+    #[cfg(feature = "headers")]
     #[test]
     fn test_bearer_auth() {
         let mut headers = Headers::new();
@@ -200,9 +210,8 @@ mod benches {
     bench_header!(bearer, ProxyAuthorization<Bearer>, { vec![b"Bearer fpKL54jvWmEGVoRdCNjG".to_vec()] });
 }
 
-#[cfg(feature = "compat")]
 impl<S> ::header::StandardHeader for ProxyAuthorization<S>
-    where S: Scheme + Any + ::std::fmt::Display
+    where S: Scheme + Any
 {
     #[inline]
     fn http_header_name() -> ::http::header::HeaderName {

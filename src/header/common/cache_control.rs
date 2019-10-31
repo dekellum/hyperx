@@ -25,20 +25,22 @@ use header::parsing::{from_comma_delimited, fmt_comma_delimited};
 ///
 /// # Examples
 /// ```
-/// use hyperx::header::{Headers, CacheControl, CacheDirective};
+/// # extern crate http;
+/// use hyperx::header::{CacheControl, CacheDirective, TypedHeaders};
 ///
-/// let mut headers = Headers::new();
-/// headers.set(
-///     CacheControl(vec![CacheDirective::MaxAge(86400u32)])
+/// let mut headers = http::HeaderMap::new();
+/// headers.encode(
+///     &CacheControl(vec![CacheDirective::MaxAge(86400u32)])
 /// );
 /// ```
 ///
 /// ```
-/// use hyperx::header::{Headers, CacheControl, CacheDirective};
+/// # extern crate http;
+/// use hyperx::header::{CacheControl, CacheDirective, TypedHeaders};
 ///
-/// let mut headers = Headers::new();
-/// headers.set(
-///     CacheControl(vec![
+/// let mut headers = http::HeaderMap::new();
+/// headers.encode(
+///     &CacheControl(vec![
 ///         CacheDirective::NoCache,
 ///         CacheDirective::Private,
 ///         CacheDirective::MaxAge(360u32),

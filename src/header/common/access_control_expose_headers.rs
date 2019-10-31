@@ -19,17 +19,18 @@ header! {
     /// # Examples
     ///
     /// ```
+    /// # extern crate http;
     /// # extern crate hyperx;
     /// # extern crate unicase;
     /// # fn main() {
     /// // extern crate unicase;
     ///
-    /// use hyperx::header::{Headers, AccessControlExposeHeaders};
+    /// use hyperx::header::{AccessControlExposeHeaders, TypedHeaders};
     /// use unicase::Ascii;
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(
-    ///     AccessControlExposeHeaders(vec![
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(
+    ///     &AccessControlExposeHeaders(vec![
     ///         Ascii::new("etag".to_owned()),
     ///         Ascii::new("content-length".to_owned())
     ///     ])
@@ -38,17 +39,18 @@ header! {
     /// ```
     ///
     /// ```
+    /// # extern crate http;
     /// # extern crate hyperx;
     /// # extern crate unicase;
     /// # fn main() {
     /// // extern crate unicase;
     ///
-    /// use hyperx::header::{Headers, AccessControlExposeHeaders};
+    /// use hyperx::header::{AccessControlExposeHeaders, TypedHeaders};
     /// use unicase::Ascii;
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(
-    ///     AccessControlExposeHeaders(vec![
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(
+    ///     &AccessControlExposeHeaders(vec![
     ///         Ascii::new("etag".to_owned()),
     ///         Ascii::new("content-length".to_owned())
     ///     ])

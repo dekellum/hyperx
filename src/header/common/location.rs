@@ -20,17 +20,19 @@ header! {
     /// # Examples
     ///
     /// ```
-    /// use hyperx::header::{Headers, Location};
+    /// # extern crate http;
+    /// use hyperx::header::{Location, TypedHeaders};
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(Location::new("/People.html#tim"));
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(&Location::new("/People.html#tim"));
     /// ```
     ///
     /// ```
-    /// use hyperx::header::{Headers, Location};
+    /// # extern crate http;
+    /// use hyperx::header::{Location, TypedHeaders};
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(Location::new("http://www.example.com/index.html"));
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(&Location::new("http://www.example.com/index.html"));
     /// ```
     // TODO: Use URL
     (Location, "Location") => Cow[str]

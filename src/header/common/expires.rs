@@ -22,12 +22,13 @@ header! {
     /// # Example
     ///
     /// ```
-    /// use hyperx::header::{Headers, Expires};
+    /// # extern crate http;
+    /// use hyperx::header::{Expires, TypedHeaders};
     /// use std::time::{SystemTime, Duration};
     ///
-    /// let mut headers = Headers::new();
+    /// let mut headers = http::HeaderMap::new();
     /// let expiration = SystemTime::now() + Duration::from_secs(60 * 60 * 24);
-    /// headers.set(Expires(expiration.into()));
+    /// headers.encode(&Expires(expiration.into()));
     /// ```
     (Expires, "Expires") => [HttpDate]
 

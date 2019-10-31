@@ -26,17 +26,19 @@ use header::{Header, RawLike};
 /// # Examples
 ///
 /// ```
-/// use hyperx::header::{Headers, Authorization};
+/// # extern crate http;
+/// use hyperx::header::{Authorization, TypedHeaders};
 ///
-/// let mut headers = Headers::new();
-/// headers.set(Authorization("let me in".to_owned()));
+/// let mut headers = http::HeaderMap::new();
+/// headers.encode(&Authorization("let me in".to_owned()));
 /// ```
 /// ```
-/// use hyperx::header::{Headers, Authorization, Basic};
+/// # extern crate http;
+/// use hyperx::header::{Authorization, Basic, TypedHeaders};
 ///
-/// let mut headers = Headers::new();
-/// headers.set(
-///    Authorization(
+/// let mut headers = http::HeaderMap::new();
+/// headers.encode(
+///    &Authorization(
 ///        Basic {
 ///            username: "Aladdin".to_owned(),
 ///            password: Some("open sesame".to_owned())
@@ -46,11 +48,11 @@ use header::{Header, RawLike};
 /// ```
 ///
 /// ```
-/// use hyperx::header::{Headers, Authorization, Bearer};
+/// use hyperx::header::{Authorization, Bearer, TypedHeaders};
 ///
-/// let mut headers = Headers::new();
-/// headers.set(
-///    Authorization(
+/// let mut headers = http::HeaderMap::new();
+/// headers.encode(
+///    &Authorization(
 ///        Bearer {
 ///            token: "QWxhZGRpbjpvcGVuIHNlc2FtZQ".to_owned()
 ///        }
@@ -230,8 +232,12 @@ impl FromStr for Bearer {
 #[cfg(test)]
 mod tests {
     use super::{Authorization, Basic, Bearer};
-    use super::super::super::{Headers, Header, Raw};
+    use super::super::super::{Header, Raw};
 
+    #[cfg(feature = "headers")]
+    use super::super::super::Headers;
+
+    #[cfg(feature = "headers")]
     #[test]
     fn test_raw_auth() {
         let mut headers = Headers::new();
@@ -246,6 +252,7 @@ mod tests {
         assert_eq!(header.0, "foo bar baz");
     }
 
+    #[cfg(feature = "headers")]
     #[test]
     fn test_basic_auth() {
         let mut headers = Headers::new();
@@ -256,6 +263,7 @@ mod tests {
             "Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==\r\n".to_owned());
     }
 
+    #[cfg(feature = "headers")]
     #[test]
     fn test_basic_auth_no_password() {
         let mut headers = Headers::new();
@@ -279,6 +287,7 @@ mod tests {
         assert_eq!(auth.0.password, Some("".to_owned()));
     }
 
+    #[cfg(feature = "headers")]
     #[test]
     fn test_bearer_auth() {
         let mut headers = Headers::new();
@@ -301,9 +310,8 @@ bench_header!(raw, Authorization<String>, { vec![b"foo bar baz".to_vec()] });
 bench_header!(basic, Authorization<Basic>, { vec![b"Basic QWxhZGRpbjpuIHNlc2FtZQ==".to_vec()] });
 bench_header!(bearer, Authorization<Bearer>, { vec![b"Bearer fpKL54jvWmEGVoRdCNjG".to_vec()] });
 
-#[cfg(feature = "compat")]
 impl<S> ::header::StandardHeader for Authorization<S>
-    where S: Scheme + Any + ::std::fmt::Display
+    where S: Scheme + Any
 {
     #[inline]
     fn http_header_name() -> ::http::header::HeaderName {

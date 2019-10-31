@@ -69,10 +69,11 @@ pub enum DispositionParam {
 /// # Example
 ///
 /// ```
-/// use hyperx::header::{Headers, ContentDisposition, DispositionType, DispositionParam, Charset};
+/// # extern crate http;
+/// use hyperx::header::{ContentDisposition, DispositionType, DispositionParam, Charset, TypedHeaders};
 ///
-/// let mut headers = Headers::new();
-/// headers.set(ContentDisposition {
+/// let mut headers = http::HeaderMap::new();
+/// headers.encode(&ContentDisposition {
 ///     disposition: DispositionType::Attachment,
 ///     parameters: vec![DispositionParam::Filename(
 ///       Charset::Iso_8859_1, // The character set for the bytes of the filename

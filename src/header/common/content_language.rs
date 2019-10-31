@@ -24,14 +24,15 @@ header! {
     /// # Examples
     ///
     /// ```
+    /// # extern crate http;
     /// # extern crate hyperx;
     /// # #[macro_use] extern crate language_tags;
-    /// # use hyperx::header::{Headers, ContentLanguage, qitem};
+    /// # use hyperx::header::{ContentLanguage, qitem, TypedHeaders};
     /// #
     /// # fn main() {
-    /// let mut headers = Headers::new();
-    /// headers.set(
-    ///     ContentLanguage(vec![
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(
+    ///     &ContentLanguage(vec![
     ///         qitem(langtag!(en)),
     ///     ])
     /// );
@@ -39,15 +40,16 @@ header! {
     /// ```
     ///
     /// ```
+    /// # extern crate http;
     /// # extern crate hyperx;
     /// # #[macro_use] extern crate language_tags;
-    /// # use hyperx::header::{Headers, ContentLanguage, qitem};
+    /// # use hyperx::header::{ContentLanguage, qitem, TypedHeaders};
     /// #
     /// # fn main() {
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(
-    ///     ContentLanguage(vec![
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(
+    ///     &ContentLanguage(vec![
     ///         qitem(langtag!(da)),
     ///         qitem(langtag!(en;;;GB)),
     ///     ])

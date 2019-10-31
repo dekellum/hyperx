@@ -16,7 +16,6 @@
 
 extern crate base64;
 extern crate bytes;
-#[cfg(feature = "compat")]
 extern crate http;
 extern crate httparse;
 extern crate language_tags;
@@ -30,7 +29,10 @@ extern crate unicase;
 extern crate test;
 
 pub use error::{Result, Error};
+
+#[cfg(feature = "headers")]
 pub use header::Headers;
+
 pub use method::Method;
 
 mod error;

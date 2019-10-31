@@ -25,18 +25,20 @@ header! {
     /// # Examples
     ///
     /// ```
-    /// use hyperx::header::{Headers, ContentEncoding, Encoding};
+    /// # extern crate http;
+    /// use hyperx::header::{ContentEncoding, Encoding, TypedHeaders};
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(ContentEncoding(vec![Encoding::Chunked]));
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(&ContentEncoding(vec![Encoding::Chunked]));
     /// ```
     ///
     /// ```
-    /// use hyperx::header::{Headers, ContentEncoding, Encoding};
+    /// # extern crate http;
+    /// use hyperx::header::{ContentEncoding, Encoding, TypedHeaders};
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(
-    ///     ContentEncoding(vec![
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(
+    ///     &ContentEncoding(vec![
     ///         Encoding::Gzip,
     ///         Encoding::Chunked,
     ///     ])

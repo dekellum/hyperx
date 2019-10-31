@@ -20,15 +20,16 @@ use header::internals::VecMap;
 ///
 /// # Example
 /// ```
-/// use hyperx::header::{Headers, Cookie};
+/// # extern crate http;
+/// use hyperx::header::{Cookie, TypedHeaders};
 ///
-/// let mut headers = Headers::new();
+/// let mut headers = http::HeaderMap::new();
 /// let mut cookie = Cookie::new();
 /// cookie.append("foo", "bar");
 ///
 /// assert_eq!(cookie.get("foo"), Some("bar"));
 ///
-/// headers.set(cookie);
+/// headers.encode(&cookie);
 /// ```
 #[derive(Clone)]
 pub struct Cookie(VecMap<Cow<'static, str>, Cow<'static, str>>);

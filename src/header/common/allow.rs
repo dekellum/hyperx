@@ -22,22 +22,24 @@ header! {
     /// # Examples
     ///
     /// ```
-    /// use hyperx::header::{Headers, Allow};
+    /// # extern crate http;
+    /// use hyperx::header::{Allow, TypedHeaders};
     /// use hyperx::Method;
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(
-    ///     Allow(vec![Method::Get])
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(
+    ///     &Allow(vec![Method::Get])
     /// );
     /// ```
     ///
     /// ```
-    /// use hyperx::header::{Headers, Allow};
+    /// # extern crate http;
+    /// use hyperx::header::{Allow, TypedHeaders};
     /// use hyperx::Method;
     ///
-    /// let mut headers = Headers::new();
-    /// headers.set(
-    ///     Allow(vec![
+    /// let mut headers = http::HeaderMap::new();
+    /// headers.encode(
+    ///     &Allow(vec![
     ///         Method::Get,
     ///         Method::Post,
     ///         Method::Patch,

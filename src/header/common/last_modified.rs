@@ -22,12 +22,13 @@ header! {
     /// # Example
     ///
     /// ```
-    /// use hyperx::header::{Headers, LastModified};
+    /// # extern crate http;
+    /// use hyperx::header::{LastModified, TypedHeaders};
     /// use std::time::{SystemTime, Duration};
     ///
-    /// let mut headers = Headers::new();
+    /// let mut headers = http::HeaderMap::new();
     /// let modified = SystemTime::now() - Duration::from_secs(60 * 60 * 24);
-    /// headers.set(LastModified(modified.into()));
+    /// headers.encode(&LastModified(modified.into()));
     /// ```
     (LastModified, "Last-Modified") => [HttpDate]
 

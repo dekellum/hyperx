@@ -21,16 +21,13 @@
 //!
 //! ## Parsing `http::header::HeaderValue`s
 //!
-//! With the default *compat* feature enabled, `HeaderValue`(s) implement the
-//! `RawLike` trait which allows for parsing with less copying than going
-//! through `HeaderValue::to_str` or the `Raw` type. See example usage below:
+//! `HeaderValue`(s) implement the `RawLike` trait which allows for parsing
+//! with less copying than going through `HeaderValue::to_str` or the `Raw`
+//! type. See example usage below:
 //!
 //! ```
-//! # #[cfg(feature = "compat")]
 //! # extern crate hyperx;
-//! # #[cfg(feature = "compat")]
 //! # extern crate http;
-//! # #[cfg(feature = "compat")]
 //! # fn run() -> Result<(), Box<std::error::Error>> {
 //! use http::header::{HeaderMap, CONTENT_ENCODING};
 //! use hyperx::header::{ContentEncoding, Encoding, Header};
@@ -53,12 +50,8 @@
 //! ));
 //! # Ok(())
 //! # }
-//! # #[cfg(feature = "compat")]
 //! # fn main() {
 //! #     run().unwrap();
-//! # }
-//! # #[cfg(not(feature = "compat"))]
-//! # fn main() {
 //! # }
 //! ```
 //!
@@ -69,11 +62,8 @@
 //! standard header types named in the _http_ crate:
 //!
 //! ```
-//! # #[cfg(feature = "compat")]
 //! # extern crate hyperx;
-//! # #[cfg(feature = "compat")]
 //! # extern crate http;
-//! # #[cfg(feature = "compat")]
 //! # fn run() -> Result<(), Box<std::error::Error>> {
 //! use http::header::HeaderMap;
 //! use hyperx::header::{ContentEncoding, Encoding, TypedHeaders};
@@ -90,31 +80,30 @@
 //! );
 //! # Ok(())
 //! # }
-//! # #[cfg(feature = "compat")]
 //! # fn main() {
 //! #     run().unwrap();
-//! # }
-//! # #[cfg(not(feature = "compat"))]
-//! # fn main() {
 //! # }
 //! ```
 //!
 //! ## Defining Custom Headers
 //!
-//! Hyper*x* provides many of the most commonly used headers in HTTP. If you
+//! Hyper*x* provides all commonly used headers in HTTP. If you
 //! need to define a custom header, it's easy to do while still taking
 //! advantage of the type system. Hyper*x* includes a `header!` macro for
 //! defining many wrapper-style headers.
 //!
 //! ```
+//! # extern crate http;
 //! # #[macro_use] extern crate hyperx;
-//! use hyperx::header::Headers;
 //! header! { (XRequestGuid, "X-Request-Guid") => [String] }
 //!
 //! fn main () {
-//!     let mut headers = Headers::new();
+//!     let mut headers = http::HeaderMap::new();
 //!
-//!     headers.set(XRequestGuid("a proper guid".to_owned()))
+//!     headers.insert(
+//!         "x-request-guid",
+//!         XRequestGuid("a proper guid".to_owned()).to_string().parse().unwrap()
+//!     );
 //! }
 //! ```
 //!
@@ -139,7 +128,7 @@
 //!     }
 //!
 //!     fn parse_header<'a, T>(raw: &'a T) -> hyperx::Result<Dnt>
-//!     where T: RawLike<'a>
+//!         where T: RawLike<'a>
 //!     {
 //!         if let Some(line) = raw.one() {
 //!             if line.len() == 1 {
@@ -164,32 +153,38 @@
 //!     }
 //! }
 //! ```
-use std::borrow::{Cow, ToOwned};
-use std::iter::{FromIterator, IntoIterator};
-use std::{mem, fmt};
+use std::borrow::Cow;
+use std::fmt;
 
 use unicase::Ascii;
 
-use self::internals::{Item, VecMap, Entry};
 use self::sealed::HeaderClone;
 
 pub use self::shared::*;
 pub use self::common::*;
 pub use self::raw::{Raw, RawLike};
 
+#[cfg(feature = "headers")]
+use std::{
+    borrow::ToOwned,
+    iter::{FromIterator, IntoIterator},
+    mem,
+};
+
+#[cfg(feature = "headers")]
+use self::internals::{Item, VecMap, Entry};
+
+#[cfg(feature = "headers")]
 use bytes::Bytes;
+
+pub use self::compat::{TypedHeaders, StandardHeader, ValueMapIter};
 
 mod common;
 mod internals;
 mod raw;
 mod shared;
 pub mod parsing;
-
-#[cfg(feature = "compat")]
 mod compat;
-
-#[cfg(feature = "compat")]
-pub use self::compat::{TypedHeaders, StandardHeader, ValueMapIter};
 
 /// A trait for any object that will represent a header field and value.
 ///
@@ -248,6 +243,7 @@ mod sealed {
 #[allow(missing_debug_implementations)]
 pub struct Formatter<'a, 'b: 'a>(Multi<'a, 'b>);
 
+#[allow(unused)]
 enum Multi<'a, 'b: 'a> {
     Line(&'a str, &'a mut fmt::Formatter<'b>),
     Join(bool, &'a mut fmt::Formatter<'b>),
@@ -320,8 +316,10 @@ impl<'a, 'b> Formatter<'a, 'b> {
     }
 }
 
+#[cfg(feature = "headers")]
 struct ValueString<'a>(&'a Item);
 
+#[cfg(feature = "headers")]
 impl<'a> fmt::Debug for ValueString<'a> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.write_str("\"")?;
@@ -330,6 +328,7 @@ impl<'a> fmt::Debug for ValueString<'a> {
     }
 }
 
+#[cfg(feature = "headers")]
 impl<'a> fmt::Display for ValueString<'a> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         self.0.write_h1(&mut Formatter(Multi::Join(true, f)))
@@ -371,16 +370,19 @@ impl dyn Header + Send + Sync {
     // order the compiler has chosen to represent a TraitObject.
     //
     // It has been assured that this order will be stable.
+    #[cfg(feature = "headers")]
     #[inline]
     unsafe fn downcast_ref_unchecked<T: 'static>(&self) -> &T {
         &*(mem::transmute::<*const _, (*const (), *const ())>(self).0 as *const T)
     }
 
+    #[cfg(feature = "headers")]
     #[inline]
     unsafe fn downcast_mut_unchecked<T: 'static>(&mut self) -> &mut T {
         &mut *(mem::transmute::<*mut _, (*mut (), *mut ())>(self).0 as *mut T)
     }
 
+    #[cfg(feature = "headers")]
     #[inline]
     unsafe fn downcast_unchecked<T: 'static>(self: Box<Self>) -> T {
         *Box::from_raw(mem::transmute::<*mut _, (*mut (), *mut ())>(Box::into_raw(self)).0 as *mut T)
@@ -394,17 +396,25 @@ impl Clone for Box<dyn Header + Send + Sync> {
     }
 }
 
+#[cfg(feature = "headers")]
 #[inline]
 fn header_name<T: Header>() -> &'static str {
     <T as Header>::header_name()
 }
 
-/// A map of header fields on requests and responses.
+/// A specialized map of typed headers.
+///
+/// This type is only available with the non-default _headers_ feature
+/// enabled. The type is preserved for compatibly, but its use is no longer
+/// required nor recommended. Consider replacing with `http::HeaderMap` and its
+/// [`TypedHeaders`](trait.TypedHeaders.html) extension.
+#[cfg(feature = "headers")]
 #[derive(Clone)]
 pub struct Headers {
     data: VecMap<HeaderName, Item>,
 }
 
+#[cfg(feature = "headers")]
 impl Default for Headers {
     fn default() -> Headers {
         Headers::new()
@@ -413,6 +423,7 @@ impl Default for Headers {
 
 macro_rules! literals {
     ($($len:expr => $($header:path),+;)+) => (
+        #[cfg(feature = "headers")]
         fn maybe_literal(s: &str) -> Cow<'static, str> {
             match s.len() {
                 $($len => {
@@ -458,6 +469,7 @@ literals! {
     27 => AccessControlAllowOrigin;
 }
 
+#[cfg(feature = "headers")]
 impl Headers {
 
     /// Creates a new, empty headers map.
@@ -618,6 +630,7 @@ impl Headers {
 
 }
 
+#[cfg(feature = "headers")]
 impl PartialEq for Headers {
     fn eq(&self, other: &Headers) -> bool {
         if self.len() != other.len() {
@@ -634,6 +647,7 @@ impl PartialEq for Headers {
     }
 }
 
+#[cfg(feature = "headers")]
 impl fmt::Display for Headers {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -644,6 +658,7 @@ impl fmt::Display for Headers {
     }
 }
 
+#[cfg(feature = "headers")]
 impl fmt::Debug for Headers {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -654,11 +669,13 @@ impl fmt::Debug for Headers {
 }
 
 /// An `Iterator` over the fields in a `Headers` map.
+#[cfg(feature = "headers")]
 #[allow(missing_debug_implementations)]
 pub struct HeadersItems<'a> {
     inner: ::std::slice::Iter<'a, (HeaderName, Item)>
 }
 
+#[cfg(feature = "headers")]
 impl<'a> Iterator for HeadersItems<'a> {
     type Item = HeaderView<'a>;
 
@@ -668,8 +685,10 @@ impl<'a> Iterator for HeadersItems<'a> {
 }
 
 /// Returned with the `HeadersItems` iterator.
+#[cfg(feature = "headers")]
 pub struct HeaderView<'a>(&'a HeaderName, &'a Item);
 
+#[cfg(feature = "headers")]
 impl<'a> HeaderView<'a> {
     /// Check if a HeaderView is a certain Header.
     #[inline]
@@ -707,6 +726,7 @@ impl<'a> HeaderView<'a> {
     }
 }
 
+#[cfg(feature = "headers")]
 impl<'a> fmt::Display for HeaderView<'a> {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -714,6 +734,7 @@ impl<'a> fmt::Display for HeaderView<'a> {
     }
 }
 
+#[cfg(feature = "headers")]
 impl<'a> fmt::Debug for HeaderView<'a> {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -721,6 +742,7 @@ impl<'a> fmt::Debug for HeaderView<'a> {
     }
 }
 
+#[cfg(feature = "headers")]
 impl<'a> Extend<HeaderView<'a>> for Headers {
     fn extend<I: IntoIterator<Item=HeaderView<'a>>>(&mut self, iter: I) {
         for header in iter {
@@ -729,6 +751,7 @@ impl<'a> Extend<HeaderView<'a>> for Headers {
     }
 }
 
+#[cfg(feature = "headers")]
 impl<'a> Extend<(&'a str, Bytes)> for Headers {
     fn extend<I: IntoIterator<Item=(&'a str, Bytes)>>(&mut self, iter: I) {
         for (name, value) in iter {
@@ -747,6 +770,7 @@ impl<'a> Extend<(&'a str, Bytes)> for Headers {
     }
 }
 
+#[cfg(feature = "headers")]
 impl<'a> FromIterator<HeaderView<'a>> for Headers {
     fn from_iter<I: IntoIterator<Item=HeaderView<'a>>>(iter: I) -> Headers {
         let mut headers = Headers::new();
@@ -795,12 +819,13 @@ impl PartialEq<HeaderName> for str {
     }
 }
 
-#[cfg(test)]
+#[cfg(all(test, feature = "headers"))]
 mod tests {
     use std::fmt;
+
     use super::{
-        Headers, Header, RawLike, ContentLength, ContentType, Host,
-        SetCookie};
+        Header, Headers, ContentLength, ContentType, Host, RawLike, SetCookie
+    };
 
     #[cfg(feature = "nightly")]
     use test::Bencher;
@@ -817,6 +842,7 @@ mod tests {
             make_header!(&bytes[..colon], &bytes[colon + 2..])
         })
     }
+
     #[test]
     fn test_from_raw() {
         let headers = make_header!(b"Content-Length", b"10");

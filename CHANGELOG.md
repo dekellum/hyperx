@@ -1,5 +1,15 @@
 ## 0.16.0 (TBD)
 
+* The default _compat_ feature is no longer optional, as its unlikely that
+  anyone would be using recent versions without this feature. The feature gate
+  name is retained for now, but has no effect.
+
+* Place the legacy `Headers` struct under a new non-default _headers_ feature
+  gate. Note that use of this type is no longer required nor recommended for
+  parsing and serialization of typed headers. See the rewritten typed header
+  doc examples.  Consider replacing with the _http_ crate `HeaderMap` and the
+  `TypedHeaders` extension trait introduced here in 0.15.0.
+
 * Upgrade (unconstrain) _cfg-if_ dependency to (0.1.10 is MSRV 1.31.0)
 
 * Upgrade _unicase_ to (min) 2.1.0 to avoid compile failures with older
