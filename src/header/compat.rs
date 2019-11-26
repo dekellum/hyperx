@@ -15,7 +15,7 @@ use std::convert::From;
 use http;
 
 #[cfg(feature = "headers")]
-use super::{Raw, Headers};
+use super::{Headers};
 
 /// A trait for the "standard" headers that have an associated `HeaderName`
 /// constant in the _http_ crate.
@@ -107,18 +107,8 @@ impl TypedHeaders for HeaderMap {
 
 #[cfg(feature = "headers")]
 impl From<http::HeaderMap> for Headers {
-    fn from(mut header_map: http::HeaderMap) -> Headers {
-        let mut headers = Headers::new();
-        for (name, mut value_drain) in header_map.drain() {
-            if let Some(first_value) = value_drain.next() {
-                let mut raw: Raw = first_value.as_bytes().into();
-                for value in value_drain {
-                    raw.push(value.as_bytes());
-                }
-                headers.append_raw(name.as_str().to_string(), raw);
-            }
-        }
-        headers
+    fn from(header_map: http::HeaderMap) -> Headers {
+        Headers::from(&header_map)
     }
 }
 
@@ -146,8 +136,9 @@ impl<'a> From<&'a Headers> for http::HeaderMap {
     fn from(headers: &'a Headers) -> http::HeaderMap {
         let mut hmap = http::HeaderMap::new();
         for header in headers.iter() {
-            let entry = hmap.entry(header.name())
+            let name: http::header::HeaderName = header.name().parse()
                 .expect("convert invalid header name");
+            let entry = hmap.entry(name);
             let mut value_iter = header.raw().iter().map(|line| {
                 http::header::HeaderValue::from_bytes(line)
                     .expect("convert invalid header value")

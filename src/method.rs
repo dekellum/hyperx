@@ -1,7 +1,7 @@
 //! The HTTP request method
 use std::fmt;
 use std::str::FromStr;
-use std::convert::AsRef;
+use std::convert::{AsRef, TryFrom};
 
 use http;
 
@@ -188,7 +188,6 @@ impl From<http::Method> for Method {
 
 impl From<Method> for http::Method {
     fn from(method: Method) -> http::Method {
-        use http::HttpTryFrom;
 
         match method {
             Method::Get =>
@@ -210,7 +209,7 @@ impl From<Method> for http::Method {
             Method::Trace =>
                 http::Method::TRACE,
             Method::Extension(s) => {
-                HttpTryFrom::try_from(s.as_str())
+                http::Method::try_from(s.as_str())
                     .expect("attempted to convert invalid method")
             }
         }
@@ -220,6 +219,7 @@ impl From<Method> for http::Method {
 #[cfg(test)]
 mod tests {
     use std::collections::HashMap;
+    use std::convert::TryFrom;
     use std::str::FromStr;
     use error::Error;
     use super::Method;
@@ -274,8 +274,6 @@ mod tests {
 
     #[test]
     fn test_compat() {
-        use http::{self, HttpTryFrom};
-
         let methods = vec![
             "GET",
             "POST",

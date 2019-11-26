@@ -10,6 +10,8 @@
   doc examples.  Consider replacing with the _http_ crate `HeaderMap` and the
   `TypedHeaders` extension trait introduced here in 0.15.0. (#18)
 
+* Upgrade to _http_ 0.2.0 (\w API changes) and _bytes_ 0.5.2 (MSRV 1.39.0)
+
 * Upgrade (unconstrain) _cfg-if_ dependency to 0.1.10 (MSRV 1.31.0)
 
 * Upgrade to _unicase_ 2.6.0
@@ -20,7 +22,7 @@
 
 * Broaden _base64_ dependency to include 0.11.0 (MSRV 1.34.0)
 
-* MSRV is now 1.34.0, based on above upgrades.
+* MSRV is now 1.39.0, based on above upgrades.
 
 ## 0.15.2 (2019-10-1)
 

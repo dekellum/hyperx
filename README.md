@@ -16,7 +16,7 @@ where this module was dropped in preference to the byte-oriented
 
 ## Minimum supported rust version
 
-MSRV := 1.34.0
+MSRV := 1.39.0
 
 The crate will fail fast on any lower rustc (via a build.rs version
 check) and is also CI tested on this version.
