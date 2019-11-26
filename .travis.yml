@@ -2,6 +2,7 @@ language: rust
 dist: xenial
 script:
   - 'if [ "$WITH_LOCK" != "true" ]; then cargo update; fi'
+  - 'if [ "$TRAVIS_RUST_VERSION" == "1.34.0" ]; then cargo update -p bytes --precise 0.4.12; fi'
   - 'cargo test'
   - 'cargo test --features headers'
   - 'if [ "$TRAVIS_RUST_VERSION" = "nightly" ]; then cargo test --all-features; fi'
@@ -22,6 +23,7 @@ matrix:
       os: osx
     - rust: 1.34.0
       env: WITH_LOCK=true
+    - rust: 1.39.0
     - rust: stable
     - rust: nightly
       env: MAY_FAIL=true
