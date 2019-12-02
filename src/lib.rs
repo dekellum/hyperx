@@ -8,7 +8,7 @@
 //!
 //! Hyper is the low-level HTTP implementation for Rust. Hyper*x* is an
 //! e*x*traction of the hyper 0.11 typed header module, with minimized
-//! dependencies, for continued use with hyper 0.12 (current master), where
+//! dependencies, for continued use with hyper 0.12 or later, where
 //! this module was removed in preference to the byte-oriented `http::header`
 //! module.
 //!
