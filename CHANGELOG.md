@@ -16,6 +16,8 @@
 
 * Upgrade to _percent-encoding_ 2.1.0 (\w API changes, MSRV 1.33.0) (#15)
 
+* Upgrade to _time_ 0.1.39 to avoid minimal version build failure
+
 * Broaden _base64_ dependency to include 0.11.0 (MSRV 1.34.0)
 
 * MSRV is now 1.34.0, based on above upgrades.
