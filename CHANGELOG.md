@@ -8,16 +8,15 @@
   gate. Note that use of this type is no longer required nor recommended for
   parsing and serialization of typed headers. See the rewritten typed header
   doc examples.  Consider replacing with the _http_ crate `HeaderMap` and the
-  `TypedHeaders` extension trait introduced here in 0.15.0.
+  `TypedHeaders` extension trait introduced here in 0.15.0. (#18)
 
-* Upgrade (unconstrain) _cfg-if_ dependency to (0.1.10 is MSRV 1.31.0)
+* Upgrade (unconstrain) _cfg-if_ dependency to 0.1.10 (MSRV 1.31.0)
 
-* Upgrade _unicase_ to (min) 2.1.0 to avoid compile failures with older
-  releases.
+* Upgrade to _unicase_ 2.6.0
 
-* Upgrade to _percent-encoding_ 2.1.0 \w API changes, MSRV 1.33.0 (#15)
+* Upgrade to _percent-encoding_ 2.1.0 (\w API changes, MSRV 1.33.0) (#15)
 
-* Broaden _base64_ dependency to include 0.12.0 (MSRV 1.34.0)
+* Broaden _base64_ dependency to include 0.11.0 (MSRV 1.34.0)
 
 * MSRV is now 1.34.0, based on above upgrades.
 
