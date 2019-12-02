@@ -31,7 +31,7 @@ log                 = { version=">=0.4, <0.5" }
 mime                = { version=">=0.3.2, <0.4" }
 percent-encoding    = { version=">=2.1.0, <2.2" }
 time                = { version=">=0.1.37, <0.2" }
-unicase             = { version=">=2.1.0, <2.6" }
+unicase             = { version=">=2.6.0, <2.7" }
 
 [features]
 nightly = []
