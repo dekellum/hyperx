@@ -35,7 +35,6 @@ unicase             = { version=">=2.6.0, <2.7" }
 
 [features]
 nightly = []
-raw_status = []
 compat = [] # no-op for backward compatibility
 headers = []
 
