@@ -1,4 +1,4 @@
-#![doc(html_root_url = "https://docs.rs/hyperx/0.16.0")]
+#![doc(html_root_url = "https://docs.rs/hyperx/1.0.0")]
 #![deny(missing_docs)]
 #![deny(missing_debug_implementations)]
 #![deny(unused_extern_crates)]
