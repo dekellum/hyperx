@@ -25,6 +25,3 @@ build: false
 test_script:
   - cargo test
   - cargo test --features headers
-  - cargo update
-  - cargo test
-  - cargo test --features headers
