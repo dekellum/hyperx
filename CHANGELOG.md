@@ -1,3 +1,5 @@
+## 1.1.0 (unreleased)
+
 ## 1.0.0 (2020-1-3)
 
 * The default _compat_ feature is no longer optional, as its unlikely that
