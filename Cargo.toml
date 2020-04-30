@@ -22,7 +22,7 @@ exclude = [
 build = "build.rs"
 
 [dependencies]
-base64              = { version=">=0.10.1, <0.12" }
+base64              = { version=">=0.10.1, <0.13" }
 bytes               = { version=">=0.5.2, <0.6" }
 http                = { version=">=0.2.0, <0.3" }
 httparse            = { version=">=1.0, <1.4" }
