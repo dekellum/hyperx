@@ -1,4 +1,5 @@
 //! Error and Result module.
+
 use std::error::Error as StdError;
 use std::fmt;
 use std::str::Utf8Error;
@@ -51,28 +52,34 @@ impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
             Utf8(ref e) => fmt::Display::fmt(e, f),
-            ref e => f.write_str(e.description()),
+            ref e => f.write_str(e.static_description()),
         }
     }
 }
 
-impl StdError for Error {
-    fn description(&self) -> &str {
+impl Error {
+    fn static_description(&self) -> &str {
         match *self {
             Method => "invalid Method specified",
             Version => "invalid HTTP version specified",
             Header => "invalid Header provided",
             TooLarge => "message head is too large",
             Status => "invalid Status provided",
-            Utf8(ref e) => e.description(),
-            Error::__Nonexhaustive(..) =>  unreachable!(),
+            Utf8(_) => "invalid UTF-8 string",
+            Error::__Nonexhaustive(..) => unreachable!(),
         }
+    }
+}
+
+impl StdError for Error {
+    fn description(&self) -> &str {
+        self.static_description()
     }
 
     fn cause(&self) -> Option<&dyn StdError> {
         match *self {
             Utf8(ref error) => Some(error),
-            Error::__Nonexhaustive(..) =>  unreachable!(),
+            Error::__Nonexhaustive(..) => unreachable!(),
             _ => None,
         }
     }
@@ -111,7 +118,6 @@ impl AssertSendSync for Error {}
 
 #[cfg(test)]
 mod tests {
-    use std::error::Error as StdError;
     use httparse;
     use super::Error;
     use super::Error::*;
@@ -120,7 +126,10 @@ mod tests {
         ($from:expr => $error:pat) => {
             match Error::from($from) {
                 e @ $error => {
-                    assert!(e.description().len() >= 5);
+                    assert!(format!("{}", e).len() >= 5);
+                    assert_ne!(
+                        format!("{}", e),
+                        "description() is deprecated; use Display");
                 } ,
                 e => panic!("{:?}", e)
             }

@@ -47,7 +47,7 @@ header! {
     (ContentEncoding, "Content-Encoding") => (Encoding)+
 
     test_content_encoding {
-        /// Testcase from the RFC
+        // Testcase from the RFC
         test_header!(test1, vec![b"gzip"], Some(ContentEncoding(vec![Encoding::Gzip])));
     }
 }
