@@ -1,4 +1,4 @@
-## 1.1.0 (unreleased)
+## 1.1.0 (2020-8-29)
 
 * Fix various compile warnings with rustc 1.44 and later.
 
