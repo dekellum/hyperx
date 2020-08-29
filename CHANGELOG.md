@@ -1,5 +1,9 @@
 ## 1.1.0 (unreleased)
 
+* Fix various compile warnings with rustc 1.44 and later.
+
+* Broaden _base64_ dependency to include 0.12.0 (paolobarbolini #20)
+
 ## 1.0.0 (2020-1-3)
 
 * The default _compat_ feature is no longer optional, as its unlikely that
