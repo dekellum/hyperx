@@ -2,7 +2,7 @@ use std::fmt::{self, Display};
 use std::str::FromStr;
 use std::time::SystemTime;
 
-use httpdate;
+use httpdate::HttpDate as InnerDate;
 
 /// A timestamp with HTTP formatting and parsing
 //   Prior to 1995, there were three different formats commonly used by
@@ -28,32 +28,32 @@ use httpdate;
 //   HTTP-date, the sender MUST generate those timestamps in the
 //   IMF-fixdate format.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
-pub struct HttpDate(SystemTime);
+pub struct HttpDate(InnerDate);
 
 impl FromStr for HttpDate {
     type Err = ::Error;
     fn from_str(s: &str) -> ::Result<HttpDate> {
-        httpdate::parse_http_date(s)
-            .map(|date| HttpDate::from(date))
+        InnerDate::from_str(s)
+            .map(HttpDate)
             .map_err(|_| ::Error::Header)
     }
 }
 
 impl Display for HttpDate {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        fmt::Display::fmt(&httpdate::fmt_http_date(self.0), f)
+        fmt::Display::fmt(&self.0, f)
     }
 }
 
 impl From<SystemTime> for HttpDate {
     fn from(sys: SystemTime) -> HttpDate {
-        HttpDate(sys)
+        HttpDate(sys.into())
     }
 }
 
 impl From<HttpDate> for SystemTime {
     fn from(date: HttpDate) -> SystemTime {
-        date.0
+        date.0.into()
     }
 }
 
@@ -67,7 +67,9 @@ mod tests {
         ($function: ident, $date: expr) => {
             #[test]
             fn $function() {
-                let nov_07 = HttpDate(SystemTime::UNIX_EPOCH + Duration::new(784198117, 0));
+                let nov_07 = HttpDate((
+                    SystemTime::UNIX_EPOCH + Duration::new(784198117, 0)
+                ).into());
 
                 assert_eq!($date.parse::<HttpDate>().unwrap(), nov_07);
             }
