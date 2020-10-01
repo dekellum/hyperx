@@ -1,5 +1,7 @@
 ## 1.2.0 (unreleased)
 
+* Broaden _base64_ dependency to include 0.13.0 (dvermd #23)
+
 ## 1.1.0 (2020-8-29)
 
 * Fix various compile warnings with rustc 1.44 and later.
