@@ -25,12 +25,12 @@ build = "build.rs"
 base64              = { version=">=0.10.1, <0.14" }
 bytes               = { version=">=0.5.2, <0.6" }
 http                = { version=">=0.2.0, <0.3" }
+httpdate            = { version=">=0.3.2, <0.4" }
 httparse            = { version=">=1.0, <1.4" }
 language-tags       = { version=">=0.2, <0.3" }
 log                 = { version=">=0.4, <0.5" }
 mime                = { version=">=0.3.2, <0.4" }
 percent-encoding    = { version=">=2.1.0, <2.2" }
-time                = { version=">=0.1.39, <0.2" }
 unicase             = { version=">=2.6.0, <2.7" }
 
 [features]
