@@ -1,5 +1,8 @@
 ## 1.2.0 (unreleased)
 
+* Replace use of time crate with httpdate crate for date/time typed
+  headers (paolobarbolini #24)
+
 * Broaden _base64_ dependency to include 0.13.0 (dvermd #23)
 
 ## 1.1.0 (2020-8-29)
