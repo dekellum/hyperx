@@ -437,7 +437,6 @@ macro_rules! literals {
                 _ => ()
             }
 
-            trace!("maybe_literal not found, copying {:?}", s);
             Cow::Owned(s.to_owned())
         }
 

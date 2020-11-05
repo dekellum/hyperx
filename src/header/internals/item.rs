@@ -93,7 +93,6 @@ impl Item {
                             f.fmt_line(&s)?;
                         },
                         Err(_) => {
-                            error!("raw header value is not utf8, value={:?}", part);
                             return Err(fmt::Error);
                         }
                     }
