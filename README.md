@@ -5,6 +5,7 @@
 [![crates.io](https://img.shields.io/crates/v/hyperx.svg?maxAge=3600)](https://crates.io/crates/hyperx)
 [![Travis CI Build](https://travis-ci.org/dekellum/hyperx.svg?branch=master)](https://travis-ci.org/dekellum/hyperx)
 [![Appveyor CI Build](https://ci.appveyor.com/api/projects/status/99slabo810em9xvy?svg=true)](https://ci.appveyor.com/project/dekellum/hyperx)
+[![deps status](https://deps.rs/repo/github/dekellum/hyperx/status.svg)](https://deps.rs/repo/github/dekellum/hyperx)
 
 [Hyper] is the low-level HTTP implementation for Rust. Hyper*x* is an
 e*x*traction of the hyper 0.11 typed header module, with minimized
