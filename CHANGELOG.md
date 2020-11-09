@@ -1,5 +1,10 @@
 ## 1.3.0 (unreleased)
 
+* Broaden _bytes_ dependency to include 1.0.z releases. This is intended to
+  ease transition to bytes 1.0.z across the ecosystem, allowing users to avoid
+  duplicates. The 1.3.z series of _hyperx_ will straddle both versions.
+  (with paolobarbolini #26 #31)
+
 ## 1.2.0 (2020-10-6)
 
 * Replace use of time crate with httpdate crate for date/time typed
