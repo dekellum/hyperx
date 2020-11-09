@@ -30,13 +30,13 @@ jobs:
             update: true
           - rust: stable
             os: ubuntu-20.04
-	    update: true
+            update: true
           - rust: nightly
             os: ubuntu-20.04
             all_targets: true
           - rust: nightly
             os: ubuntu-20.04
-	    update: true
+            update: true
             all_targets: true
 
     steps:
