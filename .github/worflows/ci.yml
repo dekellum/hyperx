@@ -1,0 +1,66 @@
+name: CI
+on: [push, pull_request]
+
+env:
+  RUST_BACKTRACE: 1
+
+jobs:
+
+  test:
+    name: Test ${{ matrix.rust }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - rust: 1.39.0
+            os: ubuntu-20.04
+          - rust: 1.39.0
+            os: ubuntu-20.04
+            update: true
+          - rust: 13.9.0
+            os: macos-latest
+          - rust: 13.9.0
+            os: windows-latest
+          - rust: 13.9.0
+            os: windows-latest
+            update: true
+          - rust: stable
+            os: ubuntu-20.04
+          - rust: nightly
+            os: ubuntu-20.04
+            all_targets: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Install Rust (${{ matrix.rust }})
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: ${{ matrix.rust }}
+          override: true
+
+      - name: Update Deps
+        if: matrix.update
+        uses: actions-rs/cargo@v1
+        with:
+          command: update
+
+      - name: Test
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+
+      - name: Test (features headers)
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --features headers
+
+      - name: Test all features
+        if: matrix.all_targets
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --all-features --all-targets
