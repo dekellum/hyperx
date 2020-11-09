@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - master
+  schedule:
+    - cron: '47 15 * * 1,4'
 
 env:
   RUST_BACKTRACE: 1
