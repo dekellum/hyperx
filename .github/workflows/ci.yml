@@ -17,11 +17,11 @@ jobs:
           - rust: 1.39.0
             os: ubuntu-20.04
             update: true
-          - rust: 13.9.0
+          - rust: 1.39.0
             os: macos-latest
-          - rust: 13.9.0
+          - rust: 1.39.0
             os: windows-latest
-          - rust: 13.9.0
+          - rust: 1.39.0
             os: windows-latest
             update: true
           - rust: stable
