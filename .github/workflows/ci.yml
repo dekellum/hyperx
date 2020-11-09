@@ -1,5 +1,9 @@
 name: CI
-on: [push, pull_request]
+on:
+  pull_request:
+  push:
+    branches:
+      - master
 
 env:
   RUST_BACKTRACE: 1
@@ -7,7 +11,7 @@ env:
 jobs:
 
   test:
-    name: Test ${{ matrix.rust }} on ${{ matrix.os }}
+    name: Test ${{ matrix.rust }} on ${{ matrix.os }} (${{matrix.update}})
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -26,8 +30,13 @@ jobs:
             update: true
           - rust: stable
             os: ubuntu-20.04
+	    update: true
           - rust: nightly
             os: ubuntu-20.04
+            all_targets: true
+          - rust: nightly
+            os: ubuntu-20.04
+	    update: true
             all_targets: true
 
     steps:
