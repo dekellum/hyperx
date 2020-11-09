@@ -49,7 +49,7 @@ checksum = "494b4d60369511e7dea41cf646832512a94e542f68bb9c49e54518e0f468eb47"
 
 [[package]]
 name = "hyperx"
-version = "1.2.0"
+version = "1.3.0"
 dependencies = [
  "base64",
  "bytes",

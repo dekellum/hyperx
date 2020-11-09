@@ -1,3 +1,5 @@
+## 1.3.0 (unreleased)
+
 ## 1.2.0 (2020-10-6)
 
 * Replace use of time crate with httpdate crate for date/time typed
