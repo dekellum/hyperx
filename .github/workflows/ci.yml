@@ -13,7 +13,7 @@ env:
 jobs:
 
   test:
-    name: Test ${{ matrix.rust }} on ${{ matrix.os }} (${{matrix.update}})
+    name: ${{ matrix.rust }} ${{ matrix.os }} ${{ join(matrix.extras) }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -22,24 +22,21 @@ jobs:
             os: ubuntu-20.04
           - rust: 1.39.0
             os: ubuntu-20.04
-            update: true
-          - rust: 1.39.0
-            os: macos-latest
+            extras: [update]
           - rust: 1.39.0
             os: windows-latest
           - rust: 1.39.0
             os: windows-latest
-            update: true
+            extras: [update]
           - rust: stable
             os: ubuntu-20.04
-            update: true
+            extras: [update]
           - rust: nightly
             os: ubuntu-20.04
-            all_targets: true
+            extras: [all]
           - rust: nightly
             os: ubuntu-20.04
-            update: true
-            all_targets: true
+            extras: [update, all]
 
     steps:
       - name: Checkout
@@ -53,7 +50,7 @@ jobs:
           override: true
 
       - name: Update Deps
-        if: matrix.update
+        if: ${{ contains(matrix.extras, 'update') }}
         uses: actions-rs/cargo@v1
         with:
           command: update
@@ -69,8 +66,8 @@ jobs:
           command: test
           args: --features headers
 
-      - name: Test all features
-        if: matrix.all_targets
+      - name: Test all features/targets
+        if: ${{ contains(matrix.extras, 'all') }}
         uses: actions-rs/cargo@v1
         with:
           command: test
