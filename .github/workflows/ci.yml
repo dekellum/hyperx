@@ -13,7 +13,7 @@ env:
 jobs:
 
   test:
-    name: Test ${{ matrix.rust }} on ${{ matrix.os }} (${{ join(matrix.extras) }})
+    name: ${{ matrix.rust }} ${{ matrix.os }} ${{ join(matrix.extras) }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -33,10 +33,10 @@ jobs:
             extras: [update]
           - rust: nightly
             os: ubuntu-20.04
-            extras: [all_targets]
+            extras: [all]
           - rust: nightly
             os: ubuntu-20.04
-            extras: [update, all_targets]
+            extras: [update, all]
 
     steps:
       - name: Checkout
@@ -67,7 +67,7 @@ jobs:
           args: --features headers
 
       - name: Test all features/targets
-        if: ${{ contains(matrix.extras, 'all_targets') }}
+        if: ${{ contains(matrix.extras, 'all') }}
         uses: actions-rs/cargo@v1
         with:
           command: test
