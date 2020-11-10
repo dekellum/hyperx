@@ -13,7 +13,7 @@ env:
 jobs:
 
   test:
-    name: Test ${{ matrix.rust }} on ${{ matrix.os }} (${{ matrix.extras }})
+    name: Test ${{ matrix.rust }} on ${{ matrix.os }} (${{ join(matrix.extras) }})
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -33,7 +33,7 @@ jobs:
             extras: [update]
           - rust: nightly
             os: ubuntu-20.04
-            all_targets: true
+            extras: [all_targets]
           - rust: nightly
             os: ubuntu-20.04
             extras: [update, all_targets]
