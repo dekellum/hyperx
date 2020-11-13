@@ -33,42 +33,31 @@ jobs:
             extras: [update]
           - rust: nightly
             os: ubuntu-20.04
-            extras: [all]
           - rust: nightly
             os: ubuntu-20.04
-            extras: [update, all]
+            extras: [update]
 
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Install Rust (${{ matrix.rust }})
+      - name: Install rust (${{ matrix.rust }})
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
           toolchain: ${{ matrix.rust }}
           override: true
 
-      - name: Update Deps
+      - name: Update deps
         if: ${{ contains(matrix.extras, 'update') }}
-        uses: actions-rs/cargo@v1
-        with:
-          command: update
+        run: cargo update
 
       - name: Test
-        uses: actions-rs/cargo@v1
-        with:
-          command: test
+        run: cargo test
 
-      - name: Test (features headers)
-        uses: actions-rs/cargo@v1
-        with:
-          command: test
-          args: --features headers
+      - name: Test headers feature
+        run: cargo test --features headers
 
       - name: Test all features/targets
-        if: ${{ contains(matrix.extras, 'all') }}
-        uses: actions-rs/cargo@v1
-        with:
-          command: test
-          args: --all-features --all-targets
+        if: ${{ matrix.rust == 'nightly' }}
+        run: cargo test --all-features --all-targets
