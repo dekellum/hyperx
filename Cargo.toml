@@ -22,8 +22,8 @@ build = "build.rs"
 
 [dependencies]
 base64              = { version=">=0.10.1, <0.14" }
-bytes               = { version=">=1.0.0, <2.0" }
-http                = { version=">=0.2.0, <0.3" }
+bytes               = { version=">=1.0.0, <1.1.0" }
+http                = { version=">=0.2.2, <0.3" }
 httpdate            = { version=">=0.3.2, <0.4" }
 httparse            = { version=">=1.0, <1.4" }
 language-tags       = { version=">=0.2, <0.3" }
