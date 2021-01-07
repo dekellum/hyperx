@@ -1,5 +1,11 @@
 ## 1.3.0 (unreleased)
 
+## 1.2.1 (2021-1-7)
+
+* Constrain http dep for remaining 1.2 series due to dubious release
+  practices. This will be lifted in 1.3.0, see this
+  [github comment](https://github.com/hyperium/http/pull/461#issuecomment-756298944).
+
 ## 1.2.0 (2020-10-6)
 
 * Replace use of time crate with httpdate crate for date/time typed
