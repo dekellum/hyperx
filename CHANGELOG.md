@@ -1,10 +1,22 @@
 ## 1.3.0 (unreleased)
 
+* Remove _log_ dependency, which was only used sparsely as a poor workaround
+  for unspecific `Error::Header` errors. ([#25])
+
+* Upgrade to _bytes_ 1.0.0 (paolobarbolini [#31])
+
+* Lift prior constraint on _http_ dependency (optimistically hoping for no
+  further 0.2.z anomalous releases).
+
+[#25]: https://github.com/dekellum/hyperx/pull/25
+[#31]: https://github.com/dekellum/hyperx/pull/31
+
 ## 1.2.1 (2021-1-7)
 
-* Constrain http dep for remaining 1.2 series due to dubious release
-  practices. This will be lifted in 1.3.0, see this
-  [github comment](https://github.com/hyperium/http/pull/461#issuecomment-756298944).
+* Constrain _http_ dependency to <0.2.3 for remaining 1.2 series due to dubious
+  release practices. This will be lifted in 1.3.0, see this [github comment][461].
+
+[461]: https://github.com/hyperium/http/pull/461#issuecomment-756298944
 
 ## 1.2.0 (2020-10-6)
 
