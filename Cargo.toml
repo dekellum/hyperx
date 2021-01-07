@@ -27,7 +27,6 @@ http                = { version=">=0.2.0, <0.3" }
 httpdate            = { version=">=0.3.2, <0.4" }
 httparse            = { version=">=1.0, <1.4" }
 language-tags       = { version=">=0.2, <0.3" }
-log                 = { version=">=0.4, <0.5" }
 mime                = { version=">=0.3.2, <0.4" }
 percent-encoding    = { version=">=2.1.0, <2.2" }
 unicase             = { version=">=2.6.0, <2.7" }

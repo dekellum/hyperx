@@ -193,12 +193,10 @@ impl FromStr for Basic {
                     })
                 },
                 Err(_) => {
-                    debug!("Basic::from_str utf8 error");
                     Err(::Error::Header)
                 }
             },
             Err(_) => {
-                debug!("Basic::from_str base64 error");
                 Err(::Error::Header)
             }
         }

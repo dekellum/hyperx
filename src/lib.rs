@@ -18,7 +18,6 @@ extern crate bytes;
 extern crate http;
 extern crate httparse;
 extern crate language_tags;
-#[macro_use] extern crate log;
 pub extern crate mime;
 extern crate percent_encoding;
 extern crate httpdate;
