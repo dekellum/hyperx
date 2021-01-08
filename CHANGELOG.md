@@ -1,4 +1,4 @@
-## 1.3.0 (unreleased)
+## 1.3.0 (2021-1-8)
 
 * Remove _log_ dependency, which was only used sparsely as a poor workaround
   for unspecific `Error::Header` errors. ([#25])
@@ -14,7 +14,8 @@
 ## 1.2.1 (2021-1-7)
 
 * Constrain _http_ dependency to <0.2.3 for remaining 1.2 series due to dubious
-  release practices. This will be lifted in 1.3.0, see this [github comment][461].
+  release practices, e.g. forcing duplicates in patch releases. This will be
+  lifted in 1.3.0, see this [github comment][461].
 
 [461]: https://github.com/hyperium/http/pull/461#issuecomment-756298944
 
