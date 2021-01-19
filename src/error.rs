@@ -5,8 +5,6 @@ use std::fmt;
 use std::str::Utf8Error;
 use std::string::FromUtf8Error;
 
-use httparse;
-
 use self::Error::{
     Method,
     Version,
@@ -97,54 +95,7 @@ impl From<FromUtf8Error> for Error {
     }
 }
 
-impl From<httparse::Error> for Error {
-    fn from(err: httparse::Error) -> Error {
-        match err {
-            httparse::Error::HeaderName |
-            httparse::Error::HeaderValue |
-            httparse::Error::NewLine |
-            httparse::Error::Token => Header,
-            httparse::Error::Status => Status,
-            httparse::Error::TooManyHeaders => TooLarge,
-            httparse::Error::Version => Version,
-        }
-    }
-}
-
 #[doc(hidden)]
 trait AssertSendSync: Send + Sync + 'static {}
 #[doc(hidden)]
 impl AssertSendSync for Error {}
-
-#[cfg(test)]
-mod tests {
-    use httparse;
-    use super::Error;
-    use super::Error::*;
-
-    macro_rules! from {
-        ($from:expr => $error:pat) => {
-            match Error::from($from) {
-                e @ $error => {
-                    assert!(format!("{}", e).len() >= 5);
-                    assert_ne!(
-                        format!("{}", e),
-                        "description() is deprecated; use Display");
-                } ,
-                e => panic!("{:?}", e)
-            }
-        }
-    }
-
-    #[test]
-    fn test_from() {
-        from!(httparse::Error::HeaderName => Header);
-        from!(httparse::Error::HeaderName => Header);
-        from!(httparse::Error::HeaderValue => Header);
-        from!(httparse::Error::NewLine => Header);
-        from!(httparse::Error::Status => Status);
-        from!(httparse::Error::Token => Header);
-        from!(httparse::Error::TooManyHeaders => TooLarge);
-        from!(httparse::Error::Version => Version);
-    }
-}
