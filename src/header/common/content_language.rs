@@ -33,7 +33,7 @@ header! {
     /// let mut headers = http::HeaderMap::new();
     /// headers.encode(
     ///     &ContentLanguage(vec![
-    ///         qitem(language_tags::LanguageTag::parse("en").unwrap()),
+    ///         qitem("en".parse().unwrap()),
     ///     ])
     /// );
     /// # }
@@ -49,8 +49,8 @@ header! {
     /// let mut headers = http::HeaderMap::new();
     /// headers.encode(
     ///     &ContentLanguage(vec![
-    ///         qitem(language_tags::LanguageTag::parse("da").unwrap()),
-    ///         qitem(language_tags::LanguageTag::parse("en-GB").unwrap()),
+    ///         qitem("da".parse().unwrap()),
+    ///         qitem("en-GB".parse().unwrap()),
     ///     ])
     /// );
     /// # }
