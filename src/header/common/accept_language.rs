@@ -27,9 +27,7 @@ header! {
     /// use hyperx::header::{AcceptLanguage, LanguageTag, qitem, TypedHeaders};
     ///
     /// let mut headers = http::HeaderMap::new();
-    /// let mut langtag: LanguageTag = Default::default();
-    /// langtag.language = Some("en".to_owned());
-    /// langtag.region = Some("US".to_owned());
+    /// let mut langtag: LanguageTag = LanguageTag::parse("en-US").unwrap();
     /// headers.encode(
     ///     &AcceptLanguage(vec![
     ///         qitem(langtag),
@@ -41,15 +39,15 @@ header! {
     /// # extern crate http;
     /// # extern crate hyperx;
     /// # #[macro_use] extern crate language_tags;
-    /// # use hyperx::header::{AcceptLanguage, QualityItem, q, qitem, TypedHeaders};
+    /// # use hyperx::header::{AcceptLanguage, LanguageTag, QualityItem, q, qitem, TypedHeaders};
     /// #
     /// # fn main() {
     /// let mut headers = http::HeaderMap::new();
     /// headers.encode(
     ///     &AcceptLanguage(vec![
-    ///         qitem(langtag!(da)),
-    ///         QualityItem::new(langtag!(en;;;GB), q(800)),
-    ///         QualityItem::new(langtag!(en), q(700)),
+    ///         qitem(LanguageTag::parse("da").unwrap()),
+    ///         QualityItem::new(LanguageTag::parse("en-US").unwrap(), q(800)),
+    ///         QualityItem::new(LanguageTag::parse("en").unwrap(), q(700)),
     ///     ])
     /// );
     /// # }

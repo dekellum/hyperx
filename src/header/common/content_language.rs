@@ -26,14 +26,14 @@ header! {
     /// ```
     /// # extern crate http;
     /// # extern crate hyperx;
-    /// # #[macro_use] extern crate language_tags;
+    /// extern crate language_tags;
     /// # use hyperx::header::{ContentLanguage, qitem, TypedHeaders};
     /// #
     /// # fn main() {
     /// let mut headers = http::HeaderMap::new();
     /// headers.encode(
     ///     &ContentLanguage(vec![
-    ///         qitem(langtag!(en)),
+    ///         qitem(language_tags::LanguageTag::parse("en").unwrap()),
     ///     ])
     /// );
     /// # }
@@ -42,16 +42,15 @@ header! {
     /// ```
     /// # extern crate http;
     /// # extern crate hyperx;
-    /// # #[macro_use] extern crate language_tags;
+    /// extern crate language_tags;
     /// # use hyperx::header::{ContentLanguage, qitem, TypedHeaders};
-    /// #
     /// # fn main() {
     ///
     /// let mut headers = http::HeaderMap::new();
     /// headers.encode(
     ///     &ContentLanguage(vec![
-    ///         qitem(langtag!(da)),
-    ///         qitem(langtag!(en;;;GB)),
+    ///         qitem(language_tags::LanguageTag::parse("da").unwrap()),
+    ///         qitem(language_tags::LanguageTag::parse("en-GB").unwrap()),
     ///     ])
     /// );
     /// # }
