@@ -128,7 +128,7 @@ pub trait Scheme: FromStr + fmt::Debug + Clone + Send + Sync {
     /// Will be replaced with an associated constant once available.
     fn scheme() -> Option<&'static str>;
     /// Format the Scheme data into a header value.
-    fn fmt_scheme(&self, &mut fmt::Formatter) -> fmt::Result;
+    fn fmt_scheme(&self, _: &mut fmt::Formatter) -> fmt::Result;
 }
 
 impl Scheme for String {
