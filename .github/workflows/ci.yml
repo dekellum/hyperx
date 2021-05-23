@@ -14,6 +14,7 @@ jobs:
     name: ${{ matrix.rust }} ${{ matrix.os }} ${{ join(matrix.extras) }}
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         include:
           - rust: 1.39.0
