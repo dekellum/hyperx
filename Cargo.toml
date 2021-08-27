@@ -21,15 +21,15 @@ exclude = [
 build = "build.rs"
 
 [dependencies]
-base64              = { version=">=0.10.1, <0.14" }
-bytes               = { version=">=1.0.0, <1.1.0" }
-http                = { version=">=0.2.2, <0.3" }
-httpdate            = { version=">=0.3.2, <0.4" }
-httparse            = { version=">=1.0, <1.6" }
-language-tags       = { version=">=0.2, <0.3" }
-mime                = { version=">=0.3.2, <0.4" }
-percent-encoding    = { version=">=2.1.0, <2.2" }
-unicase             = { version=">=2.6.0, <2.7" }
+base64              = "0.13"
+bytes               = "1"
+http                = "0.2.2"
+httpdate            = "0.3.2"
+httparse            = "1"
+language-tags       = "0.2"
+mime                = "0.3.2"
+percent-encoding    = "2.1"
+unicase             = "2.6"
 
 [features]
 nightly = []
