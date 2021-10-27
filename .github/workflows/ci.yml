@@ -21,12 +21,12 @@ jobs:
         include:
           - rust: 1.39.0
             os: ubuntu-20.04
-          - rust: 1.39.0
-            os: ubuntu-20.04
-            extras: [update]
           - rust: 1.41.1
             os: windows-latest
-          - rust: 1.41.1
+          - rust: 1.46.0
+            os: ubuntu-20.04
+            extras: [update]
+          - rust: 1.46.0
             os: windows-latest
             extras: [update]
           - rust: stable
