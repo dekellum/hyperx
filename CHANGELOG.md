@@ -1,5 +1,11 @@
 ## 1.3.1 (unreleased)
 
+* Broaden _bytes_ dependency to include 1.1.
+
+* Broaden _httparse_ dependency to include 1.4.
+
+* Clarify MSRV policy in README.md.
+
 ## 1.3.0 (2021-1-8)
 
 * Remove _log_ dependency, which was only used sparsely as a poor workaround
