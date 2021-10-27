@@ -1,3 +1,5 @@
+## 1.3.1 (unreleased)
+
 ## 1.3.0 (2021-1-8)
 
 * Remove _log_ dependency, which was only used sparsely as a poor workaround
