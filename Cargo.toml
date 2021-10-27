@@ -24,7 +24,7 @@ build = "build.rs"
 base64              = { version=">=0.10.1, <0.14" }
 bytes               = { version=">=1.0.0, <1.2.0" }
 http                = { version=">=0.2.2, <0.3" }
-httpdate            = { version=">=0.3.2, <0.4" }
+httpdate            = { version=">=0.3.2, <1.1" }
 language-tags       = { version=">=0.2, <0.3" }
 mime                = { version=">=0.3.2, <0.4" }
 percent-encoding    = { version=">=2.1.0, <2.2" }
