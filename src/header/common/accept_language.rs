@@ -24,12 +24,10 @@ header! {
     ///
     /// ```
     /// # extern crate http;
-    /// use hyperx::header::{AcceptLanguage, LanguageTag, qitem, TypedHeaders};
+    /// use hyperx::header::{AcceptLanguage, qitem, TypedHeaders};
     ///
     /// let mut headers = http::HeaderMap::new();
-    /// let mut langtag: LanguageTag = Default::default();
-    /// langtag.language = Some("en".to_owned());
-    /// langtag.region = Some("US".to_owned());
+    /// let mut langtag = "en-US".parse().unwrap();
     /// headers.encode(
     ///     &AcceptLanguage(vec![
     ///         qitem(langtag),
@@ -47,9 +45,9 @@ header! {
     /// let mut headers = http::HeaderMap::new();
     /// headers.encode(
     ///     &AcceptLanguage(vec![
-    ///         qitem(langtag!(da)),
-    ///         QualityItem::new(langtag!(en;;;GB), q(800)),
-    ///         QualityItem::new(langtag!(en), q(700)),
+    ///         qitem("da".parse().unwrap()),
+    ///         QualityItem::new("en-US".parse().unwrap(), q(800)),
+    ///         QualityItem::new("en".parse().unwrap(), q(700)),
     ///     ])
     /// );
     /// # }

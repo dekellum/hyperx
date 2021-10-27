@@ -59,9 +59,9 @@ checksum = "dd25036021b0de88a0aff6b850051563c6516d0bf53f8638938edbb9de732736"
 
 [[package]]
 name = "language-tags"
-version = "0.2.2"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a91d884b6667cd606bb5a69aa0c99ba811a115fc68915e7056ec08a46e93199a"
+checksum = "f11dc871dd28acc3ac816c5bbe2c5c7e60c4a41f82ce79699a0a44a8fdbc2c7c"
 
 [[package]]
 name = "mime"
