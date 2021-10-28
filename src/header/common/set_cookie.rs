@@ -14,6 +14,11 @@ use std::str::from_utf8;
 /// `SetCookie` _must not_ be encoded as a comma-delimited list. For this
 /// reason, it doesn't implement `fmt::Display` (and `std::string::ToString`).
 ///
+/// Consider using the _cookie_ crate for parsing/decoding or encoding
+/// cookie values. [Usage example].
+///
+/// [Usage example]: https://github.com/dekellum/hyperx/issues/30#issuecomment-733151305
+///
 /// # ABNF
 ///
 /// ```text
