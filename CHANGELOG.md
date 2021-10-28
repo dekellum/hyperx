@@ -1,3 +1,5 @@
+## 1.4.0 (unreleased)
+
 ## 1.3.1 (2021-10-28)
 
 * Broaden _bytes_ dependency to include 1.1.
