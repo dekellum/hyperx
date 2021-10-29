@@ -1,4 +1,5 @@
-## 1.4.0 (unreleased)
+## 1.4.0 (2021-10-29)
+
 * Minimum supported rust version (MSRV) is now 1.46.0 (_http_ 0.2.5 MSRV is
   also 1.46.0).
 
