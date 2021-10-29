@@ -18,6 +18,9 @@ use header::internals::VecMap;
 /// * `SID=31d4d96e407aad42`
 /// * `SID=31d4d96e407aad42; lang=en-US`
 ///
+/// Consider using the _cookie_ crate for parsing/decoding or encoding
+/// cookie values.
+///
 /// # Example
 /// ```
 /// # extern crate http;

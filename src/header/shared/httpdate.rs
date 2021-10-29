@@ -76,9 +76,9 @@ mod tests {
         };
     }
 
-    test_parse!(test_imf_fixdate, "Sun, 07 Nov 1994 08:48:37 GMT");
-    test_parse!(test_rfc_850, "Sunday, 07-Nov-94 08:48:37 GMT");
-    test_parse!(test_asctime, "Sun Nov  7 08:48:37 1994");
+    test_parse!(test_imf_fixdate, "Mon, 07 Nov 1994 08:48:37 GMT");
+    test_parse!(test_rfc_850, "Monday, 07-Nov-94 08:48:37 GMT");
+    test_parse!(test_asctime, "Mon Nov  7 08:48:37 1994");
 
     #[test]
     fn test_no_date() {

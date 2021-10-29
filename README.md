@@ -15,19 +15,14 @@ where it was dropped.
 
 ## Minimum supported rust version
 
-MSRV := 1.39.0
+MSRV := 1.46.0
 
 The crate will fail fast on any lower rustc (via a build.rs version check) and
 is also CI tested on this version. MSRV will only be increased in a new MINOR
 (or MAJOR) release of this crate. However, some direct or transitive
-dependencies unfortunately have or may increase MSRV in PATCH releases. Known
-examples are listed below:
-
-* http 0.2.5 increased MSRV to 1.46.0
-
-Users may need to selectively control updates by preserving/distributing a
-Cargo.lock file in order to control MSRV.
-
+dependencies unfortunately have or may increase MSRV in PATCH releases. Users
+may need to selectively control updates by preserving/distributing a Cargo.lock
+file in order to control MSRV.
 
 ## License
 

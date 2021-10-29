@@ -1,3 +1,18 @@
+## 1.4.0 (unreleased)
+* Minimum supported rust version (MSRV) is now 1.46.0 (_http_ 0.2.5 MSRV is
+  also 1.46.0).
+
+* Upgrade to language-tags 0.3.1. (#35)
+
+* Remove _httparse_ dependency and conversion from `httparse::Error` to
+  `hyperx::Error`.  In the presumed unlikely event that this conversion is used
+  externally, this is a potential breaking change, risked in a minor
+  release. (#32)
+
+* Broaden _httpdate_ dependency to include the 1.0 major release.
+
+* Add docs to cookie headers recommending use of the _cookie_ crate. (#30)
+
 ## 1.3.1 (2021-10-28)
 
 * Broaden _bytes_ dependency to include 1.1.
