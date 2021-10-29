@@ -20,10 +20,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - rust: 1.39.0
-            os: ubuntu-20.04
-          - rust: 1.41.1
-            os: windows-latest
           - rust: 1.46.0
             os: ubuntu-20.04
             extras: [update]

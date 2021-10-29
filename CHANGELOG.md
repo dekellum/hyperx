@@ -1,4 +1,6 @@
 ## 1.4.0 (unreleased)
+* Minimum supported rust version (MSRV) is now 1.46.0 (_http_ 0.2.5 MSRV is
+  also 1.46.0).
 
 * Upgrade to language-tags 0.3.1. (#35)
 
